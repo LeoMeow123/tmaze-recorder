@@ -131,6 +131,12 @@
   /* Warning banner */
   .weight-warning{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:var(--red)}
 
+  /* Drag handle */
+  .drag-handle{cursor:grab;color:var(--muted);font-size:14px;user-select:none}
+  .drag-handle:active{cursor:grabbing}
+  .mice-table tr.dragging{opacity:0.4;background:var(--bg3)}
+  .mice-table tr.drag-over{border-top:2px solid var(--accent)}
+
   @media(max-width:768px){.form-grid{grid-template-columns:1fr}.toolbar{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
@@ -165,9 +171,10 @@
       <div class="form-group"><label>Cohort Name</label><input id="nc-name" placeholder="e.g. 18mo APP Batch 2"></div>
       <div class="form-group"><label>Age</label><input id="nc-age" placeholder="e.g. 6mo, 18mo"></div>
       <div class="form-group"><label>Genotypes</label><input id="nc-genotypes" placeholder="e.g. WT, APP, Tau" value="WT, APP"></div>
-      <div class="form-group"><label>Number of Mice</label><input type="number" id="nc-count" min="1" max="50" value="10"></div>
+      <div class="form-group"><label># Male</label><input type="number" id="nc-males" min="0" max="50" value="5"></div>
+      <div class="form-group"><label># Female</label><input type="number" id="nc-females" min="0" max="50" value="5"></div>
     </div>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:12px">You'll enter mouse IDs, sex, and genotype on the next step.</p>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:12px">You'll enter mouse IDs and genotype on the next step. IDs are optional for quick testing.</p>
     <div style="display:flex;gap:8px;justify-content:flex-end">
       <button class="btn btn-secondary" onclick="closeNewCohort()">Cancel</button>
       <button class="btn btn-primary" onclick="createCohort()">Create</button>
@@ -179,8 +186,9 @@
 <div class="modal-overlay" id="miceSetupModal">
   <div class="modal-card" style="max-width:600px;max-height:80vh;overflow-y:auto">
     <h3>Enter Mouse Info</h3>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Drag rows to set recording order. Leave IDs blank for auto-generated placeholders.</p>
     <table class="mice-table" id="miceSetupTable">
-      <thead><tr><th>#</th><th>Mouse ID</th><th>Sex</th><th>Genotype</th></tr></thead>
+      <thead><tr><th style="width:24px"></th><th>#</th><th>Mouse ID</th><th>Sex</th><th>Genotype</th></tr></thead>
       <tbody id="miceSetupBody"></tbody>
     </table>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
@@ -197,12 +205,29 @@
     <span class="cohort-title" id="recordingTitle"></span>
     <button class="btn btn-secondary btn-sm" onclick="addDay()">+ Add Day</button>
     <button class="btn btn-secondary btn-sm" onclick="markReversal()">Mark Reversal</button>
+    <button class="btn btn-secondary btn-sm" onclick="showReorder()">Reorder Mice</button>
   </div>
   <div class="recording-view">
     <div id="weightWarnings"></div>
     <div id="weightChartArea"></div>
     <div class="day-tabs" id="dayTabs"></div>
     <div id="dayContent"></div>
+  </div>
+</div>
+
+<!-- REORDER MICE MODAL -->
+<div class="modal-overlay" id="reorderModal">
+  <div class="modal-card" style="max-width:400px;max-height:80vh;overflow-y:auto">
+    <h3>Recording Order</h3>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Drag to set the order mice are recorded. This order applies to all days.</p>
+    <table class="mice-table">
+      <thead><tr><th style="width:24px"></th><th>#</th><th>Mouse ID</th><th>Sex</th><th>Geno</th></tr></thead>
+      <tbody id="reorderBody"></tbody>
+    </table>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button class="btn btn-secondary" onclick="closeReorder()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveReorder()">Apply Order</button>
+    </div>
   </div>
 </div>
 
@@ -389,7 +414,8 @@ window.showNewCohort = function() {
   document.getElementById('nc-name').value = '';
   document.getElementById('nc-age').value = '';
   document.getElementById('nc-genotypes').value = 'WT, APP';
-  document.getElementById('nc-count').value = '10';
+  document.getElementById('nc-males').value = '5';
+  document.getElementById('nc-females').value = '5';
   document.getElementById('newCohortModal').classList.add('open');
 };
 window.closeNewCohort = function() { document.getElementById('newCohortModal').classList.remove('open'); };
@@ -399,8 +425,11 @@ window.createCohort = function() {
   const name = document.getElementById('nc-name').value.trim();
   const age = document.getElementById('nc-age').value.trim();
   const genotypes = document.getElementById('nc-genotypes').value.trim();
-  const count = parseInt(document.getElementById('nc-count').value) || 1;
+  const males = parseInt(document.getElementById('nc-males').value) || 0;
+  const females = parseInt(document.getElementById('nc-females').value) || 0;
+  const count = males + females;
   if (!name) { alert('Cohort name is required'); return; }
+  if (count < 1) { alert('Need at least 1 mouse'); return; }
 
   pendingCohort = {
     id: Date.now().toString(36),
@@ -410,36 +439,43 @@ window.createCohort = function() {
 
   closeNewCohort();
 
-  // Show mice setup
+  // Show mice setup — males first, then females, sex pre-filled
   const genoOpts = genotypes.split(',').map(g => g.trim()).filter(g => g);
   const body = document.getElementById('miceSetupBody');
   body.innerHTML = '';
   for (let i = 0; i < count; i++) {
-    body.innerHTML += `<tr>
-      <td style="color:var(--muted);font-size:11px">${i + 1}</td>
-      <td><input class="mouse-id-input" placeholder="e.g. 16095"></td>
-      <td><select class="mouse-sex-input"><option value="M">M</option><option value="F">F</option></select></td>
+    const sex = i < males ? 'M' : 'F';
+    const autoId = sex + (i < males ? i + 1 : i - males + 1);
+    body.innerHTML += `<tr draggable="true">
+      <td class="drag-handle">&#9776;</td>
+      <td style="color:var(--muted);font-size:11px" class="row-num">${i + 1}</td>
+      <td><input class="mouse-id-input" placeholder="${autoId}" value=""></td>
+      <td><select class="mouse-sex-input"><option value="M"${sex === 'M' ? ' selected' : ''}>M</option><option value="F"${sex === 'F' ? ' selected' : ''}>F</option></select></td>
       <td><select class="mouse-geno-input">${genoOpts.map(g => `<option value="${esc(g)}">${esc(g)}</option>`).join('')}</select></td>
     </tr>`;
   }
   document.getElementById('miceSetupModal').classList.add('open');
+  initDragReorder();
 };
 
 window.closeMiceSetup = function() { document.getElementById('miceSetupModal').classList.remove('open'); pendingCohort = null; };
 
 window.saveMiceAndStart = function() {
   if (!pendingCohort) return;
-  const ids = document.querySelectorAll('.mouse-id-input');
-  const sexes = document.querySelectorAll('.mouse-sex-input');
-  const genos = document.querySelectorAll('.mouse-geno-input');
+  const rows = document.querySelectorAll('#miceSetupBody tr');
 
   pendingCohort.mice = [];
-  for (let i = 0; i < ids.length; i++) {
-    const mid = ids[i].value.trim();
-    if (!mid) { alert(`Mouse #${i + 1} ID is required`); return; }
+  rows.forEach((row, i) => {
+    const idInput = row.querySelector('.mouse-id-input');
+    const sexInput = row.querySelector('.mouse-sex-input');
+    const genoInput = row.querySelector('.mouse-geno-input');
+    let mid = idInput.value.trim();
+    // Auto-generate ID from placeholder if blank
+    if (!mid) mid = idInput.placeholder || (sexInput.value + (i + 1));
     if (pendingCohort.mice.some(m => m.id === mid)) { alert(`Duplicate mouse ID: ${mid}`); return; }
-    pendingCohort.mice.push({ id: mid, sex: sexes[i].value, genotype: genos[i].value });
-  }
+    pendingCohort.mice.push({ id: mid, sex: sexInput.value, genotype: genoInput.value });
+  });
+  if (pendingCohort.mice.length !== rows.length) return; // duplicate found, aborted
 
   // Add Day 1
   pendingCohort.days = [createDay(1, pendingCohort.mice)];
@@ -856,6 +892,78 @@ window.saveSetup = function() {
 };
 
 // =====================================================================
+// REORDER MICE (recording view)
+// =====================================================================
+window.showReorder = function() {
+  const c = currentCohort();
+  if (!c) return;
+  const body = document.getElementById('reorderBody');
+  body.innerHTML = c.mice.map((m, i) => `<tr draggable="true" data-mouse-id="${esc(m.id)}">
+    <td class="drag-handle">&#9776;</td>
+    <td style="color:var(--muted);font-size:11px" class="row-num">${i + 1}</td>
+    <td style="font-weight:600;font-size:12px">${esc(m.id)}</td>
+    <td style="font-size:11px">${m.sex}</td>
+    <td style="font-size:11px">${esc(m.genotype)}</td>
+  </tr>`).join('');
+  document.getElementById('reorderModal').classList.add('open');
+  initDragReorderOn(body);
+};
+
+window.closeReorder = function() { document.getElementById('reorderModal').classList.remove('open'); };
+
+window.saveReorder = function() {
+  const c = currentCohort();
+  if (!c) return;
+  const rows = document.querySelectorAll('#reorderBody tr');
+  const newOrder = [...rows].map(r => r.dataset.mouseId);
+  // Reorder c.mice to match
+  const miceMap = {};
+  c.mice.forEach(m => { miceMap[m.id] = m; });
+  c.mice = newOrder.map(id => miceMap[id]).filter(m => m);
+  saveLocal();
+  closeReorder();
+  renderDayContent();
+};
+
+// =====================================================================
+// DRAG REORDER (mice setup)
+// =====================================================================
+function initDragReorder() { initDragReorderOn(document.getElementById('miceSetupBody')); }
+
+function initDragReorderOn(tbody) {
+  let dragRow = null;
+  tbody.addEventListener('dragstart', e => {
+    dragRow = e.target.closest('tr');
+    if (dragRow) dragRow.classList.add('dragging');
+  });
+  tbody.addEventListener('dragend', e => {
+    if (dragRow) dragRow.classList.remove('dragging');
+    tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+    dragRow = null;
+    tbody.querySelectorAll('.row-num').forEach((el, i) => { el.textContent = i + 1; });
+  });
+  tbody.addEventListener('dragover', e => {
+    e.preventDefault();
+    const target = e.target.closest('tr');
+    if (target && target !== dragRow) {
+      tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+      target.classList.add('drag-over');
+    }
+  });
+  tbody.addEventListener('drop', e => {
+    e.preventDefault();
+    const target = e.target.closest('tr');
+    if (target && target !== dragRow && dragRow) {
+      const rows = [...tbody.querySelectorAll('tr')];
+      const fromIdx = rows.indexOf(dragRow);
+      const toIdx = rows.indexOf(target);
+      if (fromIdx < toIdx) target.after(dragRow);
+      else target.before(dragRow);
+    }
+  });
+}
+
+// =====================================================================
 // UTILS
 // =====================================================================
 function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
@@ -865,6 +973,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeNewCohort();
     closeMiceSetup();
+    closeReorder();
     closeSetup();
   }
 });
