@@ -203,6 +203,7 @@
   <div class="toolbar">
     <button class="back-btn" onclick="backToCohorts()">&larr; Cohorts</button>
     <span class="cohort-title" id="recordingTitle"></span>
+    <button class="btn btn-secondary btn-sm" id="btnInsertDay0" onclick="insertDay0()" style="display:none">+ Day 0 (Pref)</button>
     <button class="btn btn-secondary btn-sm" onclick="addDay()">+ Add Day</button>
     <button class="btn btn-secondary btn-sm" onclick="markReversal()">Mark Reversal</button>
     <button class="btn btn-secondary btn-sm" onclick="showReorder()">Reorder Mice</button>
@@ -571,6 +572,18 @@ window.addDay = function() {
   renderWeightChart();
 };
 
+window.insertDay0 = function() {
+  const c = currentCohort();
+  if (!c) return;
+  const day = createDay(0, c.mice);
+  c.days.unshift(day);
+  activeDay = 0;
+  saveLocal();
+  renderDayTabs();
+  renderDayContent();
+  renderWeightChart();
+};
+
 window.markReversal = function() {
   const c = currentCohort();
   if (!c || activeDay == null) return;
@@ -616,6 +629,9 @@ window.applyReversal = function() {
 function renderDayTabs() {
   const c = currentCohort();
   if (!c) return;
+  const hasDay0 = c.days.some(d => d.day === 0);
+  const btn0 = document.getElementById('btnInsertDay0');
+  if (btn0) btn0.style.display = hasDay0 ? 'none' : '';
   const el = document.getElementById('dayTabs');
   el.innerHTML = c.days.map((d, i) => {
     const hasReversal = c.mice.some(m => d.trials[m.id]?.reversal);
