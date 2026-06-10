@@ -259,6 +259,15 @@ const SYNC_KEY = 'tmaze-sync';
 const CACHE_KEY = 'tmaze-cache';
 const DATA_PATH = 'data.json';
 
+function localDate() {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
+}
+function localDateTime() {
+  const d = new Date();
+  return d.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' }) + 'T' +
+    d.toLocaleTimeString('en-GB', { timeZone: 'America/Los_Angeles', hour: '2-digit', minute: '2-digit' });
+}
+
 function getSyncConfig() {
   try { return JSON.parse(localStorage.getItem(SYNC_KEY)); } catch { return null; }
 }
@@ -305,7 +314,7 @@ async function saveToCloud(data) {
   const content = btoa(binary);
 
   try {
-    const body = { message: `Update T-maze data ${new Date().toISOString().slice(0, 16)}`, content };
+    const body = { message: `Update T-maze data ${localDateTime()}`, content };
     if (sha) body.sha = sha;
     const res = await fetch(url, {
       method: 'PUT',
@@ -449,7 +458,7 @@ window.createCohort = function() {
 
   pendingCohort = {
     id: Date.now().toString(36),
-    name, age, genotypes, created: new Date().toISOString().slice(0, 10),
+    name, age, genotypes, created: localDate(),
     mice: [], days: [],
   };
 
@@ -507,7 +516,7 @@ window.saveMiceAndStart = function() {
 function createDay(dayNum, mice) {
   const day = {
     day: dayNum,
-    date: new Date().toISOString().slice(0, 10),
+    date: localDate(),
     trials: {},
   };
   mice.forEach(m => {
