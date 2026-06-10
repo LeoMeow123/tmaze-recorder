@@ -324,6 +324,7 @@ let allData = { cohorts: [] }; // { cohorts: [{ id, name, age, genotypes, mice, 
 let currentCohortId = null;
 let activeDay = null; // index into current cohort's days array
 let _saving = false;
+let _dirty = false;
 
 function currentCohort() {
   return allData.cohorts.find(c => c.id === currentCohortId);
@@ -331,9 +332,14 @@ function currentCohort() {
 
 function saveLocal() {
   localStorage.setItem(CACHE_KEY, JSON.stringify(allData));
+  if (!_dirty) {
+    _dirty = true;
+    const cfg = getSyncConfig();
+    if (cfg?.token) setSyncStatus('error', 'Unsaved');
+  }
 }
 
-async function manualSaveToCloud() {
+async function pushToCloud() {
   const cfg = getSyncConfig();
   if (!cfg?.token) { setSyncStatus('offline', 'Local only'); return; }
   if (_saving) return;
@@ -341,14 +347,24 @@ async function manualSaveToCloud() {
   setSyncStatus('saving', 'Saving...');
   const ok = await saveToCloud(allData);
   _saving = false;
-  setSyncStatus(ok ? 'saved' : 'error', ok ? 'Saved' : 'Save failed');
-  if (ok) setTimeout(() => setSyncStatus('saved', 'Synced'), 2000);
+  if (ok) {
+    _dirty = false;
+    setSyncStatus('saved', 'Saved');
+    setTimeout(() => { if (!_dirty) setSyncStatus('saved', 'Synced'); }, 2000);
+  } else {
+    setSyncStatus('error', 'Save failed');
+  }
 }
 
 window.manualSave = function() {
   saveLocal();
-  manualSaveToCloud();
+  pushToCloud();
 };
+
+// Auto-save every 5 minutes if dirty
+setInterval(() => {
+  if (_dirty && !_saving) pushToCloud();
+}, 5 * 60 * 1000);
 
 // =====================================================================
 // INIT
@@ -477,8 +493,8 @@ window.saveMiceAndStart = function() {
   });
   if (pendingCohort.mice.length !== rows.length) return; // duplicate found, aborted
 
-  // Add Day 1
-  pendingCohort.days = [createDay(1, pendingCohort.mice)];
+  // Add Day 0 (preference test)
+  pendingCohort.days = [createDay(0, pendingCohort.mice)];
 
   allData.cohorts.push(pendingCohort);
   saveLocal();
@@ -492,11 +508,10 @@ function createDay(dayNum, mice) {
   const day = {
     day: dayNum,
     date: new Date().toISOString().slice(0, 10),
-    phase: 'learning',
     trials: {},
   };
   mice.forEach(m => {
-    day.trials[m.id] = { reward: '', trials: ['', '', '', '', '', '', '', ''], weight: '', notes: '' };
+    day.trials[m.id] = { reward: '', trials: ['', '', '', '', '', '', '', ''], weight: '', notes: '', reversal: false };
   });
   return day;
 }
@@ -529,11 +544,16 @@ window.backToCohorts = function() {
 window.addDay = function() {
   const c = currentCohort();
   if (!c) return;
-  const newDayNum = c.days.length + 1;
   const lastDay = c.days[c.days.length - 1];
-  const phase = lastDay ? lastDay.phase : 'learning';
+  const newDayNum = lastDay ? lastDay.day + 1 : 0;
   const day = createDay(newDayNum, c.mice);
-  day.phase = phase;
+  // Carry forward each mouse's reversal state
+  if (lastDay) {
+    c.mice.forEach(m => {
+      const prev = lastDay.trials[m.id];
+      if (prev && prev.reversal) day.trials[m.id].reversal = true;
+    });
+  }
   c.days.push(day);
   activeDay = c.days.length - 1;
   saveLocal();
@@ -546,8 +566,40 @@ window.markReversal = function() {
   const c = currentCohort();
   if (!c || activeDay == null) return;
   const day = c.days[activeDay];
-  day.phase = day.phase === 'reversal' ? 'learning' : 'reversal';
+  // Show a quick checklist of mice to toggle reversal
+  const html = c.mice.map(m => {
+    const t = day.trials[m.id];
+    const checked = t && t.reversal ? ' checked' : '';
+    return `<label style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;cursor:pointer">
+      <input type="checkbox" data-mouse="${esc(m.id)}"${checked} style="width:16px;height:16px">
+      <span style="font-weight:600">${esc(m.id)}</span>
+      <span style="color:var(--muted);font-size:11px">${esc(m.genotype)} ${m.sex}</span>
+    </label>`;
+  }).join('');
+  const el = document.getElementById('dayContent');
+  // Insert reversal picker at top
+  let picker = document.getElementById('reversalPicker');
+  if (picker) { picker.remove(); return; } // toggle off
+  picker = document.createElement('div');
+  picker.id = 'reversalPicker';
+  picker.style.cssText = 'background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px';
+  picker.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <h4 style="font-size:13px">Toggle Reversal (Day ${day.day})</h4>
+    <button class="btn btn-sm btn-primary" onclick="applyReversal()">Apply</button>
+  </div>${html}`;
+  el.insertBefore(picker, el.firstChild);
+};
+
+window.applyReversal = function() {
+  const c = currentCohort();
+  if (!c || activeDay == null) return;
+  const day = c.days[activeDay];
+  document.querySelectorAll('#reversalPicker input[type=checkbox]').forEach(cb => {
+    const mouseId = cb.dataset.mouse;
+    if (day.trials[mouseId]) day.trials[mouseId].reversal = cb.checked;
+  });
   saveLocal();
+  document.getElementById('reversalPicker')?.remove();
   renderDayTabs();
   renderDayContent();
 };
@@ -557,8 +609,11 @@ function renderDayTabs() {
   if (!c) return;
   const el = document.getElementById('dayTabs');
   el.innerHTML = c.days.map((d, i) => {
-    const cls = (i === activeDay ? ' active' : '') + (d.phase === 'reversal' ? ' reversal' : '');
-    return `<button class="day-tab${cls}" onclick="switchDay(${i})">Day ${d.day}${d.phase === 'reversal' ? ' (R)' : ''}</button>`;
+    const hasReversal = c.mice.some(m => d.trials[m.id]?.reversal);
+    const isDay0 = d.day === 0;
+    const cls = (i === activeDay ? ' active' : '') + (hasReversal ? ' reversal' : '');
+    const label = isDay0 ? 'Day 0 (Pref)' : `Day ${d.day}${hasReversal ? ' (R)' : ''}`;
+    return `<button class="day-tab${cls}" onclick="switchDay(${i})">${label}</button>`;
   }).join('');
 }
 
@@ -574,11 +629,12 @@ function renderDayContent() {
   const day = c.days[activeDay];
   const el = document.getElementById('dayContent');
 
-  const phaseBadge = `<span class="phase-badge phase-${day.phase}">${day.phase}</span>`;
+  const isDay0 = day.day === 0;
+  const dayLabel = isDay0 ? 'Day 0 — Preference Test' : `Day ${day.day}`;
 
   let html = `<div class="day-panel">
     <div class="day-header">
-      <h3>Day ${day.day} ${phaseBadge}</h3>
+      <h3>${dayLabel}</h3>
       <span class="day-date">${day.date}</span>
     </div>
     <div style="overflow-x:auto">
@@ -595,8 +651,9 @@ function renderDayContent() {
       <tbody>`;
 
   c.mice.forEach(m => {
-    const t = day.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '' };
+    const t = day.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '', reversal: false };
     const reward = t.reward;
+    const isRev = t.reversal;
 
     // Accuracy
     let correct = 0, total = 0;
@@ -609,7 +666,7 @@ function renderDayContent() {
     const wCls = weightWarn ? ' weight-warn' : '';
 
     html += `<tr>
-      <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}</td>
+      <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}${isRev ? ' <span class="phase-badge phase-reversal">R</span>' : ''}</td>
       <td style="font-size:11px;color:var(--muted)">${esc(m.genotype)}</td>
       <td><input class="weight-input${wCls}" value="${esc(String(t.weight || ''))}" onchange="setWeight('${m.id}',this.value)" title="${weightWarn || ''}"></td>
       <td><span class="cell-toggle cell-${reward || 'empty'}" onclick="toggleReward('${m.id}')">${reward || '-'}</span></td>`;
@@ -838,7 +895,7 @@ window.exportCSV = function() {
       let correct = 0, total = 0;
       t.trials.forEach(tr => { if (tr) { total++; if (tr === t.reward) correct++; } });
       const pct = total > 0 ? Math.round((correct / total) * 100) : '';
-      trials += `DAY${d.day},${d.date},${d.phase},${m.id},${m.genotype},${m.sex},${t.weight || ''},${t.reward || ''},${t.trials.join(',')},${pct},${(t.notes || '').replace(/,/g, ';')}\n`;
+      trials += `DAY${d.day},${d.date},${t.reversal ? 'reversal' : 'learning'},${m.id},${m.genotype},${m.sex},${t.weight || ''},${t.reward || ''},${t.trials.join(',')},${pct},${(t.notes || '').replace(/,/g, ';')}\n`;
     });
   });
 
