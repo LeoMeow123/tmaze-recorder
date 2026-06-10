@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T-Maze Recorder</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap');
+  :root{--bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e2a;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--text:#e8eaf0;--muted:#7a7f94;--accent:#4f9cf9;--green:#34d399;--yellow:#fbbf24;--red:#ef4444;--purple:#a78bfa;--left:#3b82f6;--right:#f59e0b}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+  /* Header */
+  header{padding:16px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  header h1{font-size:20px;font-weight:700;display:flex;align-items:center;gap:10px}
+  .header-actions{display:flex;gap:8px;align-items:center}
+
+  /* Sync status */
+  .sync-status{font-size:11px;padding:4px 10px;border-radius:12px;font-weight:500}
+  .sync-status.saved{color:var(--green);background:rgba(52,211,153,0.1)}
+  .sync-status.saving{color:var(--yellow);background:rgba(251,191,36,0.1)}
+  .sync-status.error{color:var(--red);background:rgba(239,68,68,0.1)}
+  .sync-status.offline{color:var(--muted);background:rgba(122,127,148,0.1)}
+
+  /* Buttons */
+  .btn{padding:8px 18px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px}
+  .btn-primary{background:var(--accent);color:#000}
+  .btn-primary:hover{opacity:0.85}
+  .btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
+  .btn-secondary:hover{background:#222638}
+  .btn-danger{background:var(--bg3);color:var(--red);border:1px solid var(--border2)}
+  .btn-danger:hover{background:#1a1015}
+  .btn-sm{padding:5px 12px;font-size:11px;border-radius:6px}
+  .btn-green{background:rgba(52,211,153,0.15);color:var(--green);border:1px solid rgba(52,211,153,0.3)}
+  .btn-green:hover{background:rgba(52,211,153,0.25)}
+
+  /* Views */
+  .view{display:none}.view.active{display:block}
+
+  /* Cohort list */
+  .cohort-list{padding:40px 28px;max-width:800px;margin:0 auto}
+  .cohort-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:12px;cursor:pointer;transition:all 0.15s;display:flex;justify-content:space-between;align-items:center}
+  .cohort-card:hover{border-color:var(--accent);background:var(--bg3)}
+  .cohort-card h3{font-size:15px;font-weight:600}
+  .cohort-card .meta{font-size:12px;color:var(--muted);margin-top:4px}
+  .cohort-badge{font-size:11px;padding:3px 10px;border-radius:12px;background:rgba(79,156,249,0.1);color:var(--accent);font-weight:500}
+
+  /* New cohort form */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+  .form-group{display:flex;flex-direction:column}
+  .form-group.full{grid-column:1/-1}
+  .form-group label{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px}
+  .form-group input,.form-group select,.form-group textarea{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Outfit',sans-serif;outline:none}
+  .form-group input:focus,.form-group select:focus{border-color:var(--accent)}
+
+  /* Trial table */
+  .day-panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
+  .day-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .day-header h3{font-size:15px;font-weight:600}
+  .day-header .day-date{font-size:12px;color:var(--muted)}
+  .trial-table{width:100%;border-collapse:collapse;font-size:13px}
+  .trial-table th{text-align:center;padding:8px 6px;color:var(--muted);font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;border-bottom:2px solid var(--border);white-space:nowrap}
+  .trial-table th:first-child,.trial-table td:first-child{text-align:left}
+  .trial-table td{padding:6px;border-bottom:1px solid var(--border);text-align:center;vertical-align:middle}
+  .trial-table tr:hover{background:rgba(255,255,255,0.02)}
+
+  /* Clickable cells */
+  .cell-toggle{cursor:pointer;user-select:none;border-radius:6px;padding:4px 8px;font-weight:600;font-size:12px;min-width:32px;display:inline-block;transition:all 0.1s}
+  .cell-toggle:hover{opacity:0.8}
+  .cell-L{background:rgba(59,130,246,0.2);color:var(--left)}
+  .cell-R{background:rgba(245,158,11,0.2);color:var(--right)}
+  .cell-empty{background:var(--bg3);color:var(--muted)}
+  .cell-correct{background:rgba(52,211,153,0.2);color:var(--green)}
+  .cell-wrong{background:rgba(239,68,68,0.2);color:var(--red)}
+  .accuracy-cell{font-family:'DM Mono',monospace;font-weight:600;font-size:12px}
+  .accuracy-high{color:var(--green)}
+  .accuracy-mid{color:var(--yellow)}
+  .accuracy-low{color:var(--red)}
+
+  /* Weight input */
+  .weight-input{width:55px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--text);font-size:12px;font-family:'DM Mono',monospace;text-align:center;outline:none}
+  .weight-input:focus{border-color:var(--accent)}
+  .weight-warn{border-color:var(--red) !important;background:rgba(239,68,68,0.1) !important}
+
+  /* Notes */
+  .notes-input{width:100%;min-width:60px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--text);font-size:11px;font-family:'Outfit',sans-serif;outline:none}
+  .notes-input:focus{border-color:var(--accent)}
+
+  /* Day tabs */
+  .day-tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+  .day-tab{padding:6px 14px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.15s}
+  .day-tab:hover{color:var(--text);border-color:var(--accent)}
+  .day-tab.active{color:var(--accent);border-color:var(--accent);background:rgba(79,156,249,0.1)}
+  .day-tab.reversal{border-left:3px solid var(--purple)}
+
+  /* Weight chart */
+  .chart-container{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
+  .chart-container h3{font-size:14px;margin-bottom:12px}
+  .weight-chart{width:100%;height:200px}
+
+  /* Phase badge */
+  .phase-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;margin-left:8px}
+  .phase-learning{background:rgba(79,156,249,0.15);color:var(--accent)}
+  .phase-reversal{background:rgba(167,139,250,0.15);color:var(--purple)}
+
+  /* Toolbar */
+  .toolbar{padding:16px 28px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+  .toolbar .back-btn{font-size:13px;cursor:pointer;color:var(--muted);background:none;border:none;font-family:'Outfit',sans-serif}
+  .toolbar .back-btn:hover{color:var(--text)}
+  .toolbar .cohort-title{font-size:16px;font-weight:600;flex:1}
+
+  /* Modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:50;display:none;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px;width:100%;max-width:500px}
+  .modal-card h3{font-size:16px;margin-bottom:12px}
+
+  /* Setup modal */
+  .setup-modal .modal-card{max-width:420px}
+  .setup-modal p{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6}
+
+  /* Mice table in setup */
+  .mice-table{width:100%;border-collapse:collapse;margin-bottom:12px}
+  .mice-table th{text-align:left;padding:6px 8px;font-size:10px;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border)}
+  .mice-table td{padding:4px 8px}
+  .mice-table input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:5px 8px;color:var(--text);font-size:12px;font-family:'Outfit',sans-serif;outline:none}
+  .mice-table select{background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:5px 8px;color:var(--text);font-size:12px;font-family:'Outfit',sans-serif;outline:none;width:100%}
+
+  .recording-view{padding:20px 28px}
+
+  /* Warning banner */
+  .weight-warning{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:var(--red)}
+
+  @media(max-width:768px){.form-grid{grid-template-columns:1fr}.toolbar{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>T-Maze Recorder</h1>
+  <div class="header-actions">
+    <span class="sync-status offline" id="syncStatus">Local</span>
+    <button class="btn-secondary btn btn-sm" onclick="showSetup()">Sync</button>
+    <button class="btn btn-secondary btn-sm" onclick="exportCSV()">Export CSV</button>
+    <button class="btn btn-green btn-sm" onclick="manualSave()">Save</button>
+  </div>
+</header>
+
+<!-- COHORT LIST VIEW -->
+<div class="view active" id="view-cohorts">
+  <div class="cohort-list">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h2 style="font-size:18px">Cohorts</h2>
+      <button class="btn btn-primary" onclick="showNewCohort()">+ New Cohort</button>
+    </div>
+    <div id="cohortList"></div>
+  </div>
+</div>
+
+<!-- NEW COHORT MODAL -->
+<div class="modal-overlay" id="newCohortModal">
+  <div class="modal-card">
+    <h3>New Cohort</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>Cohort Name</label><input id="nc-name" placeholder="e.g. 18mo APP Batch 2"></div>
+      <div class="form-group"><label>Age</label><input id="nc-age" placeholder="e.g. 6mo, 18mo"></div>
+      <div class="form-group"><label>Genotypes</label><input id="nc-genotypes" placeholder="e.g. WT, APP, Tau" value="WT, APP"></div>
+      <div class="form-group"><label>Number of Mice</label><input type="number" id="nc-count" min="1" max="50" value="10"></div>
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:12px">You'll enter mouse IDs, sex, and genotype on the next step.</p>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeNewCohort()">Cancel</button>
+      <button class="btn btn-primary" onclick="createCohort()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- MICE SETUP MODAL -->
+<div class="modal-overlay" id="miceSetupModal">
+  <div class="modal-card" style="max-width:600px;max-height:80vh;overflow-y:auto">
+    <h3>Enter Mouse Info</h3>
+    <table class="mice-table" id="miceSetupTable">
+      <thead><tr><th>#</th><th>Mouse ID</th><th>Sex</th><th>Genotype</th></tr></thead>
+      <tbody id="miceSetupBody"></tbody>
+    </table>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button class="btn btn-secondary" onclick="closeMiceSetup()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMiceAndStart()">Start Recording</button>
+    </div>
+  </div>
+</div>
+
+<!-- RECORDING VIEW -->
+<div class="view" id="view-recording">
+  <div class="toolbar">
+    <button class="back-btn" onclick="backToCohorts()">&larr; Cohorts</button>
+    <span class="cohort-title" id="recordingTitle"></span>
+    <button class="btn btn-secondary btn-sm" onclick="addDay()">+ Add Day</button>
+    <button class="btn btn-secondary btn-sm" onclick="markReversal()">Mark Reversal</button>
+  </div>
+  <div class="recording-view">
+    <div id="weightWarnings"></div>
+    <div id="weightChartArea"></div>
+    <div class="day-tabs" id="dayTabs"></div>
+    <div id="dayContent"></div>
+  </div>
+</div>
+
+<!-- SYNC SETUP MODAL -->
+<div class="modal-overlay setup-modal" id="setupModal">
+  <div class="modal-card">
+    <h3>GitHub Sync</h3>
+    <p>Save data to GitHub for backup and cross-device access. Create a Fine-grained token with <strong>Contents</strong> read+write on <strong>tmaze-recorder</strong>.</p>
+    <div class="form-grid" style="grid-template-columns:1fr">
+      <div class="form-group"><label>GitHub Token</label><input type="password" id="setup-token" placeholder="github_pat_..."></div>
+      <div class="form-group"><label>Owner</label><input id="setup-owner" value="LeoMeow123"></div>
+      <div class="form-group"><label>Repo</label><input id="setup-repo" value="tmaze-recorder"></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button class="btn btn-secondary" onclick="closeSetup()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSetup()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+// =====================================================================
+// GITHUB SYNC
+// =====================================================================
+const SYNC_KEY = 'tmaze-sync';
+const CACHE_KEY = 'tmaze-cache';
+const DATA_PATH = 'data.json';
+
+function getSyncConfig() {
+  try { return JSON.parse(localStorage.getItem(SYNC_KEY)); } catch { return null; }
+}
+function setSyncConfig(cfg) { localStorage.setItem(SYNC_KEY, JSON.stringify(cfg)); }
+function setSyncStatus(state, text) {
+  const el = document.getElementById('syncStatus');
+  el.className = 'sync-status ' + state;
+  el.textContent = text || state;
+}
+
+async function loadFromCloud() {
+  const cfg = getSyncConfig();
+  if (!cfg?.token) return null;
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${DATA_PATH}`,
+      { headers: { Authorization: `Bearer ${cfg.token}`, Accept: 'application/vnd.github.v3.raw' } }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data;
+  } catch { return null; }
+}
+
+async function saveToCloud(data) {
+  const cfg = getSyncConfig();
+  if (!cfg?.token) return false;
+  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${DATA_PATH}`;
+
+  // Get SHA (cache-bust to avoid stale raw response)
+  let sha;
+  try {
+    const res = await fetch(url + '?t=' + Date.now(), {
+      headers: { Authorization: `Bearer ${cfg.token}`, Accept: 'application/vnd.github.v3+json' },
+      cache: 'no-store',
+    });
+    if (res.ok) sha = (await res.json()).sha;
+  } catch {}
+
+  const jsonStr = JSON.stringify(data, null, 2);
+  const bytes = new TextEncoder().encode(jsonStr);
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  const content = btoa(binary);
+
+  try {
+    const body = { message: `Update T-maze data ${new Date().toISOString().slice(0, 16)}`, content };
+    if (sha) body.sha = sha;
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${cfg.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) console.error('GitHub save failed:', res.status, await res.json().catch(() => ({})));
+    return res.ok;
+  } catch (e) { console.error('GitHub save error:', e); return false; }
+}
+
+// =====================================================================
+// DATA
+// =====================================================================
+let allData = { cohorts: [] }; // { cohorts: [{ id, name, age, genotypes, mice, days, created }] }
+let currentCohortId = null;
+let activeDay = null; // index into current cohort's days array
+let _saving = false;
+
+function currentCohort() {
+  return allData.cohorts.find(c => c.id === currentCohortId);
+}
+
+function saveLocal() {
+  localStorage.setItem(CACHE_KEY, JSON.stringify(allData));
+}
+
+async function manualSaveToCloud() {
+  const cfg = getSyncConfig();
+  if (!cfg?.token) { setSyncStatus('offline', 'Local only'); return; }
+  if (_saving) return;
+  _saving = true;
+  setSyncStatus('saving', 'Saving...');
+  const ok = await saveToCloud(allData);
+  _saving = false;
+  setSyncStatus(ok ? 'saved' : 'error', ok ? 'Saved' : 'Save failed');
+  if (ok) setTimeout(() => setSyncStatus('saved', 'Synced'), 2000);
+}
+
+window.manualSave = function() {
+  saveLocal();
+  manualSaveToCloud();
+};
+
+// =====================================================================
+// INIT
+// =====================================================================
+async function init() {
+  setSyncStatus('saving', 'Loading...');
+  const cfg = getSyncConfig();
+  let loaded = false;
+
+  if (cfg?.token) {
+    const cloud = await loadFromCloud();
+    if (cloud && cloud.cohorts) {
+      allData = cloud;
+      localStorage.setItem(CACHE_KEY, JSON.stringify(allData));
+      setSyncStatus('saved', 'Synced');
+      loaded = true;
+    }
+  }
+
+  if (!loaded) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
+      if (cached && cached.cohorts) { allData = cached; loaded = true; }
+    } catch {}
+  }
+
+  if (!cfg?.token) setSyncStatus('offline', papers_length_str());
+  else if (!loaded) setSyncStatus('error', 'No data');
+
+  renderCohortList();
+}
+
+function papers_length_str() {
+  return allData.cohorts.length ? 'Local (' + allData.cohorts.length + ' cohorts)' : 'Setup sync';
+}
+
+// =====================================================================
+// COHORT LIST
+// =====================================================================
+function renderCohortList() {
+  const el = document.getElementById('cohortList');
+  if (allData.cohorts.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)"><p>No cohorts yet. Click "+ New Cohort" to start.</p></div>';
+    return;
+  }
+  el.innerHTML = allData.cohorts.map(c => {
+    const dayCount = c.days ? c.days.length : 0;
+    const miceCount = c.mice ? c.mice.length : 0;
+    return `<div class="cohort-card" onclick="openCohort('${c.id}')">
+      <div>
+        <h3>${esc(c.name || 'Untitled')}</h3>
+        <div class="meta">${esc(c.age || '')} &middot; ${miceCount} mice &middot; ${dayCount} day${dayCount !== 1 ? 's' : ''} &middot; ${esc(c.genotypes || '')}</div>
+      </div>
+      <span class="cohort-badge">${c.created || ''}</span>
+    </div>`;
+  }).join('');
+}
+
+// =====================================================================
+// NEW COHORT
+// =====================================================================
+window.showNewCohort = function() {
+  document.getElementById('nc-name').value = '';
+  document.getElementById('nc-age').value = '';
+  document.getElementById('nc-genotypes').value = 'WT, APP';
+  document.getElementById('nc-count').value = '10';
+  document.getElementById('newCohortModal').classList.add('open');
+};
+window.closeNewCohort = function() { document.getElementById('newCohortModal').classList.remove('open'); };
+
+let pendingCohort = null;
+window.createCohort = function() {
+  const name = document.getElementById('nc-name').value.trim();
+  const age = document.getElementById('nc-age').value.trim();
+  const genotypes = document.getElementById('nc-genotypes').value.trim();
+  const count = parseInt(document.getElementById('nc-count').value) || 1;
+  if (!name) { alert('Cohort name is required'); return; }
+
+  pendingCohort = {
+    id: Date.now().toString(36),
+    name, age, genotypes, created: new Date().toISOString().slice(0, 10),
+    mice: [], days: [],
+  };
+
+  closeNewCohort();
+
+  // Show mice setup
+  const genoOpts = genotypes.split(',').map(g => g.trim()).filter(g => g);
+  const body = document.getElementById('miceSetupBody');
+  body.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    body.innerHTML += `<tr>
+      <td style="color:var(--muted);font-size:11px">${i + 1}</td>
+      <td><input class="mouse-id-input" placeholder="e.g. 16095"></td>
+      <td><select class="mouse-sex-input"><option value="M">M</option><option value="F">F</option></select></td>
+      <td><select class="mouse-geno-input">${genoOpts.map(g => `<option value="${esc(g)}">${esc(g)}</option>`).join('')}</select></td>
+    </tr>`;
+  }
+  document.getElementById('miceSetupModal').classList.add('open');
+};
+
+window.closeMiceSetup = function() { document.getElementById('miceSetupModal').classList.remove('open'); pendingCohort = null; };
+
+window.saveMiceAndStart = function() {
+  if (!pendingCohort) return;
+  const ids = document.querySelectorAll('.mouse-id-input');
+  const sexes = document.querySelectorAll('.mouse-sex-input');
+  const genos = document.querySelectorAll('.mouse-geno-input');
+
+  pendingCohort.mice = [];
+  for (let i = 0; i < ids.length; i++) {
+    const mid = ids[i].value.trim();
+    if (!mid) { alert(`Mouse #${i + 1} ID is required`); return; }
+    if (pendingCohort.mice.some(m => m.id === mid)) { alert(`Duplicate mouse ID: ${mid}`); return; }
+    pendingCohort.mice.push({ id: mid, sex: sexes[i].value, genotype: genos[i].value });
+  }
+
+  // Add Day 1
+  pendingCohort.days = [createDay(1, pendingCohort.mice)];
+
+  allData.cohorts.push(pendingCohort);
+  saveLocal();
+  document.getElementById('miceSetupModal').classList.remove('open');
+  openCohort(pendingCohort.id);
+  pendingCohort = null;
+  renderCohortList();
+};
+
+function createDay(dayNum, mice) {
+  const day = {
+    day: dayNum,
+    date: new Date().toISOString().slice(0, 10),
+    phase: 'learning',
+    trials: {},
+  };
+  mice.forEach(m => {
+    day.trials[m.id] = { reward: '', trials: ['', '', '', '', '', '', '', ''], weight: '', notes: '' };
+  });
+  return day;
+}
+
+// =====================================================================
+// RECORDING VIEW
+// =====================================================================
+window.openCohort = function(id) {
+  currentCohortId = id;
+  const c = currentCohort();
+  if (!c) return;
+
+  document.getElementById('view-cohorts').classList.remove('active');
+  document.getElementById('view-recording').classList.add('active');
+  document.getElementById('recordingTitle').textContent = c.name + ' (' + c.age + ')';
+
+  activeDay = c.days.length - 1;
+  renderDayTabs();
+  renderDayContent();
+  renderWeightChart();
+};
+
+window.backToCohorts = function() {
+  currentCohortId = null;
+  document.getElementById('view-recording').classList.remove('active');
+  document.getElementById('view-cohorts').classList.add('active');
+  renderCohortList();
+};
+
+window.addDay = function() {
+  const c = currentCohort();
+  if (!c) return;
+  const newDayNum = c.days.length + 1;
+  const lastDay = c.days[c.days.length - 1];
+  const phase = lastDay ? lastDay.phase : 'learning';
+  const day = createDay(newDayNum, c.mice);
+  day.phase = phase;
+  c.days.push(day);
+  activeDay = c.days.length - 1;
+  saveLocal();
+  renderDayTabs();
+  renderDayContent();
+  renderWeightChart();
+};
+
+window.markReversal = function() {
+  const c = currentCohort();
+  if (!c || activeDay == null) return;
+  const day = c.days[activeDay];
+  day.phase = day.phase === 'reversal' ? 'learning' : 'reversal';
+  saveLocal();
+  renderDayTabs();
+  renderDayContent();
+};
+
+function renderDayTabs() {
+  const c = currentCohort();
+  if (!c) return;
+  const el = document.getElementById('dayTabs');
+  el.innerHTML = c.days.map((d, i) => {
+    const cls = (i === activeDay ? ' active' : '') + (d.phase === 'reversal' ? ' reversal' : '');
+    return `<button class="day-tab${cls}" onclick="switchDay(${i})">Day ${d.day}${d.phase === 'reversal' ? ' (R)' : ''}</button>`;
+  }).join('');
+}
+
+window.switchDay = function(i) {
+  activeDay = i;
+  renderDayTabs();
+  renderDayContent();
+};
+
+function renderDayContent() {
+  const c = currentCohort();
+  if (!c || activeDay == null) return;
+  const day = c.days[activeDay];
+  const el = document.getElementById('dayContent');
+
+  const phaseBadge = `<span class="phase-badge phase-${day.phase}">${day.phase}</span>`;
+
+  let html = `<div class="day-panel">
+    <div class="day-header">
+      <h3>Day ${day.day} ${phaseBadge}</h3>
+      <span class="day-date">${day.date}</span>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="trial-table">
+      <thead><tr>
+        <th>Mouse</th>
+        <th>Geno</th>
+        <th style="width:45px">Wt (g)</th>
+        <th style="width:45px">Reward</th>
+        <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th><th>T7</th><th>T8</th>
+        <th>%</th>
+        <th>Notes</th>
+      </tr></thead>
+      <tbody>`;
+
+  c.mice.forEach(m => {
+    const t = day.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '' };
+    const reward = t.reward;
+
+    // Accuracy
+    let correct = 0, total = 0;
+    t.trials.forEach(tr => { if (tr) { total++; if (tr === reward) correct++; } });
+    const pct = total > 0 ? Math.round((correct / total) * 100) : '';
+    const pctClass = pct === '' ? '' : (pct >= 75 ? 'accuracy-high' : pct >= 50 ? 'accuracy-mid' : 'accuracy-low');
+
+    // Weight warning
+    const weightWarn = checkWeightWarning(c, m.id, activeDay);
+    const wCls = weightWarn ? ' weight-warn' : '';
+
+    html += `<tr>
+      <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}</td>
+      <td style="font-size:11px;color:var(--muted)">${esc(m.genotype)}</td>
+      <td><input class="weight-input${wCls}" value="${esc(String(t.weight || ''))}" onchange="setWeight('${m.id}',this.value)" title="${weightWarn || ''}"></td>
+      <td><span class="cell-toggle cell-${reward || 'empty'}" onclick="toggleReward('${m.id}')">${reward || '-'}</span></td>`;
+
+    for (let i = 0; i < 8; i++) {
+      const tr = t.trials[i];
+      let cls = 'cell-empty';
+      if (tr) {
+        cls = (reward && tr === reward) ? 'cell-correct' : (reward ? 'cell-wrong' : 'cell-' + tr);
+      }
+      html += `<td><span class="cell-toggle ${cls}" onclick="toggleTrial('${m.id}',${i})">${tr || '-'}</span></td>`;
+    }
+
+    html += `<td class="accuracy-cell ${pctClass}">${pct !== '' ? pct + '%' : ''}</td>`;
+    html += `<td><input class="notes-input" value="${esc(String(t.notes || ''))}" onchange="setNotes('${m.id}',this.value)" placeholder="..."></td>`;
+    html += `</tr>`;
+  });
+
+  html += `</tbody></table></div></div>`;
+  el.innerHTML = html;
+
+  // Weight warnings
+  renderWeightWarnings();
+}
+
+// =====================================================================
+// TRIAL INTERACTIONS
+// =====================================================================
+window.toggleReward = function(mouseId) {
+  const c = currentCohort();
+  const day = c.days[activeDay];
+  const t = day.trials[mouseId];
+  if (t.reward === 'L') t.reward = 'R';
+  else if (t.reward === 'R') t.reward = '';
+  else t.reward = 'L';
+  saveLocal();
+  renderDayContent();
+};
+
+window.toggleTrial = function(mouseId, trialIdx) {
+  const c = currentCohort();
+  const day = c.days[activeDay];
+  const t = day.trials[mouseId];
+  const val = t.trials[trialIdx];
+  if (val === 'L') t.trials[trialIdx] = 'R';
+  else if (val === 'R') t.trials[trialIdx] = '';
+  else t.trials[trialIdx] = 'L';
+  saveLocal();
+  renderDayContent();
+};
+
+window.setWeight = function(mouseId, val) {
+  const c = currentCohort();
+  const day = c.days[activeDay];
+  day.trials[mouseId].weight = val.trim();
+  saveLocal();
+  renderWeightWarnings();
+  renderWeightChart();
+};
+
+window.setNotes = function(mouseId, val) {
+  const c = currentCohort();
+  const day = c.days[activeDay];
+  day.trials[mouseId].notes = val;
+  saveLocal();
+};
+
+// =====================================================================
+// WEIGHT MONITORING
+// =====================================================================
+function getWeightHistory(cohort, mouseId) {
+  const weights = [];
+  cohort.days.forEach((d, i) => {
+    const t = d.trials[mouseId];
+    if (t && t.weight && !isNaN(parseFloat(t.weight))) {
+      weights.push({ day: i, dayNum: d.day, weight: parseFloat(t.weight) });
+    }
+  });
+  return weights;
+}
+
+function checkWeightWarning(cohort, mouseId, dayIdx) {
+  const history = getWeightHistory(cohort, mouseId);
+  if (history.length < 2) return null;
+  const baseline = history[0].weight;
+  const current = history[history.length - 1];
+  const prev = history[history.length - 2];
+
+  // >15% drop from baseline
+  if (current.weight < baseline * 0.85) {
+    return `Weight dropped ${Math.round((1 - current.weight / baseline) * 100)}% from baseline (${baseline}g)`;
+  }
+  // >10% drop day-over-day
+  if (current.weight < prev.weight * 0.90) {
+    return `Weight dropped ${Math.round((1 - current.weight / prev.weight) * 100)}% from previous day`;
+  }
+  return null;
+}
+
+function renderWeightWarnings() {
+  const c = currentCohort();
+  if (!c) return;
+  const warnings = [];
+  c.mice.forEach(m => {
+    const w = checkWeightWarning(c, m.id, activeDay);
+    if (w) warnings.push(`Mouse ${m.id}: ${w}`);
+  });
+  const el = document.getElementById('weightWarnings');
+  el.innerHTML = warnings.length
+    ? `<div class="weight-warning"><strong>Weight Alert:</strong> ${warnings.join(' | ')}</div>`
+    : '';
+}
+
+// =====================================================================
+// WEIGHT CHART (simple SVG)
+// =====================================================================
+function renderWeightChart() {
+  const c = currentCohort();
+  if (!c || c.days.length < 2) {
+    document.getElementById('weightChartArea').innerHTML = '';
+    return;
+  }
+
+  const W = 700, H = 180, PAD = 40;
+  const colors = ['#4f9cf9', '#34d399', '#ef4444', '#fbbf24', '#a78bfa', '#f472b6', '#38bdf8', '#f97316', '#a3e635', '#94a3b8'];
+
+  // Gather all weight data
+  let allWeights = [];
+  const series = {};
+  c.mice.forEach(m => {
+    const h = getWeightHistory(c, m.id);
+    if (h.length) {
+      series[m.id] = h;
+      h.forEach(w => allWeights.push(w.weight));
+    }
+  });
+
+  if (allWeights.length === 0) {
+    document.getElementById('weightChartArea').innerHTML = '';
+    return;
+  }
+
+  const minW = Math.min(...allWeights) - 1;
+  const maxW = Math.max(...allWeights) + 1;
+  const maxDay = c.days.length - 1;
+  const scaleX = d => PAD + (maxDay > 0 ? (d / maxDay) * (W - PAD * 2) : 0);
+  const scaleY = w => H - PAD - ((w - minW) / (maxW - minW || 1)) * (H - PAD * 2);
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto">`;
+
+  // Grid lines
+  for (let i = 0; i <= 4; i++) {
+    const y = PAD + i * (H - PAD * 2) / 4;
+    const val = (maxW - (maxW - minW) * i / 4).toFixed(1);
+    svg += `<line x1="${PAD}" y1="${y}" x2="${W - PAD}" y2="${y}" stroke="rgba(255,255,255,0.05)"/>`;
+    svg += `<text x="${PAD - 4}" y="${y + 4}" fill="#7a7f94" font-size="9" text-anchor="end" font-family="DM Mono">${val}</text>`;
+  }
+
+  // Day labels
+  c.days.forEach((d, i) => {
+    svg += `<text x="${scaleX(i)}" y="${H - 8}" fill="#7a7f94" font-size="9" text-anchor="middle" font-family="DM Mono">D${d.day}</text>`;
+  });
+
+  // Lines
+  let colorIdx = 0;
+  Object.entries(series).forEach(([mouseId, points]) => {
+    const color = colors[colorIdx % colors.length];
+    colorIdx++;
+    if (points.length < 2) return;
+    const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${scaleX(p.day)},${scaleY(p.weight)}`).join(' ');
+    svg += `<path d="${path}" fill="none" stroke="${color}" stroke-width="1.5" opacity="0.7"/>`;
+    points.forEach(p => {
+      svg += `<circle cx="${scaleX(p.day)}" cy="${scaleY(p.weight)}" r="2.5" fill="${color}" opacity="0.9"><title>${mouseId}: ${p.weight}g (Day ${p.dayNum})</title></circle>`;
+    });
+  });
+
+  // 85% baseline line
+  const firstWeights = c.mice.map(m => {
+    const h = getWeightHistory(c, m.id);
+    return h.length ? h[0].weight : null;
+  }).filter(w => w !== null);
+  if (firstWeights.length) {
+    const avgBaseline = firstWeights.reduce((a, b) => a + b, 0) / firstWeights.length;
+    const warnLine = avgBaseline * 0.85;
+    if (warnLine >= minW && warnLine <= maxW) {
+      const y = scaleY(warnLine);
+      svg += `<line x1="${PAD}" y1="${y}" x2="${W - PAD}" y2="${y}" stroke="#ef4444" stroke-dasharray="4,3" opacity="0.5"/>`;
+      svg += `<text x="${W - PAD + 4}" y="${y + 3}" fill="#ef4444" font-size="8" font-family="DM Mono">85%</text>`;
+    }
+  }
+
+  svg += `</svg>`;
+
+  document.getElementById('weightChartArea').innerHTML = `<div class="chart-container"><h3>Weight Tracking</h3>${svg}</div>`;
+}
+
+// =====================================================================
+// EXPORT CSV
+// =====================================================================
+window.exportCSV = function() {
+  const c = currentCohort();
+  if (!c) { alert('Open a cohort first'); return; }
+
+  // 1. meta_trials.csv (STRIDE format)
+  let metaTrials = 'day,mouse,reward\n';
+  c.days.forEach(d => {
+    c.mice.forEach(m => {
+      const t = d.trials[m.id];
+      if (t && t.reward) {
+        metaTrials += `DAY${d.day},${m.id},${t.reward}\n`;
+      }
+    });
+  });
+
+  // 2. T-maze-metadata.csv (STRIDE format)
+  let metadata = 'mouse,Sex,Genotype,Age\n';
+  c.mice.forEach(m => {
+    metadata += `${m.id},${m.sex},${m.genotype},${esc(c.age || '')}\n`;
+  });
+
+  // 3. Full trial data CSV
+  let trials = 'day,date,phase,mouse,genotype,sex,weight,reward,T1,T2,T3,T4,T5,T6,T7,T8,accuracy,notes\n';
+  c.days.forEach(d => {
+    c.mice.forEach(m => {
+      const t = d.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '' };
+      let correct = 0, total = 0;
+      t.trials.forEach(tr => { if (tr) { total++; if (tr === t.reward) correct++; } });
+      const pct = total > 0 ? Math.round((correct / total) * 100) : '';
+      trials += `DAY${d.day},${d.date},${d.phase},${m.id},${m.genotype},${m.sex},${t.weight || ''},${t.reward || ''},${t.trials.join(',')},${pct},${(t.notes || '').replace(/,/g, ';')}\n`;
+    });
+  });
+
+  // 4. Weight CSV
+  let weights = 'day,date,mouse,genotype,sex,weight\n';
+  c.days.forEach(d => {
+    c.mice.forEach(m => {
+      const t = d.trials[m.id];
+      if (t && t.weight) {
+        weights += `DAY${d.day},${d.date},${m.id},${m.genotype},${m.sex},${t.weight}\n`;
+      }
+    });
+  });
+
+  // Download all as zip-like (individual downloads)
+  download(`${c.name}_meta_trials.csv`, metaTrials);
+  setTimeout(() => download(`${c.name}_metadata.csv`, metadata), 200);
+  setTimeout(() => download(`${c.name}_trials_full.csv`, trials), 400);
+  setTimeout(() => download(`${c.name}_weights.csv`, weights), 600);
+};
+
+function download(filename, text) {
+  const blob = new Blob([text], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename.replace(/\s+/g, '_');
+  a.click();
+}
+
+// =====================================================================
+// SETUP
+// =====================================================================
+window.showSetup = function() {
+  const cfg = getSyncConfig();
+  if (cfg) {
+    document.getElementById('setup-token').value = cfg.token || '';
+    document.getElementById('setup-owner').value = cfg.owner || 'LeoMeow123';
+    document.getElementById('setup-repo').value = cfg.repo || 'tmaze-recorder';
+  }
+  document.getElementById('setupModal').classList.add('open');
+};
+window.closeSetup = function() { document.getElementById('setupModal').classList.remove('open'); };
+window.saveSetup = function() {
+  const token = document.getElementById('setup-token').value.trim();
+  const owner = document.getElementById('setup-owner').value.trim();
+  const repo = document.getElementById('setup-repo').value.trim();
+  if (!token) return;
+  setSyncConfig({ token, owner, repo });
+  closeSetup();
+  manualSave();
+};
+
+// =====================================================================
+// UTILS
+// =====================================================================
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+// Close modals on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeNewCohort();
+    closeMiceSetup();
+    closeSetup();
+  }
+});
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === e.currentTarget) e.target.classList.remove('open'); });
+});
+
+init();
+
+})();
+</script>
+</body>
+</html>
