@@ -978,7 +978,11 @@ document.addEventListener('keydown', e => {
   }
 });
 document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => { if (e.target === e.currentTarget) e.target.classList.remove('open'); });
+  el.addEventListener('mousedown', e => { el._clickedBackdrop = (e.target === e.currentTarget); });
+  el.addEventListener('mouseup', e => {
+    if (el._clickedBackdrop && e.target === e.currentTarget) e.target.classList.remove('open');
+    el._clickedBackdrop = false;
+  });
 });
 
 init();
