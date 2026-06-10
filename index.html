@@ -221,11 +221,11 @@
 
 <!-- REORDER MICE MODAL -->
 <div class="modal-overlay" id="reorderModal">
-  <div class="modal-card" style="max-width:400px;max-height:80vh;overflow-y:auto">
-    <h3>Recording Order</h3>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Drag to set the order mice are recorded. This order applies to all days.</p>
+  <div class="modal-card" style="max-width:520px;max-height:80vh;overflow-y:auto">
+    <h3>Recording Order &amp; Mouse IDs</h3>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Drag to reorder. Enter real mouse IDs (e.g. ear tag) to replace placeholder IDs.</p>
     <table class="mice-table">
-      <thead><tr><th style="width:24px"></th><th>#</th><th>Mouse ID</th><th>Sex</th><th>Geno</th></tr></thead>
+      <thead><tr><th style="width:24px"></th><th>#</th><th>Mask ID</th><th>Real ID</th><th>Sex</th><th>Geno</th></tr></thead>
       <tbody id="reorderBody"></tbody>
     </table>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
@@ -1143,7 +1143,8 @@ window.showReorder = function() {
   body.innerHTML = c.mice.map((m, i) => `<tr draggable="true" data-mouse-id="${esc(m.id)}">
     <td class="drag-handle">&#9776;</td>
     <td style="color:var(--muted);font-size:11px" class="row-num">${i + 1}</td>
-    <td style="font-weight:600;font-size:12px">${esc(m.id)}</td>
+    <td style="font-size:12px;color:var(--muted)">${esc(m.id)}</td>
+    <td><input class="real-id-input" data-old-id="${esc(m.id)}" value="" placeholder="${esc(m.id)}" style="width:80px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--text);font-size:12px;font-family:'DM Mono',monospace"></td>
     <td style="font-size:11px">${m.sex}</td>
     <td style="font-size:11px">${esc(m.genotype)}</td>
   </tr>`).join('');
@@ -1157,14 +1158,47 @@ window.saveReorder = function() {
   const c = currentCohort();
   if (!c) return;
   const rows = document.querySelectorAll('#reorderBody tr');
-  const newOrder = [...rows].map(r => r.dataset.mouseId);
-  // Reorder c.mice to match
+
+  // Build rename map: oldId -> newId
+  const renameMap = {};
+  const newIds = new Set();
+  for (const row of rows) {
+    const oldId = row.dataset.mouseId;
+    const input = row.querySelector('.real-id-input');
+    const newId = (input && input.value.trim()) || oldId;
+    if (newIds.has(newId)) { alert(`Duplicate mouse ID: ${newId}`); return; }
+    newIds.add(newId);
+    renameMap[oldId] = newId;
+  }
+
+  // Apply renames to mice array
   const miceMap = {};
   c.mice.forEach(m => { miceMap[m.id] = m; });
-  c.mice = newOrder.map(id => miceMap[id]).filter(m => m);
+
+  // Reorder + rename
+  const newOrder = [...rows].map(r => r.dataset.mouseId);
+  c.mice = newOrder.map(oldId => {
+    const m = miceMap[oldId];
+    if (!m) return null;
+    const newId = renameMap[oldId];
+    if (newId !== oldId) {
+      // Rename in all day trials
+      c.days.forEach(d => {
+        if (d.trials[oldId]) {
+          d.trials[newId] = d.trials[oldId];
+          delete d.trials[oldId];
+        }
+      });
+      m.id = newId;
+    }
+    return m;
+  }).filter(m => m);
+
   saveLocal();
   closeReorder();
+  renderDayTabs();
   renderDayContent();
+  renderWeightChart();
 };
 
 // =====================================================================
