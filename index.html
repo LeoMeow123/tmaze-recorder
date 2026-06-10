@@ -658,12 +658,16 @@ window.switchDay = function(i) {
   renderDayContent();
 };
 
-// Get reward side for a mouse from Day 0 preference
+// Auto-calculate preferred side from Day 0 trials (majority side = reward for all future days)
 function getDay0Reward(cohort, mouseId) {
   const day0 = cohort.days.find(d => d.day === 0);
   if (!day0) return '';
   const t = day0.trials[mouseId];
-  return t ? t.reward : '';
+  if (!t) return '';
+  let L = 0, R = 0;
+  t.trials.forEach(tr => { if (tr === 'L') L++; else if (tr === 'R') R++; });
+  if (L === 0 && R === 0) return '';
+  return L >= R ? 'L' : 'R';
 }
 
 function renderDayContent() {
@@ -679,72 +683,29 @@ function renderDayContent() {
 
   const day = c.days[activeDay];
   if (!day) return;
-  const isDay0 = day.day === 0;
 
-  if (isDay0) {
-    renderDay0Content(c, day, el);
-  } else {
-    renderTrialDay(c, day, el);
-  }
-
+  renderTrialDay(c, day, el);
   renderWeightWarnings();
 }
 
-function renderDay0Content(c, day, el) {
-  let html = `<div class="day-panel">
-    <div class="day-header">
-      <h3>Day 0 — Preference Test</h3>
-      <span class="day-date">${day.date}</span>
-    </div>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Click L/R to set each mouse's preferred side. This becomes the <strong style="color:var(--text)">reward side</strong> for all subsequent days.</p>
-    <div style="overflow-x:auto">
-    <table class="trial-table">
-      <thead><tr>
-        <th>Mouse</th>
-        <th>Sex</th>
-        <th>Geno</th>
-        <th style="width:55px">Wt (g)</th>
-        <th style="width:80px">Preferred Side</th>
-        <th>Notes</th>
-      </tr></thead>
-      <tbody>`;
-
-  c.mice.forEach(m => {
-    const t = day.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '', reversal: false };
-    const pref = t.reward;
-    const weightWarn = checkWeightWarning(c, m.id, activeDay);
-    const wCls = weightWarn ? ' weight-warn' : '';
-
-    html += `<tr>
-      <td style="font-weight:600;font-size:12px">${esc(m.id)}</td>
-      <td style="font-size:11px;color:var(--muted)">${m.sex}</td>
-      <td style="font-size:11px;color:var(--muted)">${esc(m.genotype)}</td>
-      <td><input class="weight-input${wCls}" value="${esc(String(t.weight || ''))}" onchange="setWeight('${m.id}',this.value)" title="${weightWarn || ''}"></td>
-      <td><span class="cell-toggle cell-${pref || 'empty'}" style="min-width:50px" onclick="toggleDay0Pref('${m.id}')">${pref || '—'}</span></td>
-      <td><input class="notes-input" value="${esc(String(t.notes || ''))}" onchange="setNotes('${m.id}',this.value)" placeholder="..."></td>
-    </tr>`;
-  });
-
-  html += `</tbody></table></div></div>`;
-  el.innerHTML = html;
-}
-
 function renderTrialDay(c, day, el) {
-  const dayLabel = `Day ${day.day}`;
+  const isDay0 = day.day === 0;
+  const dayLabel = isDay0 ? 'Day 0 — Preference Test' : `Day ${day.day}`;
 
   let html = `<div class="day-panel">
     <div class="day-header">
       <h3>${dayLabel}</h3>
       <span class="day-date">${day.date}</span>
     </div>
+    ${isDay0 ? '<p style="font-size:12px;color:var(--muted);margin-bottom:14px">Record 8 trials per mouse. The majority side is auto-calculated as the <strong style="color:var(--text)">preferred (reward) side</strong> for all subsequent days.</p>' : ''}
     <div style="overflow-x:auto">
     <table class="trial-table">
       <thead><tr>
         <th>Mouse</th>
         <th>Geno</th>
         <th style="width:45px">Wt (g)</th>
-        <th style="width:45px">Reward</th>
         <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th><th>T7</th><th>T8</th>
+        <th style="width:45px">${isDay0 ? 'Pref' : 'Reward'}</th>
         <th>%</th>
         <th>Notes</th>
       </tr></thead>
@@ -752,14 +713,24 @@ function renderTrialDay(c, day, el) {
 
   c.mice.forEach(m => {
     const t = day.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '', reversal: false };
-    // Reward side comes from Day 0 preference (locked)
-    const day0Reward = getDay0Reward(c, m.id);
-    const reward = day0Reward || t.reward;
     const isRev = t.reversal;
 
-    // Accuracy
+    // Determine reward side
+    let reward;
+    if (isDay0) {
+      // Auto-calculate from this day's trials
+      reward = getDay0Reward(c, m.id);
+    } else {
+      // Use Day 0 preference if available, else fall back to manual
+      const day0Reward = getDay0Reward(c, m.id);
+      reward = day0Reward || t.reward;
+    }
+
+    // Accuracy (not shown for Day 0 — there's no "correct" side yet)
     let correct = 0, total = 0;
-    t.trials.forEach(tr => { if (tr) { total++; if (tr === reward) correct++; } });
+    if (!isDay0) {
+      t.trials.forEach(tr => { if (tr) { total++; if (tr === reward) correct++; } });
+    }
     const pct = total > 0 ? Math.round((correct / total) * 100) : '';
     const pctClass = pct === '' ? '' : (pct >= 75 ? 'accuracy-high' : pct >= 50 ? 'accuracy-mid' : 'accuracy-low');
 
@@ -772,20 +743,31 @@ function renderTrialDay(c, day, el) {
       <td style="font-size:11px;color:var(--muted)">${esc(m.genotype)}</td>
       <td><input class="weight-input${wCls}" value="${esc(String(t.weight || ''))}" onchange="setWeight('${m.id}',this.value)" title="${weightWarn || ''}"></td>`;
 
-    // Show reward side — locked from Day 0 or clickable if no Day 0
-    if (day0Reward) {
-      html += `<td><span class="cell-toggle cell-${reward} reward-locked" title="Set from Day 0 preference">${reward}</span></td>`;
-    } else {
-      html += `<td><span class="cell-toggle cell-${reward || 'empty'}" onclick="toggleReward('${m.id}')">${reward || '-'}</span></td>`;
-    }
-
+    // Trial cells
     for (let i = 0; i < 8; i++) {
       const tr = t.trials[i];
       let cls = 'cell-empty';
       if (tr) {
-        cls = (reward && tr === reward) ? 'cell-correct' : (reward ? 'cell-wrong' : 'cell-' + tr);
+        if (isDay0) {
+          cls = 'cell-' + tr; // Just show L/R color, no correct/wrong
+        } else {
+          cls = (reward && tr === reward) ? 'cell-correct' : (reward ? 'cell-wrong' : 'cell-' + tr);
+        }
       }
       html += `<td><span class="cell-toggle ${cls}" onclick="toggleTrial('${m.id}',${i})">${tr || '-'}</span></td>`;
+    }
+
+    // Reward/Pref column (after trials)
+    if (isDay0) {
+      // Auto-calculated preferred side
+      html += `<td><span class="cell-toggle cell-${reward || 'empty'} reward-locked" title="Auto-calculated from trials">${reward || '—'}</span></td>`;
+    } else {
+      const day0Reward = getDay0Reward(c, m.id);
+      if (day0Reward) {
+        html += `<td><span class="cell-toggle cell-${reward} reward-locked" title="Set from Day 0 preference">${reward}</span></td>`;
+      } else {
+        html += `<td><span class="cell-toggle cell-${reward || 'empty'}" onclick="toggleReward('${m.id}')">${reward || '-'}</span></td>`;
+      }
     }
 
     html += `<td class="accuracy-cell ${pctClass}">${pct !== '' ? pct + '%' : ''}</td>`;
@@ -861,18 +843,6 @@ window.toggleReward = function(mouseId) {
   renderDayContent();
 };
 
-// Day 0 preference toggle — sets the reward side used for all subsequent days
-window.toggleDay0Pref = function(mouseId) {
-  const c = currentCohort();
-  const day0 = c.days.find(d => d.day === 0);
-  if (!day0) return;
-  const t = day0.trials[mouseId];
-  if (t.reward === 'L') t.reward = 'R';
-  else if (t.reward === 'R') t.reward = '';
-  else t.reward = 'L';
-  saveLocal();
-  renderDayContent();
-};
 
 window.toggleTrial = function(mouseId, trialIdx) {
   const c = currentCohort();
