@@ -92,6 +92,9 @@
   .day-tab:hover{color:var(--text);border-color:var(--accent)}
   .day-tab.active{color:var(--accent);border-color:var(--accent);background:rgba(79,156,249,0.1)}
   .day-tab.reversal{border-left:3px solid var(--purple)}
+  .day-tab.tab-weights{color:var(--yellow);border-color:rgba(251,191,36,0.3)}
+  .day-tab.tab-weights.active{color:var(--yellow);border-color:var(--yellow);background:rgba(251,191,36,0.1)}
+  .reward-locked{opacity:0.7;cursor:default;font-size:11px}
 
   /* Weight chart */
   .chart-container{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
@@ -557,13 +560,16 @@ window.addDay = function() {
   const lastDay = c.days[c.days.length - 1];
   const newDayNum = lastDay ? lastDay.day + 1 : 0;
   const day = createDay(newDayNum, c.mice);
-  // Carry forward each mouse's reversal state
-  if (lastDay) {
-    c.mice.forEach(m => {
+  // Carry forward each mouse's reversal state + bind reward from Day 0
+  c.mice.forEach(m => {
+    if (lastDay) {
       const prev = lastDay.trials[m.id];
       if (prev && prev.reversal) day.trials[m.id].reversal = true;
-    });
-  }
+    }
+    // Auto-set reward from Day 0 preference
+    const d0reward = getDay0Reward(c, m.id);
+    if (d0reward) day.trials[m.id].reward = d0reward;
+  });
   c.days.push(day);
   activeDay = c.days.length - 1;
   saveLocal();
@@ -633,13 +639,17 @@ function renderDayTabs() {
   const btn0 = document.getElementById('btnInsertDay0');
   if (btn0) btn0.style.display = hasDay0 ? 'none' : '';
   const el = document.getElementById('dayTabs');
-  el.innerHTML = c.days.map((d, i) => {
+  let html = c.days.map((d, i) => {
     const hasReversal = c.mice.some(m => d.trials[m.id]?.reversal);
     const isDay0 = d.day === 0;
     const cls = (i === activeDay ? ' active' : '') + (hasReversal ? ' reversal' : '');
     const label = isDay0 ? 'Day 0 (Pref)' : `Day ${d.day}${hasReversal ? ' (R)' : ''}`;
     return `<button class="day-tab${cls}" onclick="switchDay(${i})">${label}</button>`;
   }).join('');
+  // Weights tab
+  const wCls = activeDay === 'weights' ? ' active' : '';
+  html += `<button class="day-tab tab-weights${wCls}" onclick="switchDay('weights')">Weights</button>`;
+  el.innerHTML = html;
 }
 
 window.switchDay = function(i) {
@@ -648,14 +658,79 @@ window.switchDay = function(i) {
   renderDayContent();
 };
 
+// Get reward side for a mouse from Day 0 preference
+function getDay0Reward(cohort, mouseId) {
+  const day0 = cohort.days.find(d => d.day === 0);
+  if (!day0) return '';
+  const t = day0.trials[mouseId];
+  return t ? t.reward : '';
+}
+
 function renderDayContent() {
   const c = currentCohort();
   if (!c || activeDay == null) return;
-  const day = c.days[activeDay];
   const el = document.getElementById('dayContent');
 
+  // Weights tab
+  if (activeDay === 'weights') {
+    renderWeightsSheet(c, el);
+    return;
+  }
+
+  const day = c.days[activeDay];
+  if (!day) return;
   const isDay0 = day.day === 0;
-  const dayLabel = isDay0 ? 'Day 0 — Preference Test' : `Day ${day.day}`;
+
+  if (isDay0) {
+    renderDay0Content(c, day, el);
+  } else {
+    renderTrialDay(c, day, el);
+  }
+
+  renderWeightWarnings();
+}
+
+function renderDay0Content(c, day, el) {
+  let html = `<div class="day-panel">
+    <div class="day-header">
+      <h3>Day 0 — Preference Test</h3>
+      <span class="day-date">${day.date}</span>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Click L/R to set each mouse's preferred side. This becomes the <strong style="color:var(--text)">reward side</strong> for all subsequent days.</p>
+    <div style="overflow-x:auto">
+    <table class="trial-table">
+      <thead><tr>
+        <th>Mouse</th>
+        <th>Sex</th>
+        <th>Geno</th>
+        <th style="width:55px">Wt (g)</th>
+        <th style="width:80px">Preferred Side</th>
+        <th>Notes</th>
+      </tr></thead>
+      <tbody>`;
+
+  c.mice.forEach(m => {
+    const t = day.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '', reversal: false };
+    const pref = t.reward;
+    const weightWarn = checkWeightWarning(c, m.id, activeDay);
+    const wCls = weightWarn ? ' weight-warn' : '';
+
+    html += `<tr>
+      <td style="font-weight:600;font-size:12px">${esc(m.id)}</td>
+      <td style="font-size:11px;color:var(--muted)">${m.sex}</td>
+      <td style="font-size:11px;color:var(--muted)">${esc(m.genotype)}</td>
+      <td><input class="weight-input${wCls}" value="${esc(String(t.weight || ''))}" onchange="setWeight('${m.id}',this.value)" title="${weightWarn || ''}"></td>
+      <td><span class="cell-toggle cell-${pref || 'empty'}" style="min-width:50px" onclick="toggleDay0Pref('${m.id}')">${pref || '—'}</span></td>
+      <td><input class="notes-input" value="${esc(String(t.notes || ''))}" onchange="setNotes('${m.id}',this.value)" placeholder="..."></td>
+    </tr>`;
+  });
+
+  html += `</tbody></table></div></div>`;
+  el.innerHTML = html;
+}
+
+function renderTrialDay(c, day, el) {
+  const dayLabel = `Day ${day.day}`;
 
   let html = `<div class="day-panel">
     <div class="day-header">
@@ -677,7 +752,9 @@ function renderDayContent() {
 
   c.mice.forEach(m => {
     const t = day.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '', reversal: false };
-    const reward = t.reward;
+    // Reward side comes from Day 0 preference (locked)
+    const day0Reward = getDay0Reward(c, m.id);
+    const reward = day0Reward || t.reward;
     const isRev = t.reversal;
 
     // Accuracy
@@ -693,8 +770,14 @@ function renderDayContent() {
     html += `<tr>
       <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}${isRev ? ' <span class="phase-badge phase-reversal">R</span>' : ''}</td>
       <td style="font-size:11px;color:var(--muted)">${esc(m.genotype)}</td>
-      <td><input class="weight-input${wCls}" value="${esc(String(t.weight || ''))}" onchange="setWeight('${m.id}',this.value)" title="${weightWarn || ''}"></td>
-      <td><span class="cell-toggle cell-${reward || 'empty'}" onclick="toggleReward('${m.id}')">${reward || '-'}</span></td>`;
+      <td><input class="weight-input${wCls}" value="${esc(String(t.weight || ''))}" onchange="setWeight('${m.id}',this.value)" title="${weightWarn || ''}"></td>`;
+
+    // Show reward side — locked from Day 0 or clickable if no Day 0
+    if (day0Reward) {
+      html += `<td><span class="cell-toggle cell-${reward} reward-locked" title="Set from Day 0 preference">${reward}</span></td>`;
+    } else {
+      html += `<td><span class="cell-toggle cell-${reward || 'empty'}" onclick="toggleReward('${m.id}')">${reward || '-'}</span></td>`;
+    }
 
     for (let i = 0; i < 8; i++) {
       const tr = t.trials[i];
@@ -712,9 +795,56 @@ function renderDayContent() {
 
   html += `</tbody></table></div></div>`;
   el.innerHTML = html;
+}
 
-  // Weight warnings
-  renderWeightWarnings();
+// Weights-only sheet
+function renderWeightsSheet(c, el) {
+  let html = `<div class="day-panel">
+    <div class="day-header">
+      <h3>Weight Log</h3>
+      <button class="btn btn-secondary btn-sm" onclick="exportWeightsCSV()">Export Weights CSV</button>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="trial-table">
+      <thead><tr>
+        <th>Mouse</th>
+        <th>Sex</th>
+        <th>Geno</th>`;
+
+  c.days.forEach(d => {
+    html += `<th>D${d.day}</th>`;
+  });
+  html += `<th>Baseline</th><th>Current</th><th>Change</th>`;
+  html += `</tr></thead><tbody>`;
+
+  c.mice.forEach(m => {
+    html += `<tr>
+      <td style="font-weight:600;font-size:12px">${esc(m.id)}</td>
+      <td style="font-size:11px;color:var(--muted)">${m.sex}</td>
+      <td style="font-size:11px;color:var(--muted)">${esc(m.genotype)}</td>`;
+
+    const history = getWeightHistory(c, m.id);
+    c.days.forEach((d, di) => {
+      const t = d.trials[m.id];
+      const w = t && t.weight ? t.weight : '';
+      const warn = w ? checkWeightWarning(c, m.id, di) : null;
+      const wCls = warn ? ' style="color:var(--red);font-weight:600"' : '';
+      html += `<td${wCls}>${w || '<span style="color:var(--muted)">—</span>'}</td>`;
+    });
+
+    const baseline = history.length ? history[0].weight : null;
+    const current = history.length ? history[history.length - 1].weight : null;
+    const change = (baseline && current) ? (((current - baseline) / baseline) * 100).toFixed(1) : '';
+    const changeColor = change ? (parseFloat(change) < -10 ? 'var(--red)' : parseFloat(change) < -5 ? 'var(--yellow)' : 'var(--green)') : '';
+
+    html += `<td style="font-family:'DM Mono',monospace;font-size:11px">${baseline || '—'}</td>`;
+    html += `<td style="font-family:'DM Mono',monospace;font-size:11px">${current || '—'}</td>`;
+    html += `<td style="font-family:'DM Mono',monospace;font-size:11px;color:${changeColor}">${change ? change + '%' : '—'}</td>`;
+    html += `</tr>`;
+  });
+
+  html += `</tbody></table></div></div>`;
+  el.innerHTML = html;
 }
 
 // =====================================================================
@@ -724,6 +854,19 @@ window.toggleReward = function(mouseId) {
   const c = currentCohort();
   const day = c.days[activeDay];
   const t = day.trials[mouseId];
+  if (t.reward === 'L') t.reward = 'R';
+  else if (t.reward === 'R') t.reward = '';
+  else t.reward = 'L';
+  saveLocal();
+  renderDayContent();
+};
+
+// Day 0 preference toggle — sets the reward side used for all subsequent days
+window.toggleDay0Pref = function(mouseId) {
+  const c = currentCohort();
+  const day0 = c.days.find(d => d.day === 0);
+  if (!day0) return;
+  const t = day0.trials[mouseId];
   if (t.reward === 'L') t.reward = 'R';
   else if (t.reward === 'R') t.reward = '';
   else t.reward = 'L';
@@ -895,13 +1038,14 @@ window.exportCSV = function() {
   const c = currentCohort();
   if (!c) { alert('Open a cohort first'); return; }
 
-  // 1. meta_trials.csv (STRIDE format)
+  // 1. meta_trials.csv (STRIDE format) — use Day 0 reward as canonical
   let metaTrials = 'day,mouse,reward\n';
   c.days.forEach(d => {
+    if (d.day === 0) return; // skip Day 0 preference test
     c.mice.forEach(m => {
-      const t = d.trials[m.id];
-      if (t && t.reward) {
-        metaTrials += `DAY${d.day},${m.id},${t.reward}\n`;
+      const reward = getDay0Reward(c, m.id) || (d.trials[m.id] && d.trials[m.id].reward) || '';
+      if (reward) {
+        metaTrials += `DAY${d.day},${m.id},${reward}\n`;
       }
     });
   });
@@ -917,10 +1061,12 @@ window.exportCSV = function() {
   c.days.forEach(d => {
     c.mice.forEach(m => {
       const t = d.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '' };
+      const reward = d.day === 0 ? t.reward : (getDay0Reward(c, m.id) || t.reward);
       let correct = 0, total = 0;
-      t.trials.forEach(tr => { if (tr) { total++; if (tr === t.reward) correct++; } });
+      if (d.day > 0) t.trials.forEach(tr => { if (tr) { total++; if (tr === reward) correct++; } });
       const pct = total > 0 ? Math.round((correct / total) * 100) : '';
-      trials += `DAY${d.day},${d.date},${t.reversal ? 'reversal' : 'learning'},${m.id},${m.genotype},${m.sex},${t.weight || ''},${t.reward || ''},${t.trials.join(',')},${pct},${(t.notes || '').replace(/,/g, ';')}\n`;
+      const phase = d.day === 0 ? 'preference' : (t.reversal ? 'reversal' : 'learning');
+      trials += `DAY${d.day},${d.date},${phase},${m.id},${m.genotype},${m.sex},${t.weight || ''},${reward || ''},${d.day === 0 ? ',,,,,,,' : t.trials.join(',')},${pct},${(t.notes || '').replace(/,/g, ';')}\n`;
     });
   });
 
@@ -940,6 +1086,23 @@ window.exportCSV = function() {
   setTimeout(() => download(`${c.name}_metadata.csv`, metadata), 200);
   setTimeout(() => download(`${c.name}_trials_full.csv`, trials), 400);
   setTimeout(() => download(`${c.name}_weights.csv`, weights), 600);
+};
+
+window.exportWeightsCSV = function() {
+  const c = currentCohort();
+  if (!c) return;
+  let csv = 'mouse,sex,genotype';
+  c.days.forEach(d => { csv += `,DAY${d.day}`; });
+  csv += '\n';
+  c.mice.forEach(m => {
+    csv += `${m.id},${m.sex},${m.genotype}`;
+    c.days.forEach(d => {
+      const t = d.trials[m.id];
+      csv += `,${(t && t.weight) || ''}`;
+    });
+    csv += '\n';
+  });
+  download(`${c.name}_weights.csv`, csv);
 };
 
 function download(filename, text) {
