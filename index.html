@@ -517,16 +517,25 @@ window.saveMiceAndStart = function() {
   renderCohortList();
 };
 
-function createDay(dayNum, mice) {
+function createDay(dayNum, mice, date) {
   const day = {
     day: dayNum,
-    date: localDate(),
+    date: date || localDate(),
     trials: {},
   };
   mice.forEach(m => {
     day.trials[m.id] = { reward: '', trials: ['', '', '', '', '', '', '', ''], weight: '', notes: '', reversal: false };
   });
   return day;
+}
+
+// Compute date for a day based on Day 0's date + offset
+function dayDate(cohort, dayNum) {
+  const day0 = cohort.days.find(d => d.day === 0);
+  if (!day0 || !day0.date) return '';
+  const d = new Date(day0.date + 'T12:00:00'); // noon to avoid DST issues
+  d.setDate(d.getDate() + dayNum);
+  return d.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
 }
 
 // =====================================================================
@@ -559,7 +568,8 @@ window.addDay = function() {
   if (!c) return;
   const lastDay = c.days[c.days.length - 1];
   const newDayNum = lastDay ? lastDay.day + 1 : 0;
-  const day = createDay(newDayNum, c.mice);
+  const date = dayDate(c, newDayNum) || localDate();
+  const day = createDay(newDayNum, c.mice, date);
   // Carry forward each mouse's reversal state + bind reward from Day 0
   c.mice.forEach(m => {
     if (lastDay) {
@@ -692,10 +702,15 @@ function renderTrialDay(c, day, el) {
   const isDay0 = day.day === 0;
   const dayLabel = isDay0 ? 'Day 0 — Preference Test' : `Day ${day.day}`;
 
+  // Show computed date from Day 0 for non-Day-0 days
+  const displayDate = isDay0 ? day.date : (dayDate(c, day.day) || day.date);
+
   let html = `<div class="day-panel">
     <div class="day-header">
       <h3>${dayLabel}</h3>
-      <span class="day-date">${day.date}</span>
+      ${isDay0
+        ? `<input type="date" class="day-date-input" value="${day.date}" onchange="setDay0Date(this.value)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;color:var(--text);font-size:12px;font-family:'Outfit',sans-serif">`
+        : `<span class="day-date">${displayDate}</span>`}
     </div>
     ${isDay0 ? '<p style="font-size:12px;color:var(--muted);margin-bottom:14px">Record 8 trials per mouse. The majority side is auto-calculated as the <strong style="color:var(--text)">preferred (reward) side</strong> for all subsequent days.</p>' : ''}
     <div style="overflow-x:auto">
@@ -869,6 +884,18 @@ window.setNotes = function(mouseId, val) {
   const c = currentCohort();
   const day = c.days[activeDay];
   day.trials[mouseId].notes = val;
+  saveLocal();
+};
+
+window.setDay0Date = function(val) {
+  const c = currentCohort();
+  if (!c) return;
+  const day0 = c.days.find(d => d.day === 0);
+  if (day0) day0.date = val;
+  // Update all other days' dates based on Day 0
+  c.days.forEach(d => {
+    if (d.day !== 0) d.date = dayDate(c, d.day);
+  });
   saveLocal();
 };
 
