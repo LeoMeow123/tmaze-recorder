@@ -53,11 +53,6 @@
           "genotype": "tau"
         },
         {
-          "id": "F10",
-          "sex": "F",
-          "genotype": "tau"
-        },
-        {
           "id": "M10",
           "sex": "M",
           "genotype": "tau"
@@ -104,6 +99,11 @@
         },
         {
           "id": "F9",
+          "sex": "F",
+          "genotype": "tau"
+        },
+        {
+          "id": "F10",
           "sex": "F",
           "genotype": "tau"
         }
