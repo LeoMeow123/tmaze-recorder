@@ -669,15 +669,20 @@ window.switchDay = function(i) {
 };
 
 // Auto-calculate preferred side from Day 0 trials (majority side = reward for all future days)
+// On a 4-4 tie, T9 is the tiebreaker
 function getDay0Reward(cohort, mouseId) {
   const day0 = cohort.days.find(d => d.day === 0);
   if (!day0) return '';
   const t = day0.trials[mouseId];
   if (!t) return '';
   let L = 0, R = 0;
-  t.trials.forEach(tr => { if (tr === 'L') L++; else if (tr === 'R') R++; });
+  for (let i = 0; i < 8; i++) { if (t.trials[i] === 'L') L++; else if (t.trials[i] === 'R') R++; }
   if (L === 0 && R === 0) return '';
-  return L >= R ? 'L' : 'R';
+  if (L === 4 && R === 4) {
+    const t9 = t.trials[8];
+    return t9 === 'L' || t9 === 'R' ? t9 : '';
+  }
+  return L > R ? 'L' : 'R';
 }
 
 function renderDayContent() {
@@ -712,7 +717,7 @@ function renderTrialDay(c, day, el) {
         ? `<input type="date" class="day-date-input" value="${day.date}" onchange="setDay0Date(this.value)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;color:var(--text);font-size:12px;font-family:'Outfit',sans-serif">`
         : `<span class="day-date">${displayDate}</span>`}
     </div>
-    ${isDay0 ? '<p style="font-size:12px;color:var(--muted);margin-bottom:14px">Record 8 trials per mouse. The majority side is auto-calculated as the <strong style="color:var(--text)">preferred (reward) side</strong> for all subsequent days.</p>' : ''}
+    ${isDay0 ? '<p style="font-size:12px;color:var(--muted);margin-bottom:14px">Record 8 trials per mouse. The majority side is auto-calculated as the <strong style="color:var(--text)">preferred (reward) side</strong> for all subsequent days. A 9th trial appears automatically on 4-4 ties.</p>' : ''}
     <div style="overflow-x:auto">
     <table class="trial-table">
       <thead><tr>
@@ -720,6 +725,7 @@ function renderTrialDay(c, day, el) {
         <th>Geno</th>
         <th style="width:45px">Wt (g)</th>
         <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th><th>T7</th><th>T8</th>
+        ${isDay0 ? '<th>T9</th>' : ''}
         <th style="width:45px">${isDay0 ? 'Pref' : 'Reward'}</th>
         <th>%</th>
         <th>Notes</th>
@@ -759,17 +765,32 @@ function renderTrialDay(c, day, el) {
       <td><input class="weight-input${wCls}" value="${esc(String(t.weight || ''))}" onchange="setWeight('${m.id}',this.value)" title="${weightWarn || ''}"></td>`;
 
     // Trial cells
+    // Check if first 8 trials are a 4-4 tie (for Day 0 T9 visibility)
+    let d0L = 0, d0R = 0;
+    if (isDay0) { for (let i = 0; i < 8; i++) { if (t.trials[i] === 'L') d0L++; else if (t.trials[i] === 'R') d0R++; } }
+    const isTied = isDay0 && d0L === 4 && d0R === 4;
+
     for (let i = 0; i < 8; i++) {
       const tr = t.trials[i];
       let cls = 'cell-empty';
       if (tr) {
         if (isDay0) {
-          cls = 'cell-' + tr; // Just show L/R color, no correct/wrong
+          cls = 'cell-' + tr;
         } else {
           cls = (reward && tr === reward) ? 'cell-correct' : (reward ? 'cell-wrong' : 'cell-' + tr);
         }
       }
       html += `<td><span class="cell-toggle ${cls}" onclick="toggleTrial('${m.id}',${i})">${tr || '-'}</span></td>`;
+    }
+    // T9 tiebreaker column on Day 0
+    if (isDay0) {
+      const tr9 = t.trials[8] || '';
+      if (isTied) {
+        const cls9 = tr9 ? 'cell-' + tr9 : 'cell-empty';
+        html += `<td><span class="cell-toggle ${cls9}" onclick="toggleTrial('${m.id}',8)">${tr9 || '-'}</span></td>`;
+      } else {
+        html += `<td><span class="cell-toggle cell-empty" style="opacity:0.3;cursor:default">${tr9 || '·'}</span></td>`;
+      }
     }
 
     // Reward/Pref column (after trials)
@@ -1054,16 +1075,18 @@ window.exportCSV = function() {
   });
 
   // 3. Full trial data CSV
-  let trials = 'day,date,phase,mouse,genotype,sex,weight,reward,T1,T2,T3,T4,T5,T6,T7,T8,accuracy,notes\n';
+  let trials = 'day,date,phase,mouse,genotype,sex,weight,reward,T1,T2,T3,T4,T5,T6,T7,T8,T9,accuracy,notes\n';
   c.days.forEach(d => {
     c.mice.forEach(m => {
       const t = d.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '' };
-      const reward = d.day === 0 ? t.reward : (getDay0Reward(c, m.id) || t.reward);
+      const reward = d.day === 0 ? getDay0Reward(c, m.id) : (getDay0Reward(c, m.id) || t.reward);
       let correct = 0, total = 0;
-      if (d.day > 0) t.trials.forEach(tr => { if (tr) { total++; if (tr === reward) correct++; } });
+      if (d.day > 0) { for (let i = 0; i < 8; i++) { const tr = t.trials[i]; if (tr) { total++; if (tr === reward) correct++; } } }
       const pct = total > 0 ? Math.round((correct / total) * 100) : '';
       const phase = d.day === 0 ? 'preference' : (t.reversal ? 'reversal' : 'learning');
-      trials += `DAY${d.day},${d.date},${phase},${m.id},${m.genotype},${m.sex},${t.weight || ''},${reward || ''},${d.day === 0 ? ',,,,,,,' : t.trials.join(',')},${pct},${(t.notes || '').replace(/,/g, ';')}\n`;
+      const t8 = t.trials.slice(0, 8).map(v => v || '').join(',');
+      const t9 = t.trials[8] || '';
+      trials += `DAY${d.day},${d.date},${phase},${m.id},${m.genotype},${m.sex},${t.weight || ''},${reward || ''},${t8},${t9},${pct},${(t.notes || '').replace(/,/g, ';')}\n`;
     });
   });
 
