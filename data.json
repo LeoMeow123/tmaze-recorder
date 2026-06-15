@@ -58,7 +58,7 @@
           "genotype": "tau"
         },
         {
-          "id": "F7",
+          "id": "15429",
           "sex": "F",
           "genotype": "tau"
         },
@@ -260,6 +260,22 @@
               "notes": "",
               "reversal": false
             },
+            "15429": {
+              "reward": "",
+              "trials": [
+                "L",
+                "L",
+                "R",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "29.40",
+              "notes": "chewed badly ear",
+              "reversal": false
+            },
             "15430": {
               "reward": "",
               "trials": [
@@ -371,22 +387,6 @@
               ],
               "weight": "",
               "notes": "",
-              "reversal": false
-            },
-            "F7": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "29.40",
-              "notes": "chewed badly ear",
               "reversal": false
             },
             "F8": {
@@ -579,6 +579,21 @@
               "weight": "",
               "notes": ""
             },
+            "15429": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "15430": {
               "reward": "",
               "trials": [
@@ -670,21 +685,6 @@
               "notes": ""
             },
             "M10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "F7": {
               "reward": "",
               "trials": [
                 "",
@@ -886,6 +886,21 @@
               "weight": "",
               "notes": ""
             },
+            "15429": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "15430": {
               "reward": "",
               "trials": [
@@ -977,21 +992,6 @@
               "notes": ""
             },
             "M10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "F7": {
               "reward": "",
               "trials": [
                 "",
@@ -1193,6 +1193,21 @@
               "weight": "",
               "notes": ""
             },
+            "15429": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "15430": {
               "reward": "",
               "trials": [
@@ -1284,21 +1299,6 @@
               "notes": ""
             },
             "M10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "F7": {
               "reward": "",
               "trials": [
                 "",
@@ -1508,7 +1508,7 @@
               "notes": "",
               "reversal": false
             },
-            "15430": {
+            "15429": {
               "reward": "",
               "trials": [
                 "",
@@ -1524,7 +1524,7 @@
               "notes": "",
               "reversal": false
             },
-            "F7": {
+            "15430": {
               "reward": "",
               "trials": [
                 "",
@@ -1834,7 +1834,7 @@
               "notes": "",
               "reversal": false
             },
-            "15430": {
+            "15429": {
               "reward": "",
               "trials": [
                 "",
@@ -1850,7 +1850,7 @@
               "notes": "",
               "reversal": false
             },
-            "F7": {
+            "15430": {
               "reward": "",
               "trials": [
                 "",
@@ -2160,7 +2160,7 @@
               "notes": "",
               "reversal": false
             },
-            "15430": {
+            "15429": {
               "reward": "",
               "trials": [
                 "",
@@ -2176,7 +2176,7 @@
               "notes": "",
               "reversal": false
             },
-            "F7": {
+            "15430": {
               "reward": "",
               "trials": [
                 "",
@@ -2486,7 +2486,7 @@
               "notes": "",
               "reversal": false
             },
-            "15430": {
+            "15429": {
               "reward": "",
               "trials": [
                 "",
@@ -2502,7 +2502,7 @@
               "notes": "",
               "reversal": false
             },
-            "F7": {
+            "15430": {
               "reward": "",
               "trials": [
                 "",
@@ -2812,7 +2812,7 @@
               "notes": "",
               "reversal": false
             },
-            "15430": {
+            "15429": {
               "reward": "",
               "trials": [
                 "",
@@ -2828,7 +2828,7 @@
               "notes": "",
               "reversal": false
             },
-            "F7": {
+            "15430": {
               "reward": "",
               "trials": [
                 "",
@@ -3138,7 +3138,7 @@
               "notes": "",
               "reversal": false
             },
-            "15430": {
+            "15429": {
               "reward": "",
               "trials": [
                 "",
@@ -3154,7 +3154,7 @@
               "notes": "",
               "reversal": false
             },
-            "F7": {
+            "15430": {
               "reward": "",
               "trials": [
                 "",
@@ -3464,7 +3464,7 @@
               "notes": "",
               "reversal": false
             },
-            "15430": {
+            "15429": {
               "reward": "",
               "trials": [
                 "",
@@ -3480,7 +3480,7 @@
               "notes": "",
               "reversal": false
             },
-            "F7": {
+            "15430": {
               "reward": "",
               "trials": [
                 "",
@@ -3790,7 +3790,7 @@
               "notes": "",
               "reversal": false
             },
-            "15430": {
+            "15429": {
               "reward": "",
               "trials": [
                 "",
@@ -3806,7 +3806,7 @@
               "notes": "",
               "reversal": false
             },
-            "F7": {
+            "15430": {
               "reward": "",
               "trials": [
                 "",
@@ -4116,7 +4116,7 @@
               "notes": "",
               "reversal": false
             },
-            "15430": {
+            "15429": {
               "reward": "",
               "trials": [
                 "",
@@ -4132,7 +4132,7 @@
               "notes": "",
               "reversal": false
             },
-            "F7": {
+            "15430": {
               "reward": "",
               "trials": [
                 "",
