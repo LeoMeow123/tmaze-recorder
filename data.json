@@ -28,6 +28,36 @@
           "genotype": "tau"
         },
         {
+          "id": "F5",
+          "sex": "F",
+          "genotype": "tau"
+        },
+        {
+          "id": "F6",
+          "sex": "F",
+          "genotype": "tau"
+        },
+        {
+          "id": "F7",
+          "sex": "F",
+          "genotype": "tau"
+        },
+        {
+          "id": "F8",
+          "sex": "F",
+          "genotype": "tau"
+        },
+        {
+          "id": "F9",
+          "sex": "F",
+          "genotype": "tau"
+        },
+        {
+          "id": "F10",
+          "sex": "F",
+          "genotype": "tau"
+        },
+        {
           "id": "M1",
           "sex": "M",
           "genotype": "tau"
@@ -76,36 +106,6 @@
           "id": "M10",
           "sex": "M",
           "genotype": "tau"
-        },
-        {
-          "id": "F5",
-          "sex": "F",
-          "genotype": "tau"
-        },
-        {
-          "id": "F6",
-          "sex": "F",
-          "genotype": "tau"
-        },
-        {
-          "id": "F7",
-          "sex": "F",
-          "genotype": "tau"
-        },
-        {
-          "id": "F8",
-          "sex": "F",
-          "genotype": "tau"
-        },
-        {
-          "id": "F9",
-          "sex": "F",
-          "genotype": "tau"
-        },
-        {
-          "id": "F10",
-          "sex": "F",
-          "genotype": "tau"
         }
       ],
       "days": [
@@ -118,7 +118,7 @@
               "trials": [
                 "L",
                 "U",
-                "",
+                "L",
                 "",
                 "",
                 "",
