@@ -23,6 +23,11 @@
           "genotype": "tau"
         },
         {
+          "id": "15403",
+          "sex": "F",
+          "genotype": "tau"
+        },
+        {
           "id": "M1",
           "sex": "M",
           "genotype": "tau"
@@ -73,11 +78,6 @@
           "genotype": "tau"
         },
         {
-          "id": "F4",
-          "sex": "F",
-          "genotype": "tau"
-        },
-        {
           "id": "F5",
           "sex": "F",
           "genotype": "tau"
@@ -113,6 +113,22 @@
           "day": 0,
           "date": "2026-06-11",
           "trials": {
+            "15403": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "37.80",
+              "notes": "",
+              "reversal": false
+            },
             "15404": {
               "reward": "",
               "trials": [
@@ -323,22 +339,6 @@
               "notes": "",
               "reversal": false
             },
-            "F4": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
             "F5": {
               "reward": "",
               "trials": [
@@ -442,6 +442,21 @@
           "date": "2026-06-12",
           "phase": "learning",
           "trials": {
+            "15403": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "15404": {
               "reward": "",
               "trials": [
@@ -637,21 +652,6 @@
               "weight": "",
               "notes": ""
             },
-            "F4": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
             "F5": {
               "reward": "",
               "trials": [
@@ -749,6 +749,21 @@
           "date": "2026-06-13",
           "phase": "learning",
           "trials": {
+            "15403": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "15404": {
               "reward": "",
               "trials": [
@@ -944,21 +959,6 @@
               "weight": "",
               "notes": ""
             },
-            "F4": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
             "F5": {
               "reward": "",
               "trials": [
@@ -1056,6 +1056,21 @@
           "date": "2026-06-14",
           "phase": "learning",
           "trials": {
+            "15403": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "15404": {
               "reward": "",
               "trials": [
@@ -1237,21 +1252,6 @@
               "notes": ""
             },
             "M10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "F4": {
               "reward": "",
               "trials": [
                 "",
