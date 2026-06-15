@@ -133,7 +133,7 @@
             "15405": {
               "reward": "",
               "trials": [
-                "",
+                "L",
                 "",
                 "",
                 "",
@@ -143,7 +143,7 @@
                 ""
               ],
               "weight": "34.05",
-              "notes": "",
+              "notes": "Board show on second trial",
               "reversal": false
             },
             "15407": {
