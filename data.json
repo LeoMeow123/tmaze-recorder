@@ -83,7 +83,7 @@
           "genotype": "tau"
         },
         {
-          "id": "15416",
+          "id": "15413",
           "sex": "M",
           "genotype": "tau"
         },
@@ -93,7 +93,7 @@
           "genotype": "tau"
         },
         {
-          "id": "15413",
+          "id": "15416",
           "sex": "M",
           "genotype": "tau"
         },
@@ -227,22 +227,6 @@
               "notes": "",
               "reversal": false
             },
-            "15413": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "chewed badly ear",
-              "reversal": false
-            },
             "15414": {
               "reward": "",
               "trials": [
@@ -267,9 +251,9 @@
                 "L",
                 "L",
                 "R",
-                "",
-                "",
-                ""
+                "R",
+                "L",
+                "R"
               ],
               "weight": "36.50",
               "notes": "",
@@ -536,21 +520,6 @@
               "notes": ""
             },
             "15412": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "15413": {
               "reward": "",
               "trials": [
                 "",
@@ -857,21 +826,6 @@
               "weight": "",
               "notes": ""
             },
-            "15413": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
             "15414": {
               "reward": "",
               "trials": [
@@ -1150,21 +1104,6 @@
               "notes": ""
             },
             "15412": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "15413": {
               "reward": "",
               "trials": [
                 "",
@@ -1462,22 +1401,6 @@
               "reversal": false
             },
             "15412": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "15413": {
               "reward": "",
               "trials": [
                 "",
@@ -1803,22 +1726,6 @@
               "notes": "",
               "reversal": false
             },
-            "15413": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
             "15414": {
               "reward": "",
               "trials": [
@@ -2114,22 +2021,6 @@
               "reversal": false
             },
             "15412": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "15413": {
               "reward": "",
               "trials": [
                 "",
@@ -2455,22 +2346,6 @@
               "notes": "",
               "reversal": false
             },
-            "15413": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
             "15414": {
               "reward": "",
               "trials": [
@@ -2766,22 +2641,6 @@
               "reversal": false
             },
             "15412": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "15413": {
               "reward": "",
               "trials": [
                 "",
@@ -3107,22 +2966,6 @@
               "notes": "",
               "reversal": false
             },
-            "15413": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
             "15414": {
               "reward": "",
               "trials": [
@@ -3418,22 +3261,6 @@
               "reversal": false
             },
             "15412": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "15413": {
               "reward": "",
               "trials": [
                 "",
@@ -3759,22 +3586,6 @@
               "notes": "",
               "reversal": false
             },
-            "15413": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
             "15414": {
               "reward": "",
               "trials": [
@@ -4070,22 +3881,6 @@
               "reversal": false
             },
             "15412": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "15413": {
               "reward": "",
               "trials": [
                 "",
