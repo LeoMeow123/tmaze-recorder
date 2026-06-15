@@ -1179,14 +1179,26 @@ window.showSetup = function() {
   document.getElementById('setupModal').classList.add('open');
 };
 window.closeSetup = function() { document.getElementById('setupModal').classList.remove('open'); };
-window.saveSetup = function() {
+window.saveSetup = async function() {
   const token = document.getElementById('setup-token').value.trim();
   const owner = document.getElementById('setup-owner').value.trim();
   const repo = document.getElementById('setup-repo').value.trim();
   if (!token) return;
   setSyncConfig({ token, owner, repo });
   closeSetup();
-  manualSave();
+  // Pull cloud data FIRST — never push from here. Connecting a fresh browser with
+  // empty local state must not overwrite the shared history. Use Save to upload.
+  setSyncStatus('saving', 'Loading...');
+  const cloud = await loadFromCloud();
+  if (cloud && cloud.cohorts) {
+    allData = cloud;
+    localStorage.setItem(CACHE_KEY, JSON.stringify(allData));
+    _dirty = false;
+    setSyncStatus('saved', 'Synced');
+    backToCohorts();
+  } else {
+    setSyncStatus('offline', 'No cloud data — use Save to upload');
+  }
 };
 
 // =====================================================================
