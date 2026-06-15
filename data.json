@@ -236,7 +236,7 @@
                 "R",
                 "L",
                 "R",
-                "",
+                "R",
                 ""
               ],
               "weight": "37.80",
@@ -246,17 +246,17 @@
             "15414": {
               "reward": "",
               "trials": [
-                "",
-                "",
-                "",
+                "U",
+                "U",
+                "U",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
-              "notes": "chewed badly ear",
+              "weight": "36.09",
+              "notes": "Left rear leg has sac",
               "reversal": false
             },
             "15415": {
@@ -287,7 +287,7 @@
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "35.60",
               "notes": "chewed badly ear",
               "reversal": false
             },
