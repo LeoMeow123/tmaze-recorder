@@ -78,6 +78,8 @@
   .trial-table tr.mouse-failed{opacity:0.4}
   .trial-table tr.mouse-failed:hover{opacity:0.55}
   .fail-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;margin-left:6px;background:rgba(122,127,148,0.2);color:var(--muted)}
+  .cond-input{background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--text);font-size:11px;font-family:'Outfit',sans-serif;outline:none}
+  .cond-input:focus{border-color:var(--accent)}
   .accuracy-cell{font-family:'DM Mono',monospace;font-weight:600;font-size:12px}
   .accuracy-high{color:var(--green)}
   .accuracy-mid{color:var(--yellow)}
@@ -508,7 +510,7 @@ window.saveMiceAndStart = function() {
     // Auto-generate ID from placeholder if blank
     if (!mid) mid = idInput.placeholder || (sexInput.value + (i + 1));
     if (pendingCohort.mice.some(m => m.id === mid)) { alert(`Duplicate mouse ID: ${mid}`); return; }
-    pendingCohort.mice.push({ id: mid, sex: sexInput.value, genotype: genoInput.value });
+    pendingCohort.mice.push({ id: mid, sex: sexInput.value, genotype: genoInput.value, condition: 'healthy' });
   });
   if (pendingCohort.mice.length !== rows.length) return; // duplicate found, aborted
 
@@ -746,6 +748,7 @@ function renderTrialDay(c, day, el) {
     <table class="trial-table">
       <thead><tr>
         <th>Mouse</th>
+        ${isDay0 ? '<th>Condition</th>' : ''}
         <th>Geno</th>
         <th style="width:45px">Wt (g)</th>
         <th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th><th>T7</th><th>T8</th>
@@ -761,10 +764,15 @@ function renderTrialDay(c, day, el) {
     const isRev = t.reversal;
     const uCount = t.trials.filter(x => x === 'U').length;
     const day0Failed = !isDay0 && failedDay0(c, m.id);
-    const failed = uCount >= 3 || day0Failed;
-    const failTitle = day0Failed
-      ? 'Failed Day 0 — unable to perform the T-maze'
-      : `${uCount} unfinished trials — failed T-maze this day`;
+    const cond = m.condition || 'healthy';
+    const condExcluded = !isDay0 && (cond === 'disease' || cond === 'missing');
+    const failed = uCount >= 3 || day0Failed || condExcluded;
+    const failTitle = condExcluded
+      ? `Marked ${cond} on Day 0 — excluded from testing`
+      : day0Failed
+        ? 'Failed Day 0 — unable to perform the T-maze'
+        : `${uCount} unfinished trials — failed T-maze this day`;
+    const badgeLabel = condExcluded ? cond.toUpperCase() : 'FAIL';
 
     // Determine reward side
     let reward;
@@ -790,7 +798,12 @@ function renderTrialDay(c, day, el) {
     const wCls = weightWarn ? ' weight-warn' : '';
 
     html += `<tr${failed ? ' class="mouse-failed"' : ''}>
-      <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}${isRev ? ' <span class="phase-badge phase-reversal">R</span>' : ''}${failed ? ` <span class="fail-badge" title="${failTitle}">FAIL</span>` : ''}</td>
+      <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}${isRev ? ' <span class="phase-badge phase-reversal">R</span>' : ''}${failed ? ` <span class="fail-badge" title="${failTitle}">${badgeLabel}</span>` : ''}</td>
+      ${isDay0 ? `<td><select class="cond-input" onchange="setCondition('${m.id}',this.value)">
+        <option value="healthy"${cond === 'healthy' ? ' selected' : ''}>Healthy</option>
+        <option value="missing"${cond === 'missing' ? ' selected' : ''}>Missing</option>
+        <option value="disease"${cond === 'disease' ? ' selected' : ''}>Disease</option>
+      </select></td>` : ''}
       <td style="font-size:11px;color:var(--muted)">${esc(m.genotype)}</td>
       <td><input class="weight-input${wCls}" value="${esc(String(t.weight || ''))}" onchange="setWeight('${m.id}',this.value)" title="${weightWarn || ''}"></td>`;
 
@@ -939,6 +952,15 @@ window.setNotes = function(mouseId, val) {
   const day = c.days[activeDay];
   day.trials[mouseId].notes = val;
   saveLocal();
+};
+
+window.setCondition = function(mouseId, val) {
+  const c = currentCohort();
+  if (!c) return;
+  const m = c.mice.find(x => x.id === mouseId);
+  if (m) m.condition = val;
+  saveLocal();
+  renderDayContent();
 };
 
 window.setDay0Date = function(val) {
@@ -1108,7 +1130,7 @@ window.exportCSV = function() {
   });
 
   // 3. Full trial data CSV
-  let trials = 'day,date,phase,mouse,genotype,sex,weight,reward,T1,T2,T3,T4,T5,T6,T7,T8,T9,accuracy,notes\n';
+  let trials = 'day,date,phase,mouse,condition,genotype,sex,weight,reward,T1,T2,T3,T4,T5,T6,T7,T8,T9,accuracy,notes\n';
   c.days.forEach(d => {
     c.mice.forEach(m => {
       const t = d.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '' };
@@ -1119,7 +1141,7 @@ window.exportCSV = function() {
       const phase = d.day === 0 ? 'preference' : (t.reversal ? 'reversal' : 'learning');
       const t8 = t.trials.slice(0, 8).map(v => v || '').join(',');
       const t9 = t.trials[8] || '';
-      trials += `DAY${d.day},${d.date},${phase},${m.id},${m.genotype},${m.sex},${t.weight || ''},${reward || ''},${t8},${t9},${pct},${(t.notes || '').replace(/,/g, ';')}\n`;
+      trials += `DAY${d.day},${d.date},${phase},${m.id},${m.condition || 'healthy'},${m.genotype},${m.sex},${t.weight || ''},${reward || ''},${t8},${t9},${pct},${(t.notes || '').replace(/,/g, ';')}\n`;
     });
   });
 
