@@ -8,6 +8,11 @@
       "created": "2026-06-10",
       "mice": [
         {
+          "id": "15404",
+          "sex": "F",
+          "genotype": "tau"
+        },
+        {
           "id": "M1",
           "sex": "M",
           "genotype": "tau"
@@ -55,11 +60,6 @@
         {
           "id": "M10",
           "sex": "M",
-          "genotype": "tau"
-        },
-        {
-          "id": "F1",
-          "sex": "F",
           "genotype": "tau"
         },
         {
@@ -113,6 +113,22 @@
           "day": 0,
           "date": "2026-06-11",
           "trials": {
+            "15404": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "34.70",
+              "notes": "",
+              "reversal": false
+            },
             "M1": {
               "reward": "",
               "trials": [
@@ -259,22 +275,6 @@
               "reversal": false
             },
             "M10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "F1": {
               "reward": "",
               "trials": [
                 "",
@@ -441,6 +441,21 @@
           "date": "2026-06-12",
           "phase": "learning",
           "trials": {
+            "15404": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "M1": {
               "reward": "",
               "trials": [
@@ -577,21 +592,6 @@
               "notes": ""
             },
             "M10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "F1": {
               "reward": "",
               "trials": [
                 "",
@@ -748,6 +748,21 @@
           "date": "2026-06-13",
           "phase": "learning",
           "trials": {
+            "15404": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "M1": {
               "reward": "",
               "trials": [
@@ -884,21 +899,6 @@
               "notes": ""
             },
             "M10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "F1": {
               "reward": "",
               "trials": [
                 "",
@@ -1055,6 +1055,21 @@
           "date": "2026-06-14",
           "phase": "learning",
           "trials": {
+            "15404": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "M1": {
               "reward": "R",
               "trials": [
@@ -1191,21 +1206,6 @@
               "notes": ""
             },
             "M10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "F1": {
               "reward": "",
               "trials": [
                 "",
