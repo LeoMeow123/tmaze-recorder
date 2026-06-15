@@ -95,17 +95,20 @@
         {
           "id": "M10",
           "sex": "M",
-          "genotype": "tau"
+          "genotype": "tau",
+          "condition": "missing"
         },
         {
           "id": "F10",
           "sex": "F",
-          "genotype": "tau"
+          "genotype": "tau",
+          "condition": "missing"
         },
         {
           "id": "15414",
           "sex": "M",
-          "genotype": "tau"
+          "genotype": "tau",
+          "condition": "disease"
         }
       ],
       "days": [
