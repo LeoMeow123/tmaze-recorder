@@ -33,6 +33,11 @@
           "genotype": "tau"
         },
         {
+          "id": "15425",
+          "sex": "M",
+          "genotype": "tau"
+        },
+        {
           "id": "F6",
           "sex": "F",
           "genotype": "tau"
@@ -55,11 +60,6 @@
         {
           "id": "F10",
           "sex": "F",
-          "genotype": "tau"
-        },
-        {
-          "id": "M1",
-          "sex": "M",
           "genotype": "tau"
         },
         {
@@ -194,20 +194,20 @@
               "notes": "Left eye unable to see",
               "reversal": false
             },
-            "M1": {
+            "15425": {
               "reward": "",
               "trials": [
                 "L",
                 "R",
-                "R",
-                "R",
-                "R",
-                "L",
-                "L",
-                "L",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
                 ""
               ],
-              "weight": "",
+              "weight": "36.05",
               "notes": "",
               "reversal": false
             },
@@ -517,7 +517,7 @@
               "weight": "",
               "notes": ""
             },
-            "M1": {
+            "15425": {
               "reward": "",
               "trials": [
                 "",
@@ -529,7 +529,7 @@
                 "R",
                 "R"
               ],
-              "weight": "23",
+              "weight": "",
               "notes": ""
             },
             "M2": {
@@ -824,7 +824,7 @@
               "weight": "",
               "notes": ""
             },
-            "M1": {
+            "15425": {
               "reward": "",
               "trials": [
                 "L",
@@ -1131,7 +1131,7 @@
               "weight": "",
               "notes": ""
             },
-            "M1": {
+            "15425": {
               "reward": "R",
               "trials": [
                 "L",
