@@ -68,13 +68,13 @@
           "genotype": "tau"
         },
         {
-          "id": "F9",
-          "sex": "F",
+          "id": "15402",
+          "sex": "M",
           "genotype": "tau"
         },
         {
-          "id": "M5",
-          "sex": "M",
+          "id": "F9",
+          "sex": "F",
           "genotype": "tau"
         },
         {
@@ -113,6 +113,22 @@
           "day": 0,
           "date": "2026-06-15",
           "trials": {
+            "15402": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "35.60",
+              "notes": "",
+              "reversal": false
+            },
             "15403": {
               "reward": "",
               "trials": [
@@ -309,22 +325,6 @@
               "notes": "Left eye",
               "reversal": false
             },
-            "M5": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
             "M6": {
               "reward": "",
               "trials": [
@@ -444,6 +444,21 @@
           "date": "2026-06-16",
           "phase": "learning",
           "trials": {
+            "15402": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "15403": {
               "reward": "",
               "trials": [
@@ -610,21 +625,6 @@
               "notes": ""
             },
             "15430": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "M5": {
               "reward": "",
               "trials": [
                 "",
@@ -751,6 +751,21 @@
           "date": "2026-06-17",
           "phase": "learning",
           "trials": {
+            "15402": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "15403": {
               "reward": "",
               "trials": [
@@ -917,21 +932,6 @@
               "notes": ""
             },
             "15430": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "M5": {
               "reward": "",
               "trials": [
                 "",
@@ -1058,6 +1058,21 @@
           "date": "2026-06-18",
           "phase": "learning",
           "trials": {
+            "15402": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "15403": {
               "reward": "",
               "trials": [
@@ -1238,21 +1253,6 @@
               "weight": "",
               "notes": ""
             },
-            "M5": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
             "M6": {
               "reward": "",
               "trials": [
@@ -1364,6 +1364,22 @@
           "day": 4,
           "date": "2026-06-19",
           "trials": {
+            "15402": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15403": {
               "reward": "R",
               "trials": [
@@ -1573,22 +1589,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M5": {
               "reward": "",
               "trials": [
                 "",
@@ -1690,6 +1690,22 @@
           "day": 5,
           "date": "2026-06-20",
           "trials": {
+            "15402": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15403": {
               "reward": "R",
               "trials": [
@@ -1899,22 +1915,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M5": {
               "reward": "",
               "trials": [
                 "",
@@ -2016,6 +2016,22 @@
           "day": 6,
           "date": "2026-06-21",
           "trials": {
+            "15402": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15403": {
               "reward": "R",
               "trials": [
@@ -2225,22 +2241,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M5": {
               "reward": "",
               "trials": [
                 "",
@@ -2342,6 +2342,22 @@
           "day": 7,
           "date": "2026-06-22",
           "trials": {
+            "15402": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15403": {
               "reward": "R",
               "trials": [
@@ -2551,22 +2567,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M5": {
               "reward": "",
               "trials": [
                 "",
@@ -2668,6 +2668,22 @@
           "day": 8,
           "date": "2026-06-23",
           "trials": {
+            "15402": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15403": {
               "reward": "R",
               "trials": [
@@ -2877,22 +2893,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M5": {
               "reward": "",
               "trials": [
                 "",
@@ -2994,6 +2994,22 @@
           "day": 9,
           "date": "2026-06-24",
           "trials": {
+            "15402": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15403": {
               "reward": "R",
               "trials": [
@@ -3203,22 +3219,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M5": {
               "reward": "",
               "trials": [
                 "",
@@ -3320,6 +3320,22 @@
           "day": 10,
           "date": "2026-06-25",
           "trials": {
+            "15402": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15403": {
               "reward": "R",
               "trials": [
@@ -3529,22 +3545,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M5": {
               "reward": "",
               "trials": [
                 "",
@@ -3646,6 +3646,22 @@
           "day": 11,
           "date": "2026-06-26",
           "trials": {
+            "15402": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15403": {
               "reward": "R",
               "trials": [
@@ -3855,22 +3871,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M5": {
               "reward": "",
               "trials": [
                 "",
@@ -3972,6 +3972,22 @@
           "day": 12,
           "date": "2026-06-27",
           "trials": {
+            "15402": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15403": {
               "reward": "R",
               "trials": [
@@ -4181,22 +4197,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M5": {
               "reward": "",
               "trials": [
                 "",
