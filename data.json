@@ -88,17 +88,17 @@
           "genotype": "tau"
         },
         {
-          "id": "M11",
-          "sex": "M",
-          "genotype": "tau"
-        },
-        {
           "id": "15414",
           "sex": "M",
           "genotype": "tau"
         },
         {
           "id": "15416",
+          "sex": "M",
+          "genotype": "tau"
+        },
+        {
+          "id": "M10",
           "sex": "M",
           "genotype": "tau"
         },
@@ -231,8 +231,8 @@
               "reward": "",
               "trials": [
                 "R",
-                "",
-                "",
+                "L",
+                "R",
                 "",
                 "",
                 "",
