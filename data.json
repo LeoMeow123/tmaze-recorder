@@ -88,11 +88,6 @@
           "genotype": "tau"
         },
         {
-          "id": "15414",
-          "sex": "M",
-          "genotype": "tau"
-        },
-        {
           "id": "15416",
           "sex": "M",
           "genotype": "tau"
@@ -105,6 +100,11 @@
         {
           "id": "F10",
           "sex": "F",
+          "genotype": "tau"
+        },
+        {
+          "id": "15414",
+          "sex": "M",
           "genotype": "tau"
         }
       ],
@@ -246,9 +246,9 @@
             "15414": {
               "reward": "",
               "trials": [
-                "U",
-                "U",
-                "U",
+                "",
+                "",
+                "",
                 "",
                 "",
                 "",
@@ -256,7 +256,7 @@
                 ""
               ],
               "weight": "36.09",
-              "notes": "Left rear leg has sac",
+              "notes": "Disease: Left rear leg has sac",
               "reversal": false
             },
             "15415": {
@@ -278,11 +278,11 @@
             "15416": {
               "reward": "",
               "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L",
                 "",
                 "",
                 ""
@@ -419,7 +419,7 @@
                 ""
               ],
               "weight": "",
-              "notes": "",
+              "notes": "Missing ",
               "reversal": false
             }
           }
