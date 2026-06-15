@@ -72,6 +72,12 @@
   .cell-empty{background:var(--bg3);color:var(--muted)}
   .cell-correct{background:rgba(52,211,153,0.2);color:var(--green)}
   .cell-wrong{background:rgba(239,68,68,0.2);color:var(--red)}
+  .cell-U{background:rgba(122,127,148,0.22);color:var(--muted)}
+
+  /* Failed day: 3+ unfinished trials */
+  .trial-table tr.mouse-failed{opacity:0.4}
+  .trial-table tr.mouse-failed:hover{opacity:0.55}
+  .fail-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;margin-left:6px;background:rgba(122,127,148,0.2);color:var(--muted)}
   .accuracy-cell{font-family:'DM Mono',monospace;font-weight:600;font-size:12px}
   .accuracy-high{color:var(--green)}
   .accuracy-mid{color:var(--yellow)}
@@ -576,9 +582,9 @@ window.addDay = function() {
       const prev = lastDay.trials[m.id];
       if (prev && prev.reversal) day.trials[m.id].reversal = true;
     }
-    // Auto-set reward from Day 0 preference
-    const d0reward = getDay0Reward(c, m.id);
-    if (d0reward) day.trials[m.id].reward = d0reward;
+    // Auto-set reward = opposite of Day 0 preference
+    const rewardSide = getRewardSide(c, m.id);
+    if (rewardSide) day.trials[m.id].reward = rewardSide;
   });
   c.days.push(day);
   activeDay = c.days.length - 1;
@@ -668,8 +674,8 @@ window.switchDay = function(i) {
   renderDayContent();
 };
 
-// Auto-calculate preferred side from Day 0 trials (majority side = reward for all future days)
-// On a 4-4 tie, T9 is the tiebreaker
+// Auto-calculate the PREFERRED side from Day 0 trials (majority of L/R).
+// On a 4-4 tie, T9 is the tiebreaker. U trials are ignored.
 function getDay0Reward(cohort, mouseId) {
   const day0 = cohort.days.find(d => d.day === 0);
   if (!day0) return '';
@@ -683,6 +689,23 @@ function getDay0Reward(cohort, mouseId) {
     return t9 === 'L' || t9 === 'R' ? t9 : '';
   }
   return L > R ? 'L' : 'R';
+}
+
+// Reward side is the OPPOSITE of the Day-0 preferred side — the mouse must learn against its bias.
+function getRewardSide(cohort, mouseId) {
+  const pref = getDay0Reward(cohort, mouseId);
+  if (pref === 'L') return 'R';
+  if (pref === 'R') return 'L';
+  return '';
+}
+
+// A mouse that has 3+ unfinished (U) trials on Day 0 couldn't perform the test at all.
+function failedDay0(cohort, mouseId) {
+  const day0 = cohort.days.find(d => d.day === 0);
+  if (!day0) return false;
+  const t = day0.trials[mouseId];
+  if (!t) return false;
+  return t.trials.filter(x => x === 'U').length >= 3;
 }
 
 function renderDayContent() {
@@ -717,7 +740,8 @@ function renderTrialDay(c, day, el) {
         ? `<input type="date" class="day-date-input" value="${day.date}" onchange="setDay0Date(this.value)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;color:var(--text);font-size:12px;font-family:'Outfit',sans-serif">`
         : `<span class="day-date">${displayDate}</span>`}
     </div>
-    ${isDay0 ? '<p style="font-size:12px;color:var(--muted);margin-bottom:14px">Record 8 trials per mouse. The majority side is auto-calculated as the <strong style="color:var(--text)">preferred (reward) side</strong> for all subsequent days. A 9th trial appears automatically on 4-4 ties.</p>' : ''}
+    <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Tap a cell to cycle <strong style="color:var(--left)">L</strong> → <strong style="color:var(--right)">R</strong> → <strong style="color:var(--muted)">U</strong> (unable to finish in 2:30) → blank. U is excluded from accuracy.</p>
+    ${isDay0 ? '<p style="font-size:12px;color:var(--muted);margin-bottom:14px">Record 8 trials per mouse. The majority side is the <strong style="color:var(--text)">preferred side</strong>; the <strong style="color:var(--text)">opposite side</strong> becomes the reward side for all subsequent days. A 9th trial appears automatically on 4-4 ties.</p>' : ''}
     <div style="overflow-x:auto">
     <table class="trial-table">
       <thead><tr>
@@ -735,6 +759,12 @@ function renderTrialDay(c, day, el) {
   c.mice.forEach(m => {
     const t = day.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '', reversal: false };
     const isRev = t.reversal;
+    const uCount = t.trials.filter(x => x === 'U').length;
+    const day0Failed = !isDay0 && failedDay0(c, m.id);
+    const failed = uCount >= 3 || day0Failed;
+    const failTitle = day0Failed
+      ? 'Failed Day 0 — unable to perform the T-maze'
+      : `${uCount} unfinished trials — failed T-maze this day`;
 
     // Determine reward side
     let reward;
@@ -742,15 +772,15 @@ function renderTrialDay(c, day, el) {
       // Auto-calculate from this day's trials
       reward = getDay0Reward(c, m.id);
     } else {
-      // Use Day 0 preference if available, else fall back to manual
-      const day0Reward = getDay0Reward(c, m.id);
-      reward = day0Reward || t.reward;
+      // Reward = opposite of Day 0 preference if available, else fall back to manual
+      const rewardSide = getRewardSide(c, m.id);
+      reward = rewardSide || t.reward;
     }
 
     // Accuracy (not shown for Day 0 — there's no "correct" side yet)
     let correct = 0, total = 0;
     if (!isDay0) {
-      t.trials.forEach(tr => { if (tr) { total++; if (tr === reward) correct++; } });
+      t.trials.forEach(tr => { if (tr === 'L' || tr === 'R') { total++; if (tr === reward) correct++; } });
     }
     const pct = total > 0 ? Math.round((correct / total) * 100) : '';
     const pctClass = pct === '' ? '' : (pct >= 75 ? 'accuracy-high' : pct >= 50 ? 'accuracy-mid' : 'accuracy-low');
@@ -759,8 +789,8 @@ function renderTrialDay(c, day, el) {
     const weightWarn = checkWeightWarning(c, m.id, activeDay);
     const wCls = weightWarn ? ' weight-warn' : '';
 
-    html += `<tr>
-      <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}${isRev ? ' <span class="phase-badge phase-reversal">R</span>' : ''}</td>
+    html += `<tr${failed ? ' class="mouse-failed"' : ''}>
+      <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}${isRev ? ' <span class="phase-badge phase-reversal">R</span>' : ''}${failed ? ` <span class="fail-badge" title="${failTitle}">FAIL</span>` : ''}</td>
       <td style="font-size:11px;color:var(--muted)">${esc(m.genotype)}</td>
       <td><input class="weight-input${wCls}" value="${esc(String(t.weight || ''))}" onchange="setWeight('${m.id}',this.value)" title="${weightWarn || ''}"></td>`;
 
@@ -774,7 +804,9 @@ function renderTrialDay(c, day, el) {
       const tr = t.trials[i];
       let cls = 'cell-empty';
       if (tr) {
-        if (isDay0) {
+        if (tr === 'U') {
+          cls = 'cell-U';
+        } else if (isDay0) {
           cls = 'cell-' + tr;
         } else {
           cls = (reward && tr === reward) ? 'cell-correct' : (reward ? 'cell-wrong' : 'cell-' + tr);
@@ -800,7 +832,7 @@ function renderTrialDay(c, day, el) {
     } else {
       const day0Reward = getDay0Reward(c, m.id);
       if (day0Reward) {
-        html += `<td><span class="cell-toggle cell-${reward} reward-locked" title="Set from Day 0 preference">${reward}</span></td>`;
+        html += `<td><span class="cell-toggle cell-${reward} reward-locked" title="Reward = opposite of Day 0 preference">${reward}</span></td>`;
       } else {
         html += `<td><span class="cell-toggle cell-${reward || 'empty'}" onclick="toggleReward('${m.id}')">${reward || '-'}</span></td>`;
       }
@@ -886,7 +918,8 @@ window.toggleTrial = function(mouseId, trialIdx) {
   const t = day.trials[mouseId];
   const val = t.trials[trialIdx];
   if (val === 'L') t.trials[trialIdx] = 'R';
-  else if (val === 'R') t.trials[trialIdx] = '';
+  else if (val === 'R') t.trials[trialIdx] = 'U';
+  else if (val === 'U') t.trials[trialIdx] = '';
   else t.trials[trialIdx] = 'L';
   saveLocal();
   renderDayContent();
@@ -1061,7 +1094,7 @@ window.exportCSV = function() {
   c.days.forEach(d => {
     if (d.day === 0) return; // skip Day 0 preference test
     c.mice.forEach(m => {
-      const reward = getDay0Reward(c, m.id) || (d.trials[m.id] && d.trials[m.id].reward) || '';
+      const reward = getRewardSide(c, m.id) || (d.trials[m.id] && d.trials[m.id].reward) || '';
       if (reward) {
         metaTrials += `DAY${d.day},${m.id},${reward}\n`;
       }
@@ -1079,9 +1112,9 @@ window.exportCSV = function() {
   c.days.forEach(d => {
     c.mice.forEach(m => {
       const t = d.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '' };
-      const reward = d.day === 0 ? getDay0Reward(c, m.id) : (getDay0Reward(c, m.id) || t.reward);
+      const reward = d.day === 0 ? getDay0Reward(c, m.id) : (getRewardSide(c, m.id) || t.reward);
       let correct = 0, total = 0;
-      if (d.day > 0) { for (let i = 0; i < 8; i++) { const tr = t.trials[i]; if (tr) { total++; if (tr === reward) correct++; } } }
+      if (d.day > 0) { for (let i = 0; i < 8; i++) { const tr = t.trials[i]; if (tr === 'L' || tr === 'R') { total++; if (tr === reward) correct++; } } }
       const pct = total > 0 ? Math.round((correct / total) * 100) : '';
       const phase = d.day === 0 ? 'preference' : (t.reversal ? 'reversal' : 'learning');
       const t8 = t.trials.slice(0, 8).map(v => v || '').join(',');
