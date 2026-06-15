@@ -78,7 +78,7 @@
           "genotype": "tau"
         },
         {
-          "id": "M6",
+          "id": "15415",
           "sex": "M",
           "genotype": "tau"
         },
@@ -221,9 +221,25 @@
                 "L",
                 "L",
                 "R",
-                ""
+                "R"
               ],
               "weight": "30.43",
+              "notes": "",
+              "reversal": false
+            },
+            "15415": {
+              "reward": "",
+              "trials": [
+                "R",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "36.50",
               "notes": "",
               "reversal": false
             },
@@ -340,22 +356,6 @@
               ],
               "weight": "31.00",
               "notes": "Left eye",
-              "reversal": false
-            },
-            "M6": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
               "reversal": false
             },
             "M7": {
@@ -550,6 +550,21 @@
               "weight": "",
               "notes": ""
             },
+            "15415": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "15421": {
               "reward": "",
               "trials": [
@@ -641,21 +656,6 @@
               "notes": ""
             },
             "15430": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "M6": {
               "reward": "",
               "trials": [
                 "",
@@ -857,6 +857,21 @@
               "weight": "",
               "notes": ""
             },
+            "15415": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "15421": {
               "reward": "",
               "trials": [
@@ -948,21 +963,6 @@
               "notes": ""
             },
             "15430": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "M6": {
               "reward": "",
               "trials": [
                 "",
@@ -1164,6 +1164,21 @@
               "weight": "",
               "notes": ""
             },
+            "15415": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "15421": {
               "reward": "",
               "trials": [
@@ -1255,21 +1270,6 @@
               "notes": ""
             },
             "15430": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "M6": {
               "reward": "",
               "trials": [
                 "",
@@ -1477,6 +1477,22 @@
               "notes": "",
               "reversal": false
             },
+            "15415": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15421": {
               "reward": "",
               "trials": [
@@ -1590,22 +1606,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M6": {
               "reward": "",
               "trials": [
                 "",
@@ -1803,6 +1803,22 @@
               "notes": "",
               "reversal": false
             },
+            "15415": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15421": {
               "reward": "",
               "trials": [
@@ -1916,22 +1932,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M6": {
               "reward": "",
               "trials": [
                 "",
@@ -2129,6 +2129,22 @@
               "notes": "",
               "reversal": false
             },
+            "15415": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15421": {
               "reward": "",
               "trials": [
@@ -2242,22 +2258,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M6": {
               "reward": "",
               "trials": [
                 "",
@@ -2455,6 +2455,22 @@
               "notes": "",
               "reversal": false
             },
+            "15415": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15421": {
               "reward": "",
               "trials": [
@@ -2568,22 +2584,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M6": {
               "reward": "",
               "trials": [
                 "",
@@ -2781,6 +2781,22 @@
               "notes": "",
               "reversal": false
             },
+            "15415": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15421": {
               "reward": "",
               "trials": [
@@ -2894,22 +2910,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M6": {
               "reward": "",
               "trials": [
                 "",
@@ -3107,6 +3107,22 @@
               "notes": "",
               "reversal": false
             },
+            "15415": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15421": {
               "reward": "",
               "trials": [
@@ -3220,22 +3236,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M6": {
               "reward": "",
               "trials": [
                 "",
@@ -3433,6 +3433,22 @@
               "notes": "",
               "reversal": false
             },
+            "15415": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15421": {
               "reward": "",
               "trials": [
@@ -3546,22 +3562,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M6": {
               "reward": "",
               "trials": [
                 "",
@@ -3759,6 +3759,22 @@
               "notes": "",
               "reversal": false
             },
+            "15415": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15421": {
               "reward": "",
               "trials": [
@@ -3872,22 +3888,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M6": {
               "reward": "",
               "trials": [
                 "",
@@ -4085,6 +4085,22 @@
               "notes": "",
               "reversal": false
             },
+            "15415": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15421": {
               "reward": "",
               "trials": [
@@ -4198,22 +4214,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M6": {
               "reward": "",
               "trials": [
                 "",
