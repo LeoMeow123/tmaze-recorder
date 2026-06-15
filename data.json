@@ -38,6 +38,21 @@
           "genotype": "tau"
         },
         {
+          "id": "M2",
+          "sex": "M",
+          "genotype": "tau"
+        },
+        {
+          "id": "M3",
+          "sex": "M",
+          "genotype": "tau"
+        },
+        {
+          "id": "M4",
+          "sex": "M",
+          "genotype": "tau"
+        },
+        {
           "id": "F6",
           "sex": "F",
           "genotype": "tau"
@@ -60,21 +75,6 @@
         {
           "id": "F10",
           "sex": "F",
-          "genotype": "tau"
-        },
-        {
-          "id": "M2",
-          "sex": "M",
-          "genotype": "tau"
-        },
-        {
-          "id": "M3",
-          "sex": "M",
-          "genotype": "tau"
-        },
-        {
-          "id": "M4",
-          "sex": "M",
           "genotype": "tau"
         },
         {
@@ -202,9 +202,9 @@
                 "L",
                 "L",
                 "L",
-                "",
-                "",
-                "",
+                "R",
+                "R",
+                "L",
                 ""
               ],
               "weight": "36.05",
