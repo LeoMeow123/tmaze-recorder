@@ -88,6 +88,11 @@
           "genotype": "tau"
         },
         {
+          "id": "M11",
+          "sex": "M",
+          "genotype": "tau"
+        },
+        {
           "id": "15414",
           "sex": "M",
           "genotype": "tau"
@@ -100,11 +105,6 @@
         {
           "id": "F10",
           "sex": "F",
-          "genotype": "tau"
-        },
-        {
-          "id": "M10",
-          "sex": "M",
           "genotype": "tau"
         }
       ],
@@ -224,6 +224,22 @@
                 "R"
               ],
               "weight": "30.43",
+              "notes": "",
+              "reversal": false
+            },
+            "15413": {
+              "reward": "",
+              "trials": [
+                "R",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "37.80",
               "notes": "",
               "reversal": false
             },
@@ -390,22 +406,6 @@
               "notes": "Left eye",
               "reversal": false
             },
-            "M10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
             "F10": {
               "reward": "",
               "trials": [
@@ -520,6 +520,21 @@
               "notes": ""
             },
             "15412": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
+            "15413": {
               "reward": "",
               "trials": [
                 "",
@@ -670,21 +685,6 @@
               "notes": ""
             },
             "15430": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "M10": {
               "reward": "",
               "trials": [
                 "",
@@ -826,6 +826,21 @@
               "weight": "",
               "notes": ""
             },
+            "15413": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
             "15414": {
               "reward": "",
               "trials": [
@@ -976,21 +991,6 @@
               "weight": "",
               "notes": ""
             },
-            "M10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
             "F10": {
               "reward": "",
               "trials": [
@@ -1104,6 +1104,21 @@
               "notes": ""
             },
             "15412": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": ""
+            },
+            "15413": {
               "reward": "",
               "trials": [
                 "",
@@ -1254,21 +1269,6 @@
               "notes": ""
             },
             "15430": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": ""
-            },
-            "M10": {
               "reward": "",
               "trials": [
                 "",
@@ -1416,6 +1416,22 @@
               "notes": "",
               "reversal": false
             },
+            "15413": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15414": {
               "reward": "",
               "trials": [
@@ -1577,22 +1593,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M10": {
               "reward": "",
               "trials": [
                 "",
@@ -1726,6 +1726,22 @@
               "notes": "",
               "reversal": false
             },
+            "15413": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15414": {
               "reward": "",
               "trials": [
@@ -1887,22 +1903,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M10": {
               "reward": "",
               "trials": [
                 "",
@@ -2036,6 +2036,22 @@
               "notes": "",
               "reversal": false
             },
+            "15413": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15414": {
               "reward": "",
               "trials": [
@@ -2197,22 +2213,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M10": {
               "reward": "",
               "trials": [
                 "",
@@ -2346,6 +2346,22 @@
               "notes": "",
               "reversal": false
             },
+            "15413": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15414": {
               "reward": "",
               "trials": [
@@ -2507,22 +2523,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M10": {
               "reward": "",
               "trials": [
                 "",
@@ -2656,6 +2656,22 @@
               "notes": "",
               "reversal": false
             },
+            "15413": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15414": {
               "reward": "",
               "trials": [
@@ -2817,22 +2833,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M10": {
               "reward": "",
               "trials": [
                 "",
@@ -2966,6 +2966,22 @@
               "notes": "",
               "reversal": false
             },
+            "15413": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15414": {
               "reward": "",
               "trials": [
@@ -3127,22 +3143,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M10": {
               "reward": "",
               "trials": [
                 "",
@@ -3276,6 +3276,22 @@
               "notes": "",
               "reversal": false
             },
+            "15413": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15414": {
               "reward": "",
               "trials": [
@@ -3437,22 +3453,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M10": {
               "reward": "",
               "trials": [
                 "",
@@ -3586,6 +3586,22 @@
               "notes": "",
               "reversal": false
             },
+            "15413": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15414": {
               "reward": "",
               "trials": [
@@ -3747,22 +3763,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M10": {
               "reward": "",
               "trials": [
                 "",
@@ -3896,6 +3896,22 @@
               "notes": "",
               "reversal": false
             },
+            "15413": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
             "15414": {
               "reward": "",
               "trials": [
@@ -4057,22 +4073,6 @@
               "reversal": false
             },
             "F10": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M10": {
               "reward": "",
               "trials": [
                 "",
