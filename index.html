@@ -710,6 +710,26 @@ function failedDay0(cohort, mouseId) {
   return t.trials.filter(x => x === 'U').length >= 3;
 }
 
+// A day (Day 1+) is a "fail day" when the mouse has 3+ unfinished (U) trials.
+function isFailDay(day, mouseId) {
+  if (day.day < 1) return false;
+  const t = day.trials[mouseId];
+  return !!t && t.trials.filter(x => x === 'U').length >= 3;
+}
+
+// Day 1+ permanent exclusion: a single fail day keeps the mouse in the study;
+// it is excluded only once it hits 3 consecutive fail days, from that day onward.
+function excludedByStreak(cohort, mouseId, dayIdx) {
+  const days = cohort.days;
+  let streak = 0;
+  for (let i = 0; i < days.length; i++) {
+    if (days[i].day < 1) continue; // Day 0 has its own rule
+    streak = isFailDay(days[i], mouseId) ? streak + 1 : 0;
+    if (streak >= 3) return dayIdx >= i; // excluded from the 3rd-fail day on
+  }
+  return false;
+}
+
 function renderDayContent() {
   const c = currentCohort();
   if (!c || activeDay == null) return;
@@ -763,16 +783,18 @@ function renderTrialDay(c, day, el) {
     const t = day.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '', reversal: false };
     const isRev = t.reversal;
     const uCount = t.trials.filter(x => x === 'U').length;
-    const day0Failed = !isDay0 && failedDay0(c, m.id);
     const cond = m.condition || 'healthy';
     const condExcluded = !isDay0 && (cond === 'disease' || cond === 'missing');
-    const failed = uCount >= 3 || day0Failed || condExcluded;
-    const failTitle = condExcluded
-      ? `Marked ${cond} on Day 0 — excluded from testing`
-      : day0Failed
-        ? 'Failed Day 0 — unable to perform the T-maze'
-        : `${uCount} unfinished trials — failed T-maze this day`;
-    const badgeLabel = condExcluded ? cond.toUpperCase() : 'FAIL';
+    const day0Failed = !isDay0 && failedDay0(c, m.id);
+    const streakExcluded = !isDay0 && excludedByStreak(c, m.id, activeDay);
+    const thisDayFail = uCount >= 3;
+    const failed = condExcluded || day0Failed || streakExcluded || thisDayFail;
+    // Permanent exclusions take priority over a single failed day.
+    let badgeLabel = '', failTitle = '';
+    if (condExcluded) { badgeLabel = cond.toUpperCase(); failTitle = `Marked ${cond} on Day 0 — excluded from testing`; }
+    else if (day0Failed) { badgeLabel = 'OUT'; failTitle = 'Failed Day 0 — unable to perform the T-maze'; }
+    else if (streakExcluded) { badgeLabel = 'OUT'; failTitle = '3 consecutive failed days — excluded from testing'; }
+    else if (thisDayFail) { badgeLabel = 'FAIL'; failTitle = `${uCount} unfinished trials — failed this day (kept in study)`; }
 
     // Determine reward side
     let reward;
