@@ -80,6 +80,8 @@
   .fail-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;margin-left:6px;background:rgba(122,127,148,0.2);color:var(--muted)}
   .cond-input{background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--text);font-size:11px;font-family:'Outfit',sans-serif;outline:none}
   .cond-input:focus{border-color:var(--accent)}
+  .cond-input:disabled,.weight-input:disabled,.notes-input:disabled{opacity:0.6;cursor:not-allowed}
+  .lock-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;background:rgba(52,211,153,0.12);color:var(--green);margin-left:8px}
   .accuracy-cell{font-family:'DM Mono',monospace;font-weight:600;font-size:12px}
   .accuracy-high{color:var(--green)}
   .accuracy-mid{color:var(--yellow)}
@@ -611,6 +613,7 @@ window.insertDay0 = function() {
 window.markReversal = function() {
   const c = currentCohort();
   if (!c || activeDay == null) return;
+  if (activeDayLocked()) { alert('This day is finished (locked). Unlock it first to change reversal.'); return; }
   const day = c.days[activeDay];
   // Show a quick checklist of mice to toggle reversal
   const html = c.mice.map(m => {
@@ -639,6 +642,7 @@ window.markReversal = function() {
 window.applyReversal = function() {
   const c = currentCohort();
   if (!c || activeDay == null) return;
+  if (activeDayLocked()) return;
   const day = c.days[activeDay];
   document.querySelectorAll('#reversalPicker input[type=checkbox]').forEach(cb => {
     const mouseId = cb.dataset.mouse;
@@ -661,7 +665,8 @@ function renderDayTabs() {
     const hasReversal = c.mice.some(m => d.trials[m.id]?.reversal);
     const isDay0 = d.day === 0;
     const cls = (i === activeDay ? ' active' : '') + (hasReversal ? ' reversal' : '');
-    const label = isDay0 ? 'Day 0 (Pref)' : `Day ${d.day}${hasReversal ? ' (R)' : ''}`;
+    const lock = d.locked ? ' 🔒' : '';
+    const label = (isDay0 ? 'Day 0 (Pref)' : `Day ${d.day}${hasReversal ? ' (R)' : ''}`) + lock;
     return `<button class="day-tab${cls}" onclick="switchDay(${i})">${label}</button>`;
   }).join('');
   // Weights tab
@@ -750,17 +755,25 @@ function renderDayContent() {
 
 function renderTrialDay(c, day, el) {
   const isDay0 = day.day === 0;
+  const locked = !!day.locked;
   const dayLabel = isDay0 ? 'Day 0 — Preference Test' : `Day ${day.day}`;
 
   // Show computed date from Day 0 for non-Day-0 days
   const displayDate = isDay0 ? day.date : (dayDate(c, day.day) || day.date);
 
+  const dateHtml = isDay0
+    ? (locked
+        ? `<span class="day-date">${day.date}</span>`
+        : `<input type="date" class="day-date-input" value="${day.date}" onchange="setDay0Date(this.value)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;color:var(--text);font-size:12px;font-family:'Outfit',sans-serif">`)
+    : `<span class="day-date">${displayDate}</span>`;
+  const lockHtml = locked
+    ? `<button class="btn btn-secondary btn-sm" onclick="unlockDay()">Unlock</button>`
+    : `<button class="btn btn-green btn-sm" onclick="finishDay()">Finish Day</button>`;
+
   let html = `<div class="day-panel">
     <div class="day-header">
-      <h3>${dayLabel}</h3>
-      ${isDay0
-        ? `<input type="date" class="day-date-input" value="${day.date}" onchange="setDay0Date(this.value)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;color:var(--text);font-size:12px;font-family:'Outfit',sans-serif">`
-        : `<span class="day-date">${displayDate}</span>`}
+      <h3>${dayLabel}${locked ? ' <span class="lock-badge">🔒 Locked</span>' : ''}</h3>
+      <div style="display:flex;align-items:center;gap:10px">${dateHtml}${lockHtml}</div>
     </div>
     <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Tap a cell to cycle <strong style="color:var(--left)">L</strong> → <strong style="color:var(--right)">R</strong> → <strong style="color:var(--muted)">U</strong> (unable to finish in 2:30) → blank. U is excluded from accuracy.</p>
     ${isDay0 ? '<p style="font-size:12px;color:var(--muted);margin-bottom:14px">Record 8 trials per mouse. The majority side is the <strong style="color:var(--text)">preferred side</strong>; the <strong style="color:var(--text)">opposite side</strong> becomes the reward side for all subsequent days. A 9th trial appears automatically on 4-4 ties.</p>' : ''}
@@ -821,13 +834,13 @@ function renderTrialDay(c, day, el) {
 
     html += `<tr${failed ? ' class="mouse-failed"' : ''}>
       <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}${isRev ? ' <span class="phase-badge phase-reversal">R</span>' : ''}${failed ? ` <span class="fail-badge" title="${failTitle}">${badgeLabel}</span>` : ''}</td>
-      ${isDay0 ? `<td><select class="cond-input" onchange="setCondition('${m.id}',this.value)">
+      ${isDay0 ? `<td><select class="cond-input" onchange="setCondition('${m.id}',this.value)"${locked ? ' disabled' : ''}>
         <option value="healthy"${cond === 'healthy' ? ' selected' : ''}>Healthy</option>
         <option value="missing"${cond === 'missing' ? ' selected' : ''}>Missing</option>
         <option value="disease"${cond === 'disease' ? ' selected' : ''}>Disease</option>
       </select></td>` : ''}
       <td style="font-size:11px;color:var(--muted)">${esc(m.genotype)}</td>
-      <td><input class="weight-input${wCls}" value="${esc(String(t.weight || ''))}" onchange="setWeight('${m.id}',this.value)" title="${weightWarn || ''}"></td>`;
+      <td><input class="weight-input${wCls}" value="${esc(String(t.weight || ''))}" onchange="setWeight('${m.id}',this.value)" title="${weightWarn || ''}"${locked ? ' disabled' : ''}></td>`;
 
     // Trial cells
     // Check if first 8 trials are a 4-4 tie (for Day 0 T9 visibility)
@@ -847,14 +860,14 @@ function renderTrialDay(c, day, el) {
           cls = (reward && tr === reward) ? 'cell-correct' : (reward ? 'cell-wrong' : 'cell-' + tr);
         }
       }
-      html += `<td><span class="cell-toggle ${cls}" onclick="toggleTrial('${m.id}',${i})">${tr || '-'}</span></td>`;
+      html += `<td><span class="cell-toggle ${cls}"${locked ? ' style="cursor:default"' : ` onclick="toggleTrial('${m.id}',${i})"`}>${tr || '-'}</span></td>`;
     }
     // T9 tiebreaker column on Day 0
     if (isDay0) {
       const tr9 = t.trials[8] || '';
       if (isTied) {
         const cls9 = tr9 ? 'cell-' + tr9 : 'cell-empty';
-        html += `<td><span class="cell-toggle ${cls9}" onclick="toggleTrial('${m.id}',8)">${tr9 || '-'}</span></td>`;
+        html += `<td><span class="cell-toggle ${cls9}"${locked ? ' style="cursor:default"' : ` onclick="toggleTrial('${m.id}',8)"`}>${tr9 || '-'}</span></td>`;
       } else {
         html += `<td><span class="cell-toggle cell-empty" style="opacity:0.3;cursor:default">${tr9 || '·'}</span></td>`;
       }
@@ -869,12 +882,12 @@ function renderTrialDay(c, day, el) {
       if (day0Reward) {
         html += `<td><span class="cell-toggle cell-${reward} reward-locked" title="Reward = opposite of Day 0 preference">${reward}</span></td>`;
       } else {
-        html += `<td><span class="cell-toggle cell-${reward || 'empty'}" onclick="toggleReward('${m.id}')">${reward || '-'}</span></td>`;
+        html += `<td><span class="cell-toggle cell-${reward || 'empty'}"${locked ? ' style="cursor:default"' : ` onclick="toggleReward('${m.id}')"`}>${reward || '-'}</span></td>`;
       }
     }
 
     html += `<td class="accuracy-cell ${pctClass}">${pct !== '' ? pct + '%' : ''}</td>`;
-    html += `<td><input class="notes-input" value="${esc(String(t.notes || ''))}" onchange="setNotes('${m.id}',this.value)" placeholder="..."></td>`;
+    html += `<td><input class="notes-input" value="${esc(String(t.notes || ''))}" onchange="setNotes('${m.id}',this.value)" placeholder="..."${locked ? ' disabled' : ''}></td>`;
     html += `</tr>`;
   });
 
@@ -935,7 +948,37 @@ function renderWeightsSheet(c, el) {
 // =====================================================================
 // TRIAL INTERACTIONS
 // =====================================================================
+// True when the currently viewed day has been finished (locked).
+function activeDayLocked() {
+  const c = currentCohort();
+  if (!c || activeDay === 'weights' || activeDay == null) return false;
+  const day = c.days[activeDay];
+  return !!(day && day.locked);
+}
+
+window.finishDay = function() {
+  const c = currentCohort();
+  if (!c || activeDay === 'weights' || activeDay == null) return;
+  const day = c.days[activeDay];
+  if (!day) return;
+  day.locked = true;
+  saveLocal();
+  renderDayContent();
+};
+
+window.unlockDay = function() {
+  const c = currentCohort();
+  if (!c || activeDay === 'weights' || activeDay == null) return;
+  const day = c.days[activeDay];
+  if (!day) return;
+  if (!confirm('Unlock this day for editing? It was finished to prevent accidental changes.')) return;
+  day.locked = false;
+  saveLocal();
+  renderDayContent();
+};
+
 window.toggleReward = function(mouseId) {
+  if (activeDayLocked()) return;
   const c = currentCohort();
   const day = c.days[activeDay];
   const t = day.trials[mouseId];
@@ -948,6 +991,7 @@ window.toggleReward = function(mouseId) {
 
 
 window.toggleTrial = function(mouseId, trialIdx) {
+  if (activeDayLocked()) return;
   const c = currentCohort();
   const day = c.days[activeDay];
   const t = day.trials[mouseId];
@@ -961,6 +1005,7 @@ window.toggleTrial = function(mouseId, trialIdx) {
 };
 
 window.setWeight = function(mouseId, val) {
+  if (activeDayLocked()) return;
   const c = currentCohort();
   const day = c.days[activeDay];
   day.trials[mouseId].weight = val.trim();
@@ -970,6 +1015,7 @@ window.setWeight = function(mouseId, val) {
 };
 
 window.setNotes = function(mouseId, val) {
+  if (activeDayLocked()) return;
   const c = currentCohort();
   const day = c.days[activeDay];
   day.trials[mouseId].notes = val;
@@ -977,6 +1023,7 @@ window.setNotes = function(mouseId, val) {
 };
 
 window.setCondition = function(mouseId, val) {
+  if (activeDayLocked()) return;
   const c = currentCohort();
   if (!c) return;
   const m = c.mice.find(x => x.id === mouseId);
@@ -986,6 +1033,7 @@ window.setCondition = function(mouseId, val) {
 };
 
 window.setDay0Date = function(val) {
+  if (activeDayLocked()) return;
   const c = currentCohort();
   if (!c) return;
   const day0 = c.days.find(d => d.day === 0);
