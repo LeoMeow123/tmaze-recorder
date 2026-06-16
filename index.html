@@ -1206,7 +1206,8 @@ function download(filename, text) {
   const blob = new Blob([text], { type: 'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = filename.replace(/\s+/g, '_');
+  // Prefix with the local (Pacific) date so daily exports don't collide.
+  a.download = (localDate() + '_' + filename).replace(/\s+/g, '_');
   a.click();
 }
 
