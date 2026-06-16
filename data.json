@@ -425,7 +425,8 @@
               "notes": "Missing ",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         },
         {
           "day": 1,
@@ -717,7 +718,8 @@
               "weight": "",
               "notes": ""
             }
-          }
+          },
+          "locked": true
         },
         {
           "day": 2,
