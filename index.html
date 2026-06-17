@@ -82,6 +82,7 @@
   .cond-input:focus{border-color:var(--accent)}
   .cond-input:disabled,.weight-input:disabled,.notes-input:disabled{opacity:0.6;cursor:not-allowed}
   .lock-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;background:rgba(52,211,153,0.12);color:var(--green);margin-left:8px}
+  .learn-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;background:rgba(52,211,153,0.18);color:var(--green);margin-left:6px}
   .accuracy-cell{font-family:'DM Mono',monospace;font-weight:600;font-size:12px}
   .accuracy-high{color:var(--green)}
   .accuracy-mid{color:var(--yellow)}
@@ -735,6 +736,33 @@ function excludedByStreak(cohort, mouseId, dayIdx) {
   return false;
 }
 
+// Learning criterion: 6+ correct (rewarded-side) choices on 2 consecutive
+// experiment days (Day 1+).
+const LEARN_MIN_CORRECT = 6, LEARN_DAYS = 2;
+
+function correctCount(cohort, day, mouseId) {
+  if (day.day < 1) return 0;
+  const t = day.trials[mouseId];
+  if (!t) return 0;
+  const reward = getRewardSide(cohort, mouseId) || t.reward;
+  if (!reward) return 0;
+  let correct = 0;
+  for (let i = 0; i < 8; i++) { if (t.trials[i] === reward) correct++; }
+  return correct;
+}
+
+// True for every day at/after the criterion is first met.
+function reachedCriterion(cohort, mouseId, dayIdx) {
+  const days = cohort.days;
+  let streak = 0;
+  for (let i = 0; i < days.length; i++) {
+    if (days[i].day < 1) continue;
+    streak = correctCount(cohort, days[i], mouseId) >= LEARN_MIN_CORRECT ? streak + 1 : 0;
+    if (streak >= LEARN_DAYS) return dayIdx >= i;
+  }
+  return false;
+}
+
 function renderDayContent() {
   const c = currentCohort();
   if (!c || activeDay == null) return;
@@ -808,6 +836,7 @@ function renderTrialDay(c, day, el) {
     else if (day0Failed) { badgeLabel = 'OUT'; failTitle = 'Failed Day 0 — unable to perform the T-maze'; }
     else if (streakExcluded) { badgeLabel = 'OUT'; failTitle = '3 consecutive failed days — excluded from testing'; }
     else if (thisDayFail) { badgeLabel = 'FAIL'; failTitle = `${uCount} unfinished trials — failed this day (kept in study)`; }
+    const learned = !isDay0 && reachedCriterion(c, m.id, activeDay);
 
     // Determine reward side
     let reward;
@@ -833,7 +862,7 @@ function renderTrialDay(c, day, el) {
     const wCls = weightWarn ? ' weight-warn' : '';
 
     html += `<tr${failed ? ' class="mouse-failed"' : ''}>
-      <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}${isRev ? ' <span class="phase-badge phase-reversal">R</span>' : ''}${failed ? ` <span class="fail-badge" title="${failTitle}">${badgeLabel}</span>` : ''}</td>
+      <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}${isRev ? ' <span class="phase-badge phase-reversal">R</span>' : ''}${failed ? ` <span class="fail-badge" title="${failTitle}">${badgeLabel}</span>` : ''}${learned ? ` <span class="learn-badge" title="Reached criterion: ${LEARN_MIN_CORRECT}+ correct on ${LEARN_DAYS} consecutive days">LEARNED ✓</span>` : ''}</td>
       ${isDay0 ? `<td><select class="cond-input" onchange="setCondition('${m.id}',this.value)"${locked ? ' disabled' : ''}>
         <option value="healthy"${cond === 'healthy' ? ' selected' : ''}>Healthy</option>
         <option value="missing"${cond === 'missing' ? ' selected' : ''}>Missing</option>
@@ -1200,18 +1229,19 @@ window.exportCSV = function() {
   });
 
   // 3. Full trial data CSV
-  let trials = 'day,date,phase,mouse,condition,genotype,sex,weight,reward,T1,T2,T3,T4,T5,T6,T7,T8,T9,accuracy,notes\n';
-  c.days.forEach(d => {
+  let trials = 'day,date,phase,mouse,condition,genotype,sex,weight,reward,T1,T2,T3,T4,T5,T6,T7,T8,T9,accuracy,learned,notes\n';
+  c.days.forEach((d, di) => {
     c.mice.forEach(m => {
       const t = d.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '' };
       const reward = d.day === 0 ? getDay0Reward(c, m.id) : (getRewardSide(c, m.id) || t.reward);
       let correct = 0, total = 0;
       if (d.day > 0) { for (let i = 0; i < 8; i++) { const tr = t.trials[i]; if (tr === 'L' || tr === 'R') { total++; if (tr === reward) correct++; } } }
       const pct = total > 0 ? Math.round((correct / total) * 100) : '';
+      const learned = d.day > 0 && reachedCriterion(c, m.id, di) ? 'yes' : '';
       const phase = d.day === 0 ? 'preference' : (t.reversal ? 'reversal' : 'learning');
       const t8 = t.trials.slice(0, 8).map(v => v || '').join(',');
       const t9 = t.trials[8] || '';
-      trials += `DAY${d.day},${d.date},${phase},${m.id},${m.condition || 'healthy'},${m.genotype},${m.sex},${t.weight || ''},${reward || ''},${t8},${t9},${pct},${(t.notes || '').replace(/,/g, ';')}\n`;
+      trials += `DAY${d.day},${d.date},${phase},${m.id},${m.condition || 'healthy'},${m.genotype},${m.sex},${t.weight || ''},${reward || ''},${t8},${t9},${pct},${learned},${(t.notes || '').replace(/,/g, ';')}\n`;
     });
   });
 
