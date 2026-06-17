@@ -1011,7 +1011,8 @@
               "weight": "",
               "notes": ""
             }
-          }
+          },
+          "locked": true
         },
         {
           "day": 3,
