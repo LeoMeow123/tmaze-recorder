@@ -1480,8 +1480,8 @@
                 "L",
                 "R",
                 "R",
-                "",
-                ""
+                "L",
+                "L"
               ],
               "weight": "34.08",
               "notes": "",
@@ -1615,7 +1615,8 @@
               "notes": "",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         },
         {
           "day": 5,
