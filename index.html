@@ -83,6 +83,19 @@
   .cond-input:disabled,.weight-input:disabled,.notes-input:disabled{opacity:0.6;cursor:not-allowed}
   .lock-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;background:rgba(52,211,153,0.12);color:var(--green);margin-left:8px}
   .learn-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;background:rgba(52,211,153,0.18);color:var(--green);margin-left:6px}
+
+  /* Learned (criterion reached): positive green band, mouse is done for this cohort */
+  .trial-table tr.mouse-learned td{background:rgba(52,211,153,0.12)}
+  .trial-table tr.mouse-learned:hover td{background:rgba(52,211,153,0.18)}
+  .trial-table tr.mouse-learned td:first-child{box-shadow:inset 3px 0 0 var(--green)}
+
+  /* Fireworks celebration overlay */
+  .celebrate-overlay{position:fixed;inset:0;z-index:1000;pointer-events:none;overflow:hidden}
+  .celebrate-overlay canvas{width:100%;height:100%;display:block}
+  .celebrate-banner{position:absolute;top:32%;left:0;right:0;text-align:center;font-family:'Outfit',sans-serif;color:#fff;text-shadow:0 2px 24px rgba(0,0,0,0.75);animation:celebPop 0.5s ease-out}
+  .celebrate-title{font-size:38px;font-weight:800;margin-top:8px}
+  .celebrate-sub{font-size:15px;color:#cbd5e1;margin-top:6px}
+  @keyframes celebPop{from{transform:scale(0.6);opacity:0}to{transform:scale(1);opacity:1}}
   .accuracy-cell{font-family:'DM Mono',monospace;font-weight:600;font-size:12px}
   .accuracy-high{color:var(--green)}
   .accuracy-mid{color:var(--yellow)}
@@ -561,6 +574,8 @@ window.openCohort = function(id) {
   document.getElementById('view-recording').classList.add('active');
   document.getElementById('recordingTitle').textContent = c.name + ' (' + c.age + ')';
 
+  seedCelebrated(c); // don't replay past achievements when opening a cohort
+
   activeDay = c.days.length - 1;
   renderDayTabs();
   renderDayContent();
@@ -751,16 +766,22 @@ function correctCount(cohort, day, mouseId) {
   return correct;
 }
 
-// True for every day at/after the criterion is first met.
-function reachedCriterion(cohort, mouseId, dayIdx) {
+// Index into cohort.days where the criterion is first met, or -1 if never.
+function criterionDayIdx(cohort, mouseId) {
   const days = cohort.days;
   let streak = 0;
   for (let i = 0; i < days.length; i++) {
     if (days[i].day < 1) continue;
     streak = correctCount(cohort, days[i], mouseId) >= LEARN_MIN_CORRECT ? streak + 1 : 0;
-    if (streak >= LEARN_DAYS) return dayIdx >= i;
+    if (streak >= LEARN_DAYS) return i;
   }
-  return false;
+  return -1;
+}
+
+// True for every day at/after the criterion is first met.
+function reachedCriterion(cohort, mouseId, dayIdx) {
+  const idx = criterionDayIdx(cohort, mouseId);
+  return idx >= 0 && dayIdx >= idx;
 }
 
 function renderDayContent() {
@@ -820,6 +841,7 @@ function renderTrialDay(c, day, el) {
       </tr></thead>
       <tbody>`;
 
+  const newlyLearned = [];
   c.mice.forEach(m => {
     const t = day.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '', reversal: false };
     const isRev = t.reversal;
@@ -837,6 +859,12 @@ function renderTrialDay(c, day, el) {
     else if (streakExcluded) { badgeLabel = 'OUT'; failTitle = '3 consecutive failed days — excluded from testing'; }
     else if (thisDayFail) { badgeLabel = 'FAIL'; failTitle = `${uCount} unfinished trials — failed this day (kept in study)`; }
     const learned = !isDay0 && reachedCriterion(c, m.id, activeDay);
+    // A learned mouse (with no reversal phase) is done for this cohort — celebrate
+    // the day it crosses, then show a positive green band like the OUT band.
+    if (learned && criterionDayIdx(c, m.id) === activeDay) {
+      const key = m.id + ':' + activeDay;
+      if (!celebrated.has(key)) { celebrated.add(key); newlyLearned.push(m.id); }
+    }
 
     // Determine reward side
     let reward;
@@ -862,8 +890,9 @@ function renderTrialDay(c, day, el) {
     const weightWarn = checkWeightWarning(c, m.id, activeDay);
     const wCls = weightWarn ? ' weight-warn' : '';
 
-    html += `<tr${failed ? ' class="mouse-failed"' : ''}>
-      <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}${isRev ? ' <span class="phase-badge phase-reversal">R</span>' : ''}${failed ? ` <span class="fail-badge" title="${failTitle}">${badgeLabel}</span>` : ''}${learned ? ` <span class="learn-badge" title="Reached criterion: ${LEARN_MIN_CORRECT}+ correct on ${LEARN_DAYS} consecutive days">LEARNED ✓</span>` : ''}</td>
+    const rowClass = learned ? ' class="mouse-learned"' : (failed ? ' class="mouse-failed"' : '');
+    html += `<tr${rowClass}>
+      <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}${isRev ? ' <span class="phase-badge phase-reversal">R</span>' : ''}${!learned && failed ? ` <span class="fail-badge" title="${failTitle}">${badgeLabel}</span>` : ''}${learned ? ` <span class="learn-badge" title="Reached criterion: ${LEARN_MIN_CORRECT}+ correct on ${LEARN_DAYS} consecutive days — done for this cohort">LEARNED ✓</span>` : ''}</td>
       ${isDay0 ? `<td><select class="cond-input" onchange="setCondition('${m.id}',this.value)"${locked ? ' disabled' : ''}>
         <option value="healthy"${cond === 'healthy' ? ' selected' : ''}>Healthy</option>
         <option value="missing"${cond === 'missing' ? ' selected' : ''}>Missing</option>
@@ -923,6 +952,82 @@ function renderTrialDay(c, day, el) {
 
   html += `</tbody></table></div></div>`;
   el.innerHTML = html;
+
+  if (newlyLearned.length) celebrate(newlyLearned);
+}
+
+// =====================================================================
+// LEARNING CELEBRATION (full-screen fireworks)
+// =====================================================================
+// Session-only set of "mouseId:dayIdx" already celebrated, so the fireworks
+// fire once per achievement and not on every re-render or revisit.
+const celebrated = new Set();
+
+// Mark all already-achieved criteria so opening a cohort doesn't replay old
+// celebrations — only live crossings during recording fire.
+function seedCelebrated(cohort) {
+  cohort.mice.forEach(m => {
+    const idx = criterionDayIdx(cohort, m.id);
+    if (idx >= 0) celebrated.add(m.id + ':' + idx);
+  });
+}
+
+function celebrate(names) {
+  const overlay = document.createElement('div');
+  overlay.className = 'celebrate-overlay';
+  const canvas = document.createElement('canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  overlay.appendChild(canvas);
+  const banner = document.createElement('div');
+  banner.className = 'celebrate-banner';
+  banner.innerHTML = `<div style="font-size:64px">🎉🎆🎉</div>
+    <div class="celebrate-title">${names.map(esc).join(', ')} learned!</div>
+    <div class="celebrate-sub">Reached criterion — ${LEARN_MIN_CORRECT}/8 correct on ${LEARN_DAYS} consecutive days</div>`;
+  overlay.appendChild(banner);
+  document.body.appendChild(overlay);
+
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const colors = ['#4f9cf9', '#34d399', '#fbbf24', '#ef4444', '#a78bfa', '#f472b6', '#38bdf8', '#f97316', '#a3e635'];
+  let particles = [];
+  function burst(x, y) {
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    for (let i = 0; i < 70; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const sp = Math.random() * 6 + 1;
+      particles.push({ x, y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, life: 1, color });
+    }
+  }
+  const DURATION = 4500;
+  const t0 = performance.now();
+  let lastBurst = 0;
+  function tick(now) {
+    const elapsed = now - t0;
+    ctx.clearRect(0, 0, W, H);
+    if (elapsed < 3200 && now - lastBurst > 260) {
+      lastBurst = now;
+      burst(Math.random() * W * 0.8 + W * 0.1, Math.random() * H * 0.5 + H * 0.1);
+    }
+    particles.forEach(p => {
+      p.vy += 0.05; p.x += p.vx; p.y += p.vy; p.vx *= 0.99; p.vy *= 0.99; p.life -= 0.012;
+      if (p.life > 0) {
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI * 2); ctx.fill();
+      }
+    });
+    particles = particles.filter(p => p.life > 0);
+    if (elapsed < DURATION) {
+      requestAnimationFrame(tick);
+    } else {
+      overlay.style.transition = 'opacity 0.6s';
+      overlay.style.opacity = '0';
+      setTimeout(() => overlay.remove(), 700);
+    }
+  }
+  burst(W * 0.3, H * 0.3); burst(W * 0.6, H * 0.32); burst(W * 0.5, H * 0.24);
+  requestAnimationFrame(tick);
 }
 
 // Weights-only sheet
