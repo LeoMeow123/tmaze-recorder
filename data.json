@@ -2548,7 +2548,8 @@
               "notes": "",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         },
         {
           "day": 8,
