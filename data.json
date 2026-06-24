@@ -3051,8 +3051,8 @@
                 "R",
                 "L",
                 "R",
-                "",
-                ""
+                "R",
+                "L"
               ],
               "weight": "39.06",
               "notes": "first trail on device, following recording on a new card",
@@ -3086,7 +3086,7 @@
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "34.91",
               "notes": "",
               "reversal": false
             },
