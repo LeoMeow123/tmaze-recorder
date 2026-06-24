@@ -3046,16 +3046,16 @@
               "reward": "",
               "trials": [
                 "L",
-                "",
-                "",
-                "",
-                "",
-                "",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
                 "",
                 ""
               ],
               "weight": "39.06",
-              "notes": "",
+              "notes": "first trail on device, following recording on a new card",
               "reversal": false
             },
             "15422": {
@@ -3071,7 +3071,7 @@
                 "R"
               ],
               "weight": "37.28",
-              "notes": "",
+              "notes": "last 3 trails on device",
               "reversal": false
             },
             "15424": {
