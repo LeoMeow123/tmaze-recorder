@@ -3297,9 +3297,9 @@
                 "L",
                 "R",
                 "L",
-                "",
-                "",
-                ""
+                "R",
+                "R",
+                "R"
               ],
               "weight": "37.46",
               "notes": "third one video enter L then R",
@@ -3349,7 +3349,7 @@
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "35.39",
               "notes": "",
               "reversal": false
             },
