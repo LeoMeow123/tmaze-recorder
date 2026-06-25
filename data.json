@@ -3294,15 +3294,15 @@
               "trials": [
                 "L",
                 "R",
-                "",
-                "",
-                "",
+                "L",
+                "R",
+                "L",
                 "",
                 "",
                 ""
               ],
               "weight": "37.46",
-              "notes": "",
+              "notes": "third one video enter L then R",
               "reversal": false
             },
             "15414": {
