@@ -3604,8 +3604,8 @@
               "reward": "",
               "trials": [
                 "L",
-                "",
-                "",
+                "U",
+                "U",
                 "",
                 "",
                 "",
@@ -3613,7 +3613,7 @@
                 ""
               ],
               "weight": "36.63",
-              "notes": "",
+              "notes": "2 trial never enter before 2:30, but in recording we stopped at 2:37 and he entered right",
               "reversal": false
             },
             "15414": {
