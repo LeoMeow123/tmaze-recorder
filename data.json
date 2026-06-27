@@ -3968,11 +3968,11 @@
                 "L",
                 "R",
                 "L",
-                "",
-                ""
+                "U",
+                "L"
               ],
               "weight": "35.45",
-              "notes": "",
+              "notes": "Trial7 video cutoff due to battery",
               "reversal": false
             },
             "15421": {
@@ -4103,7 +4103,8 @@
               "notes": "",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         },
         {
           "day": 13,
