@@ -4430,7 +4430,8 @@
               "notes": "",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         },
         {
           "day": 14,
