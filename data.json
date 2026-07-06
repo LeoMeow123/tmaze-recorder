@@ -4890,16 +4890,16 @@
             "F1-2": {
               "reward": "",
               "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "24.05",
               "notes": "",
               "reversal": false
             },
@@ -4915,7 +4915,7 @@
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "23.08",
               "notes": "",
               "reversal": false
             },
