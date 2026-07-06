@@ -4970,16 +4970,17 @@
             "M2-3": {
               "reward": "",
               "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "L",
+                "L",
+                "R",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L"
               ],
-              "weight": "",
+              "weight": "29.76",
               "notes": "",
               "reversal": false
             },
@@ -4995,7 +4996,7 @@
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "31.26",
               "notes": "",
               "reversal": false
             },
