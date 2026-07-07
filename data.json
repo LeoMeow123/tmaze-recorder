@@ -5333,16 +5333,16 @@
             "M4-1": {
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
+                "R",
+                "R",
+                "L",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "28.67",
               "notes": "",
               "reversal": false
             },
