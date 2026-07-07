@@ -5385,16 +5385,17 @@
                 "R",
                 "L",
                 "R",
-                "",
-                "",
-                "",
-                ""
+                "L",
+                "L",
+                "L",
+                "R"
               ],
               "weight": "31.12",
               "notes": "",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         }
       ]
     }
