@@ -5205,16 +5205,16 @@
             "M2-1": {
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
+                "L",
+                "R",
+                "L",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "32.13",
               "notes": "",
               "reversal": false
             },
