@@ -5353,13 +5353,13 @@
                 "R",
                 "L",
                 "R",
-                "",
-                "",
-                "",
+                "R",
+                "L",
+                "L",
                 ""
               ],
               "weight": "30.65",
-              "notes": "",
+              "notes": "Check body length",
               "reversal": false
             },
             "M5-1": {
