@@ -5340,25 +5340,25 @@
                 "L",
                 "R",
                 "L",
-                ""
+                "R"
               ],
               "weight": "28.67",
-              "notes": "",
+              "notes": "Check body length",
               "reversal": false
             },
             "M4-2": {
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
-                "",
+                "R",
+                "R",
+                "L",
+                "R",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "30.65",
               "notes": "",
               "reversal": false
             },
