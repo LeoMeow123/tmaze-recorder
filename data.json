@@ -5650,14 +5650,15 @@
                 "L",
                 "L",
                 "R",
-                "",
-                ""
+                "L",
+                "L"
               ],
               "weight": "29.86",
               "notes": "",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         }
       ]
     }
