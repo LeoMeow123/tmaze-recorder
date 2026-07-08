@@ -5580,16 +5580,16 @@
             "F3-4": {
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
+                "R",
+                "R",
+                "R",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "21.74",
               "notes": "",
               "reversal": false
             },
