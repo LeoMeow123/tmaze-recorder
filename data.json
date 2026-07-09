@@ -5908,19 +5908,20 @@
               "reward": "R",
               "trials": [
                 "L",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "R",
+                "L",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R"
               ],
               "weight": "29.62",
               "notes": "",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         }
       ]
     }
