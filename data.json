@@ -6171,19 +6171,20 @@
               "reward": "R",
               "trials": [
                 "R",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "L",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L"
               ],
               "weight": "28.63",
               "notes": "",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         }
       ]
     }
