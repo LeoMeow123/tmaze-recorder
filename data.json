@@ -6122,16 +6122,16 @@
             "M4-1": {
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
+                "L",
+                "R",
+                "R",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "27.54",
               "notes": "",
               "reversal": false
             },
