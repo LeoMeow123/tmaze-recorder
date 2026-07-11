@@ -6321,17 +6321,17 @@
             "F3-1": {
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
-                "",
+                "R",
+                "U",
+                "R",
+                "L",
                 "",
                 "",
                 "",
                 ""
               ],
               "weight": "22.93",
-              "notes": "",
+              "notes": "Freezing at the junction",
               "reversal": false
             },
             "F3-2": {
