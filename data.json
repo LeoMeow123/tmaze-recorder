@@ -6408,7 +6408,7 @@
                 "L",
                 "R",
                 "L",
-                ""
+                "L"
               ],
               "weight": "28.80",
               "notes": "",
@@ -6417,7 +6417,7 @@
             "M5-1": {
               "reward": "R",
               "trials": [
-                "",
+                "R",
                 "",
                 "",
                 "",
@@ -6426,8 +6426,8 @@
                 "",
                 ""
               ],
-              "weight": "",
-              "notes": "",
+              "weight": "24.93",
+              "notes": "Board at trial2",
               "reversal": false
             },
             "M5-2": {
