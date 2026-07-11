@@ -6328,7 +6328,7 @@
                 "R",
                 "L",
                 "L",
-                ""
+                "R"
               ],
               "weight": "22.93",
               "notes": "Freezing at the junction",
@@ -6337,7 +6337,7 @@
             "F3-2": {
               "reward": "L",
               "trials": [
-                "",
+                "L",
                 "",
                 "",
                 "",
@@ -6346,7 +6346,7 @@
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "21.39",
               "notes": "",
               "reversal": false
             },
