@@ -6385,9 +6385,9 @@
             "M4-1": {
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
+                "U",
+                "L",
+                "R",
                 "",
                 "",
                 "",
@@ -6395,7 +6395,7 @@
                 ""
               ],
               "weight": "26.66",
-              "notes": "Trial 1 board at the end of the video",
+              "notes": "Board at trial2",
               "reversal": false
             },
             "M4-2": {
