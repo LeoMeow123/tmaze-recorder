@@ -6680,16 +6680,16 @@
             "M5-1": {
               "reward": "R",
               "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R"
               ],
-              "weight": "23.9",
+              "weight": "23.90",
               "notes": "",
               "reversal": false
             },
@@ -6705,7 +6705,7 @@
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "26.08",
               "notes": "",
               "reversal": false
             }
