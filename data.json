@@ -6472,16 +6472,16 @@
             "F1-2": {
               "reward": "R",
               "trials": [
-                "",
-                "",
-                "",
+                "R",
+                "L",
+                "R",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "22.62",
               "notes": "",
               "reversal": false
             },
