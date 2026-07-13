@@ -6719,16 +6719,16 @@
             "F1-1": {
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
+                "R",
+                "L",
+                "L",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "18.68",
               "notes": "",
               "reversal": false
             },
