@@ -7223,19 +7223,20 @@
               "reward": "R",
               "trials": [
                 "R",
-                "U",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "L",
+                "R",
+                "L",
+                "R",
+                "L",
+                "L",
+                "R"
               ],
               "weight": "24.20",
               "notes": "",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         }
       ]
     }
