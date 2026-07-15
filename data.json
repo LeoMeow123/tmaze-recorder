@@ -7389,16 +7389,16 @@
             "F3-2": {
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
+                "R",
+                "L",
+                "R",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "21.34",
               "notes": "",
               "reversal": false
             },
