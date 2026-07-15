@@ -7309,16 +7309,16 @@
             "M2-1": {
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
+                "L",
+                "L",
+                "R",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "28.87",
               "notes": "",
               "reversal": false
             },
