@@ -7748,20 +7748,21 @@
             "M5-2": {
               "reward": "R",
               "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "R",
+                "L",
+                "R",
+                "L",
+                "L",
+                "R",
+                "L",
+                "R"
               ],
-              "weight": "",
+              "weight": "23.91",
               "notes": "",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         }
       ]
     }
