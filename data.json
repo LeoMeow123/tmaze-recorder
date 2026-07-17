@@ -7883,16 +7883,16 @@
             "M2-4": {
               "reward": "R",
               "trials": [
-                "",
-                "",
-                "",
+                "L",
+                "R",
+                "L",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "26.15",
               "notes": "",
               "reversal": false
             },
