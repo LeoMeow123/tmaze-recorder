@@ -8300,25 +8300,25 @@
       "created": "2026-08-04",
       "mice": [
         {
-          "id": "M1",
+          "id": "M1-1",
           "sex": "M",
           "genotype": "WT",
           "condition": "healthy"
         },
         {
-          "id": "M2",
+          "id": "M1-2",
           "sex": "M",
           "genotype": "WT",
           "condition": "healthy"
         },
         {
-          "id": "M3",
+          "id": "M1-3",
           "sex": "M",
           "genotype": "WT",
           "condition": "healthy"
         },
         {
-          "id": "M4",
+          "id": "M2-1",
           "sex": "M",
           "genotype": "WT",
           "condition": "healthy"
@@ -8365,7 +8365,103 @@
           "day": 0,
           "date": "2026-08-04",
           "trials": {
-            "M1": {
+            "M5": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M6": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M7": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M8": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M9": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M10": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M1-1": {
               "reward": "",
               "trials": [
                 "R",
@@ -8381,7 +8477,7 @@
               "notes": "",
               "reversal": false
             },
-            "M2": {
+            "M1-2": {
               "reward": "",
               "trials": [
                 "L",
@@ -8397,7 +8493,7 @@
               "notes": "",
               "reversal": false
             },
-            "M3": {
+            "M1-3": {
               "reward": "",
               "trials": [
                 "R",
@@ -8414,22 +8510,28 @@
               "notes": "",
               "reversal": false
             },
-            "M4": {
+            "M2-1": {
               "reward": "",
               "trials": [
                 "L",
                 "L",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "R",
+                "R",
+                "L",
+                "L",
+                "R",
+                "R"
               ],
               "weight": "35.06",
               "notes": "",
               "reversal": false
-            },
+            }
+          }
+        },
+        {
+          "day": 1,
+          "date": "2026-08-05",
+          "trials": {
             "M5": {
               "reward": "",
               "trials": [
@@ -8525,14 +8627,8 @@
               "weight": "",
               "notes": "",
               "reversal": false
-            }
-          }
-        },
-        {
-          "day": 1,
-          "date": "2026-08-05",
-          "trials": {
-            "M1": {
+            },
+            "M1-1": {
               "reward": "L",
               "trials": [
                 "",
@@ -8548,7 +8644,7 @@
               "notes": "",
               "reversal": false
             },
-            "M2": {
+            "M1-2": {
               "reward": "",
               "trials": [
                 "",
@@ -8564,7 +8660,7 @@
               "notes": "",
               "reversal": false
             },
-            "M3": {
+            "M1-3": {
               "reward": "",
               "trials": [
                 "",
@@ -8580,103 +8676,7 @@
               "notes": "",
               "reversal": false
             },
-            "M4": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M5": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M6": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M7": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M8": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M9": {
-              "reward": "",
-              "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "weight": "",
-              "notes": "",
-              "reversal": false
-            },
-            "M10": {
+            "M2-1": {
               "reward": "",
               "trials": [
                 "",
