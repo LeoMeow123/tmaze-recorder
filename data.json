@@ -8466,16 +8466,16 @@
             "M3-1": {
               "reward": "",
               "trials": [
-                "",
-                "",
-                "",
+                "R",
+                "R",
+                "L",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "32.05",
               "notes": "",
               "reversal": false
             },
@@ -8491,7 +8491,7 @@
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "30.43",
               "notes": "",
               "reversal": false
             },
@@ -8507,7 +8507,7 @@
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "30.57",
               "notes": "",
               "reversal": false
             },
@@ -8523,7 +8523,7 @@
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "31.52",
               "notes": "",
               "reversal": false
             }
