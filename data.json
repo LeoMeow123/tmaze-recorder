@@ -8517,18 +8517,20 @@
               "trials": [
                 "L",
                 "R",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "R",
+                "L",
+                "L",
+                "R",
+                "L",
+                "R",
+                "R"
               ],
               "weight": "31.52",
               "notes": "",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         },
         {
           "day": 1,
