@@ -8384,16 +8384,16 @@
             "M2": {
               "reward": "",
               "trials": [
-                "",
-                "",
-                "",
+                "L",
+                "L",
+                "R",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "31.99",
               "notes": "",
               "reversal": false
             },
