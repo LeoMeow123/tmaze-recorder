@@ -8828,7 +8828,7 @@
                 "R"
               ],
               "weight": "26.7",
-              "notes": "",
+              "notes": "middle tail mark",
               "reversal": false
             },
             "F6": {
@@ -8837,14 +8837,14 @@
                 "R",
                 "R",
                 "R",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "R",
+                "R",
+                "R",
+                "R",
+                "R"
               ],
               "weight": "28.1",
-              "notes": "",
+              "notes": "end tail mark",
               "reversal": false
             }
           }
