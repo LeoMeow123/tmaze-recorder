@@ -8629,15 +8629,15 @@
                 "R"
               ],
               "weight": "28.15",
-              "notes": "",
+              "notes": "last trail recorded mouse pick up",
               "reversal": false
             },
             "M3-1": {
               "reward": "",
               "trials": [
-                "",
-                "",
-                "",
+                "L",
+                "L",
+                "L",
                 "",
                 "",
                 "",
