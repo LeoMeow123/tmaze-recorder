@@ -8847,7 +8847,8 @@
               "notes": "end tail mark",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         }
       ]
     }
