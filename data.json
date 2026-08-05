@@ -8834,16 +8834,16 @@
             "F6": {
               "reward": "",
               "trials": [
-                "",
-                "",
-                "",
+                "R",
+                "R",
+                "R",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "28.1",
               "notes": "",
               "reversal": false
             }
