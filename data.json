@@ -8792,16 +8792,16 @@
                 "L",
                 "L",
                 "L",
-                ""
+                "R"
               ],
               "weight": "20.3",
-              "notes": "",
+              "notes": "tail stump",
               "reversal": false
             },
             "F4": {
               "reward": "",
               "trials": [
-                "",
+                "R",
                 "",
                 "",
                 "",
@@ -8810,7 +8810,7 @@
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "29.6",
               "notes": "",
               "reversal": false
             },
