@@ -8802,7 +8802,7 @@
               "reward": "",
               "trials": [
                 "R",
-                "",
+                "L",
                 "",
                 "",
                 "",
@@ -8811,7 +8811,7 @@
                 ""
               ],
               "weight": "29.6",
-              "notes": "",
+              "notes": "end tail mark",
               "reversal": false
             },
             "F5": {
