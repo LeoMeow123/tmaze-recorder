@@ -8571,32 +8571,32 @@
             "M1-3": {
               "reward": "",
               "trials": [
-                "R",
-                "L",
-                "R",
-                "L",
-                "R",
-                "L",
-                "R",
-                "R"
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
               ],
-              "weight": "34.00",
+              "weight": "",
               "notes": "",
               "reversal": false
             },
             "M2-1": {
               "reward": "",
               "trials": [
-                "L",
-                "R",
-                "U",
-                "L",
-                "R",
+                "",
+                "",
+                "",
+                "",
+                "",
                 "",
                 "",
                 ""
               ],
-              "weight": "34.09",
+              "weight": "",
               "notes": "",
               "reversal": false
             },
@@ -8681,6 +8681,155 @@
               "reversal": false
             },
             "M3-4": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "msgbtw09",
+      "name": "Lara PD Mice",
+      "age": "",
+      "genotypes": "WT,  cdk f/ox",
+      "created": "2026-08-05",
+      "mice": [
+        {
+          "id": "F1",
+          "sex": "F",
+          "genotype": "cdk f/ox",
+          "condition": "healthy"
+        },
+        {
+          "id": "F2",
+          "sex": "F",
+          "genotype": "cdk f/ox",
+          "condition": "healthy"
+        },
+        {
+          "id": "F3",
+          "sex": "F",
+          "genotype": "cdk f/ox",
+          "condition": "healthy"
+        },
+        {
+          "id": "F4",
+          "sex": "F",
+          "genotype": "WT",
+          "condition": "healthy"
+        },
+        {
+          "id": "F5",
+          "sex": "F",
+          "genotype": "WT",
+          "condition": "healthy"
+        },
+        {
+          "id": "F6",
+          "sex": "F",
+          "genotype": "WT",
+          "condition": "healthy"
+        }
+      ],
+      "days": [
+        {
+          "day": 0,
+          "date": "2026-08-05",
+          "trials": {
+            "F1": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "F2": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "F3": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "F4": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "F5": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "F6": {
               "reward": "",
               "trials": [
                 "",
