@@ -8700,6 +8700,155 @@
           "locked": true
         }
       ]
+    },
+    {
+      "id": "msggmir0",
+      "name": "Lara PD",
+      "age": "",
+      "genotypes": "WT,  cdk5f/ox",
+      "created": "2026-08-05",
+      "mice": [
+        {
+          "id": "F1",
+          "sex": "F",
+          "genotype": "cdk5f/ox",
+          "condition": "healthy"
+        },
+        {
+          "id": "F2",
+          "sex": "F",
+          "genotype": "cdk5f/ox",
+          "condition": "healthy"
+        },
+        {
+          "id": "F3",
+          "sex": "F",
+          "genotype": "cdk5f/ox",
+          "condition": "healthy"
+        },
+        {
+          "id": "F4",
+          "sex": "F",
+          "genotype": "WT",
+          "condition": "healthy"
+        },
+        {
+          "id": "F5",
+          "sex": "F",
+          "genotype": "WT",
+          "condition": "healthy"
+        },
+        {
+          "id": "F6",
+          "sex": "F",
+          "genotype": "WT",
+          "condition": "healthy"
+        }
+      ],
+      "days": [
+        {
+          "day": 0,
+          "date": "2026-08-05",
+          "trials": {
+            "F1": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "F2": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "F3": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "F4": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "F5": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "F6": {
+              "reward": "",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            }
+          }
+        }
+      ]
     }
   ]
 }
