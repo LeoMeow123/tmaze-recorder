@@ -8651,9 +8651,9 @@
             "M3-2": {
               "reward": "",
               "trials": [
-                "",
-                "",
-                "",
+                "R",
+                "R",
+                "R",
                 "",
                 "",
                 "",
@@ -8661,7 +8661,7 @@
                 ""
               ],
               "weight": "28.93",
-              "notes": "",
+              "notes": "1st trail recorded running to the second arm.",
               "reversal": false
             },
             "M3-3": {
