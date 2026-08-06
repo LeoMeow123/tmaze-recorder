@@ -8698,157 +8698,172 @@
             }
           },
           "locked": true
-        }
-      ]
-    },
-    {
-      "id": "msggmir0",
-      "name": "Lara PD",
-      "age": "",
-      "genotypes": "WT,  cdk5f/ox",
-      "created": "2026-08-05",
-      "mice": [
-        {
-          "id": "F1",
-          "sex": "F",
-          "genotype": "cdk5f/ox",
-          "condition": "healthy"
         },
         {
-          "id": "F2",
-          "sex": "F",
-          "genotype": "cdk5f/ox",
-          "condition": "healthy"
-        },
-        {
-          "id": "F3",
-          "sex": "F",
-          "genotype": "cdk5f/ox",
-          "condition": "healthy"
-        },
-        {
-          "id": "F4",
-          "sex": "F",
-          "genotype": "WT",
-          "condition": "healthy"
-        },
-        {
-          "id": "F5",
-          "sex": "F",
-          "genotype": "WT",
-          "condition": "healthy"
-        },
-        {
-          "id": "F6",
-          "sex": "F",
-          "genotype": "WT",
-          "condition": "healthy"
-        }
-      ],
-      "days": [
-        {
-          "day": 0,
-          "date": "2026-08-05",
+          "day": 2,
+          "date": "2026-08-06",
           "trials": {
-            "F1": {
-              "reward": "",
+            "M1-1": {
+              "reward": "L",
               "trials": [
-                "L",
-                "L",
                 "R",
-                "L",
-                "R",
-                "L",
-                "R",
-                "L"
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
               ],
-              "weight": "22.5",
-              "notes": "end tail mark",
+              "weight": "30.86",
+              "notes": "",
               "reversal": false
             },
-            "F2": {
-              "reward": "",
+            "M1-2": {
+              "reward": "R",
               "trials": [
-                "R",
-                "R",
-                "R",
-                "L",
-                "L",
-                "R",
-                "L",
-                "R"
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
               ],
-              "weight": "21.7",
-              "notes": "middle tail mark",
+              "weight": "",
+              "notes": "",
               "reversal": false
             },
-            "F3": {
-              "reward": "",
+            "M1-3": {
+              "reward": "R",
               "trials": [
-                "L",
-                "L",
-                "L",
-                "L",
-                "L",
-                "L",
-                "L",
-                "R"
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
               ],
-              "weight": "20.3",
-              "notes": "tail stump",
+              "weight": "",
+              "notes": "",
               "reversal": false
             },
-            "F4": {
-              "reward": "",
+            "M2-1": {
+              "reward": "R",
               "trials": [
-                "R",
-                "L",
-                "R",
-                "L",
-                "R",
-                "L",
-                "R",
-                "L",
-                "R"
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
               ],
-              "weight": "29.6",
-              "notes": "end tail mark",
+              "weight": "",
+              "notes": "",
               "reversal": false
             },
-            "F5": {
-              "reward": "",
+            "M2-2": {
+              "reward": "R",
               "trials": [
-                "R",
-                "R",
-                "R",
-                "R",
-                "L",
-                "R",
-                "L",
-                "R"
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
               ],
-              "weight": "26.7",
-              "notes": "middle tail mark",
+              "weight": "",
+              "notes": "",
               "reversal": false
             },
-            "F6": {
-              "reward": "",
+            "M2-3": {
+              "reward": "R",
               "trials": [
-                "R",
-                "R",
-                "R",
-                "R",
-                "R",
-                "R",
-                "R",
-                "R"
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
               ],
-              "weight": "28.1",
-              "notes": "end tail mark",
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M3-1": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M3-2": {
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M3-3": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M3-4": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
               "reversal": false
             }
-          },
-          "locked": true
+          }
         }
       ]
     }
