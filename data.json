@@ -8889,16 +8889,16 @@
             "F3": {
               "reward": "R",
               "trials": [
-                "",
-                "",
-                "",
-                "",
+                "L",
+                "R",
+                "R",
+                "L",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "19.1",
               "notes": "",
               "reversal": false
             },
