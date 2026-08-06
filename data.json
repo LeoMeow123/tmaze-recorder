@@ -8732,7 +8732,7 @@
                 "R"
               ],
               "weight": "30.20",
-              "notes": "recorded few seconds to other arm on trial 3",
+              "notes": "3 rd trail recorded few seconds to other arm",
               "reversal": false
             },
             "M1-3": {
@@ -8741,14 +8741,14 @@
                 "L",
                 "L",
                 "R",
-                "",
-                "",
-                "",
-                "",
+                "L",
+                "R",
+                "R",
+                "R",
                 ""
               ],
               "weight": "32.94",
-              "notes": "",
+              "notes": "4th trail recorded walking back",
               "reversal": false
             },
             "M2-1": {
