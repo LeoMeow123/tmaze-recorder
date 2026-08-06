@@ -8819,16 +8819,16 @@
               "reward": "R",
               "trials": [
                 "L",
-                "",
-                "",
-                "",
+                "R",
+                "R",
+                "L",
                 "",
                 "",
                 "",
                 ""
               ],
               "weight": "28.87",
-              "notes": "",
+              "notes": "have a big lump on the right hind limb, consider remove it from the gait study",
               "reversal": false
             },
             "M3-3": {
