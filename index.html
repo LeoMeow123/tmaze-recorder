@@ -262,10 +262,11 @@
 <!-- SYNC SETUP MODAL -->
 <div class="modal-overlay setup-modal" id="setupModal">
   <div class="modal-card">
-    <h3>GitHub Sync</h3>
-    <p>Save data to GitHub for backup and cross-device access. Create a Fine-grained token with <strong>Contents</strong> read+write on <strong>tmaze-recorder</strong>.</p>
+    <h3>Backup &amp; Sync</h3>
+    <p>Your data saves <strong>automatically to the lab database</strong> — no setup needed, and multiple people can record at once without overwriting each other. Optionally add a GitHub token (fine-grained, <strong>Contents</strong> read+write on <strong>tmaze-recorder</strong>) to also commit a <strong>data.json</strong> backup each time you press <strong>Finish Day</strong>.</p>
     <div class="form-grid" style="grid-template-columns:1fr">
-      <div class="form-group"><label>GitHub Token</label><input type="password" id="setup-token" placeholder="github_pat_..."></div>
+      <div class="form-group"><label>Your name <span style="opacity:.6">(shown in edit history)</span></label><input id="setup-who" placeholder="e.g. Malia"></div>
+      <div class="form-group"><label>GitHub Token <span style="opacity:.6">(optional — Finish-Day backup)</span></label><input type="password" id="setup-token" placeholder="github_pat_..."></div>
       <div class="form-group"><label>Owner</label><input id="setup-owner" value="LeoMeow123"></div>
       <div class="form-group"><label>Repo</label><input id="setup-repo" value="tmaze-recorder"></div>
     </div>
@@ -286,6 +287,21 @@
 const SYNC_KEY = 'tmaze-sync';
 const CACHE_KEY = 'tmaze-cache';
 const DATA_PATH = 'data.json';
+
+// ---- Supabase: the live store (shares the Lee Lab colony project). Publishable key is public by design. ----
+const SUPA_URL = 'https://xgiqhkcpssakrlemvodx.supabase.co';
+const SUPA_KEY = 'sb_publishable_qbDIUER221OxvA_HvwhpCw_-V5OsMcD';
+async function sb(path, opts) {
+  opts = opts || {};
+  const res = await fetch(SUPA_URL + '/rest/v1/' + path, {
+    method: opts.method || 'GET',
+    headers: Object.assign({ apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' }, opts.headers || {}),
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
+  if (!res.ok) throw new Error('Supabase ' + res.status + ': ' + (await res.text()));
+  const t = await res.text();
+  return t ? JSON.parse(t) : null;
+}
 
 function localDate() {
   return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
@@ -367,69 +383,129 @@ function currentCohort() {
   return allData.cohorts.find(c => c.id === currentCohortId);
 }
 
-function saveLocal() {
-  localStorage.setItem(CACHE_KEY, JSON.stringify(allData));
-  if (!_dirty) {
-    _dirty = true;
-    const cfg = getSyncConfig();
-    if (cfg?.token) setSyncStatus('error', 'Unsaved');
-  }
+// ---- Diff-based Supabase sync ----------------------------------------
+// The app logic is untouched: every mutation still calls saveLocal(). We flatten
+// allData into rows keyed by cohort / (cohort,day) / (cohort,day,mouse), and on each
+// debounced save we upsert ONLY the rows whose content changed. So two people editing
+// different mice on the same day never clobber each other (they touch different rows).
+let _syncedKeys = {};   // last-synced "rowKey -> serialized value"
+let _syncTimer = null;
+
+function collectRows() {
+  // Store each cohort/day/mouse as a verbatim JSONB blob (minus its structural keys),
+  // so ANY field — including phase, reversal, and anything added later — round-trips losslessly.
+  const keys = {}, rows = { cohorts: [], days: [], records: [] };
+  (allData.cohorts || []).forEach(c => {
+    const { days, id, ...meta } = c;
+    keys['c:' + id] = JSON.stringify(meta);
+    rows.cohorts.push({ id, meta });
+    (days || []).forEach(dy => {
+      const { trials, day, ...dmeta } = dy;
+      keys['d:' + id + ':' + day] = JSON.stringify(dmeta);
+      rows.days.push({ cohort_id: id, day_index: day, meta: dmeta });
+      Object.keys(trials || {}).forEach(mid => {
+        keys['r:' + id + ':' + day + ':' + mid] = JSON.stringify(trials[mid]);
+        rows.records.push({ cohort_id: id, day_index: day, mouse_id: mid, data: trials[mid] });
+      });
+    });
+  });
+  return { keys, rows };
 }
 
-async function pushToCloud() {
-  const cfg = getSyncConfig();
-  if (!cfg?.token) { setSyncStatus('offline', 'Local only'); return; }
-  if (_saving) return;
+async function syncToSupabase() {
+  const { keys, rows } = collectRows();
+  const stamp = new Date().toISOString(), who = (getSyncConfig()?.who) || '';
+  const chg = (arr, kf) => arr.filter(x => keys[kf(x)] !== _syncedKeys[kf(x)]);
+  const chCohorts = chg(rows.cohorts, c => 'c:' + c.id);
+  const chDays = chg(rows.days, d => 'd:' + d.cohort_id + ':' + d.day_index);
+  const chRecords = chg(rows.records, r => 'r:' + r.cohort_id + ':' + r.day_index + ':' + r.mouse_id);
+  const deletions = Object.keys(_syncedKeys).filter(k => !(k in keys));
+  if (!chCohorts.length && !chDays.length && !chRecords.length && !deletions.length) return;
+  const up = (table, body) => sb(table, { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' }, body });
+  if (chCohorts.length) await up('tmaze_cohorts', chCohorts.map(c => Object.assign({}, c, { updated_at: stamp, updated_by: who })));
+  if (chDays.length) await up('tmaze_days', chDays.map(d => Object.assign({}, d, { updated_at: stamp, updated_by: who })));
+  if (chRecords.length) await up('tmaze_records', chRecords.map(r => Object.assign({}, r, { updated_at: stamp, updated_by: who })));
+  for (const k of deletions) await deleteRowByKey(k);
+  _syncedKeys = keys;
+}
+
+async function deleteRowByKey(k) {
+  const p = k.split(':');
+  try {
+    if (p[0] === 'r') await sb(`tmaze_records?cohort_id=eq.${encodeURIComponent(p[1])}&day_index=eq.${p[2]}&mouse_id=eq.${encodeURIComponent(p[3])}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } });
+    else if (p[0] === 'd') await sb(`tmaze_days?cohort_id=eq.${encodeURIComponent(p[1])}&day_index=eq.${p[2]}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } });
+    else if (p[0] === 'c') await sb(`tmaze_cohorts?id=eq.${encodeURIComponent(p[1])}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } });
+  } catch (e) { console.error('delete failed', k, e); }
+}
+
+function saveLocal() {
+  localStorage.setItem(CACHE_KEY, JSON.stringify(allData));   // instant local safety net
+  _dirty = true;
+  setSyncStatus('saving', 'Saving…');
+  clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(runSync, 1200);                     // debounce ~1.2s after the last edit
+}
+
+async function runSync() {
+  if (_saving) { clearTimeout(_syncTimer); _syncTimer = setTimeout(runSync, 800); return; }
   _saving = true;
-  setSyncStatus('saving', 'Saving...');
-  const ok = await saveToCloud(allData);
-  _saving = false;
-  if (ok) {
+  try {
+    await syncToSupabase();
     _dirty = false;
     setSyncStatus('saved', 'Saved');
-    setTimeout(() => { if (!_dirty) setSyncStatus('saved', 'Synced'); }, 2000);
-  } else {
-    setSyncStatus('error', 'Save failed');
-  }
+    setTimeout(() => { if (!_dirty) setSyncStatus('saved', 'Synced'); }, 1500);
+  } catch (e) {
+    console.error('Sync failed:', e);
+    setSyncStatus('error', 'Offline — retrying');
+    clearTimeout(_syncTimer);
+    _syncTimer = setTimeout(runSync, 4000);                   // keep retrying; data stays in localStorage meanwhile
+  } finally { _saving = false; }
 }
 
-window.manualSave = function() {
-  saveLocal();
-  pushToCloud();
-};
+window.manualSave = function() { saveLocal(); runSync(); };
 
-// Auto-save every 5 minutes if dirty
-setInterval(() => {
-  if (_dirty && !_saving) pushToCloud();
-}, 5 * 60 * 1000);
+// Rebuild allData from the per-row tables (the load path).
+async function loadFromSupabase() {
+  const [cohorts, days, records] = await Promise.all([
+    sb('tmaze_cohorts?select=*'),
+    sb('tmaze_days?select=*'),
+    sb('tmaze_records?select=*'),
+  ]);
+  if (!cohorts) return null;
+  const byId = {};
+  cohorts.forEach(c => { byId[c.id] = Object.assign({ id: c.id }, c.meta || {}, { days: [] }); });
+  const dm = {}; // cohort -> dayIndex -> dayObj
+  (days || []).forEach(d => { if (!byId[d.cohort_id]) return; (dm[d.cohort_id] = dm[d.cohort_id] || {})[d.day_index] = Object.assign({ day: d.day_index }, d.meta || {}, { trials: {} }); });
+  (records || []).forEach(r => { const c = dm[r.cohort_id]; if (!c) return; const o = c[r.day_index]; if (!o) return; o.trials[r.mouse_id] = r.data; });
+  Object.keys(byId).forEach(cid => { const d = dm[cid] || {}; byId[cid].days = Object.keys(d).map(Number).sort((a, b) => a - b).map(i => d[i]); });
+  return { cohorts: Object.values(byId) };
+}
 
 // =====================================================================
 // INIT
 // =====================================================================
 async function init() {
-  setSyncStatus('saving', 'Loading...');
-  const cfg = getSyncConfig();
+  setSyncStatus('saving', 'Loading…');
   let loaded = false;
-
-  if (cfg?.token) {
-    const cloud = await loadFromCloud();
-    if (cloud && cloud.cohorts) {
+  try {
+    const cloud = await loadFromSupabase();
+    if (cloud) {
       allData = cloud;
       localStorage.setItem(CACHE_KEY, JSON.stringify(allData));
+      _syncedKeys = collectRows().keys;               // baseline so nothing re-uploads until an edit
       setSyncStatus('saved', 'Synced');
       loaded = true;
     }
-  }
+  } catch (e) { console.error('Supabase load failed:', e); }
 
   if (!loaded) {
     try {
       const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
-      if (cached && cached.cohorts) { allData = cached; loaded = true; }
+      if (cached && cached.cohorts) { allData = cached; _syncedKeys = {}; loaded = true; }
     } catch {}
+    if (loaded) { setSyncStatus('error', 'Offline (cached) — will sync when back'); runSync(); }
+    else setSyncStatus('error', 'No data — check connection');
   }
-
-  if (!cfg?.token) setSyncStatus('offline', papers_length_str());
-  else if (!loaded) setSyncStatus('error', 'No data');
 
   renderCohortList();
 }
@@ -1091,7 +1167,7 @@ function activeDayLocked() {
   return !!(day && day.locked);
 }
 
-window.finishDay = function() {
+window.finishDay = async function() {
   const c = currentCohort();
   if (!c || activeDay === 'weights' || activeDay == null) return;
   const day = c.days[activeDay];
@@ -1099,6 +1175,13 @@ window.finishDay = function() {
   day.locked = true;
   saveLocal();
   renderDayContent();
+  await runSync();                                    // make sure Supabase has the lock + every edit first
+  const cfg = getSyncConfig();
+  if (cfg?.token) {                                   // one backup commit of the full snapshot to GitHub
+    setSyncStatus('saving', 'Backing up to GitHub…');
+    const ok = await saveToCloud(allData);
+    setSyncStatus(ok ? 'saved' : 'error', ok ? 'Backed up ✓' : 'Backup failed — data is safe in Supabase');
+  }
 };
 
 window.unlockDay = function() {
@@ -1401,6 +1484,7 @@ function download(filename, text) {
 window.showSetup = function() {
   const cfg = getSyncConfig();
   if (cfg) {
+    document.getElementById('setup-who').value = cfg.who || '';
     document.getElementById('setup-token').value = cfg.token || '';
     document.getElementById('setup-owner').value = cfg.owner || 'LeoMeow123';
     document.getElementById('setup-repo').value = cfg.repo || 'tmaze-recorder';
@@ -1409,25 +1493,27 @@ window.showSetup = function() {
 };
 window.closeSetup = function() { document.getElementById('setupModal').classList.remove('open'); };
 window.saveSetup = async function() {
+  const who = document.getElementById('setup-who').value.trim();
   const token = document.getElementById('setup-token').value.trim();
-  const owner = document.getElementById('setup-owner').value.trim();
-  const repo = document.getElementById('setup-repo').value.trim();
-  if (!token) return;
-  setSyncConfig({ token, owner, repo });
+  const owner = document.getElementById('setup-owner').value.trim() || 'LeoMeow123';
+  const repo = document.getElementById('setup-repo').value.trim() || 'tmaze-recorder';
+  setSyncConfig({ who, token, owner, repo });
   closeSetup();
-  // Pull cloud data FIRST — never push from here. Connecting a fresh browser with
-  // empty local state must not overwrite the shared history. Use Save to upload.
-  setSyncStatus('saving', 'Loading...');
-  const cloud = await loadFromCloud();
-  if (cloud && cloud.cohorts) {
-    allData = cloud;
-    localStorage.setItem(CACHE_KEY, JSON.stringify(allData));
-    _dirty = false;
-    setSyncStatus('saved', 'Synced');
-    backToCohorts();
-  } else {
-    setSyncStatus('offline', 'No cloud data — use Save to upload');
-  }
+  // Live data lives in Supabase; (re)load it. Never push from here.
+  setSyncStatus('saving', 'Loading…');
+  try {
+    const cloud = await loadFromSupabase();
+    if (cloud) {
+      allData = cloud;
+      localStorage.setItem(CACHE_KEY, JSON.stringify(allData));
+      _syncedKeys = collectRows().keys;
+      _dirty = false;
+      setSyncStatus('saved', 'Synced');
+      backToCohorts();
+      return;
+    }
+  } catch (e) { console.error(e); }
+  setSyncStatus('error', 'Could not load from database');
 };
 
 // =====================================================================
