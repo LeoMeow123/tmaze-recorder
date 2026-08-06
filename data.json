@@ -8905,16 +8905,16 @@
             "F4": {
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
+                "L",
+                "L",
+                "R",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "28.6",
               "notes": "",
               "reversal": false
             },
