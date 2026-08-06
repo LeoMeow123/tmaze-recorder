@@ -8722,16 +8722,16 @@
             "M1-2": {
               "reward": "R",
               "trials": [
-                "",
-                "",
-                "",
+                "L",
+                "L",
+                "L",
                 "",
                 "",
                 "",
                 "",
                 ""
               ],
-              "weight": "",
+              "weight": "30.20",
               "notes": "",
               "reversal": false
             },
