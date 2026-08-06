@@ -8943,14 +8943,15 @@
                 "R",
                 "R",
                 "L",
-                "",
-                ""
+                "L",
+                "R"
               ],
               "weight": "26.6",
               "notes": "",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         }
       ]
     }
