@@ -8698,199 +8698,48 @@
             }
           },
           "locked": true
-        }
-      ]
-    },
-    {
-      "id": "msggmir0",
-      "name": "Lara PD",
-      "age": "",
-      "genotypes": "WT,  cdk5f/ox",
-      "created": "2026-08-05",
-      "mice": [
-        {
-          "id": "F1",
-          "sex": "F",
-          "genotype": "cdk5f/ox",
-          "condition": "healthy"
         },
         {
-          "id": "F2",
-          "sex": "F",
-          "genotype": "cdk5f/ox",
-          "condition": "healthy"
-        },
-        {
-          "id": "F3",
-          "sex": "F",
-          "genotype": "cdk5f/ox",
-          "condition": "healthy"
-        },
-        {
-          "id": "F4",
-          "sex": "F",
-          "genotype": "WT",
-          "condition": "healthy"
-        },
-        {
-          "id": "F5",
-          "sex": "F",
-          "genotype": "WT",
-          "condition": "healthy"
-        },
-        {
-          "id": "F6",
-          "sex": "F",
-          "genotype": "WT",
-          "condition": "healthy"
-        }
-      ],
-      "days": [
-        {
-          "day": 0,
-          "date": "2026-08-05",
-          "trials": {
-            "F1": {
-              "reward": "",
-              "trials": [
-                "L",
-                "L",
-                "R",
-                "L",
-                "R",
-                "L",
-                "R",
-                "L"
-              ],
-              "weight": "22.5",
-              "notes": "end tail mark",
-              "reversal": false
-            },
-            "F2": {
-              "reward": "",
-              "trials": [
-                "R",
-                "R",
-                "R",
-                "L",
-                "L",
-                "R",
-                "L",
-                "R"
-              ],
-              "weight": "21.7",
-              "notes": "middle tail mark",
-              "reversal": false
-            },
-            "F3": {
-              "reward": "",
-              "trials": [
-                "L",
-                "L",
-                "L",
-                "L",
-                "L",
-                "L",
-                "L",
-                "R"
-              ],
-              "weight": "20.3",
-              "notes": "tail stump",
-              "reversal": false
-            },
-            "F4": {
-              "reward": "",
-              "trials": [
-                "R",
-                "L",
-                "R",
-                "L",
-                "R",
-                "L",
-                "R",
-                "L",
-                "R"
-              ],
-              "weight": "29.6",
-              "notes": "end tail mark",
-              "reversal": false
-            },
-            "F5": {
-              "reward": "",
-              "trials": [
-                "R",
-                "R",
-                "R",
-                "R",
-                "L",
-                "R",
-                "L",
-                "R"
-              ],
-              "weight": "26.7",
-              "notes": "middle tail mark",
-              "reversal": false
-            },
-            "F6": {
-              "reward": "",
-              "trials": [
-                "R",
-                "R",
-                "R",
-                "R",
-                "R",
-                "R",
-                "R",
-                "R"
-              ],
-              "weight": "28.1",
-              "notes": "end tail mark",
-              "reversal": false
-            }
-          },
-          "locked": true
-        },
-        {
-          "day": 1,
+          "day": 2,
           "date": "2026-08-06",
           "trials": {
-            "F1": {
-              "reward": "R",
-              "trials": [
-                "R",
-                "L",
-                "L",
-                "R",
-                "L",
-                "R",
-                "R",
-                "L"
-              ],
-              "weight": "21.9",
-              "notes": "",
-              "reversal": false
-            },
-            "F2": {
+            "M1-1": {
               "reward": "L",
               "trials": [
+                "R",
+                "R",
+                "R",
                 "L",
-                "R",
-                "R",
                 "L",
-                "R",
-                "R",
+                "L",
                 "L",
                 "R"
               ],
-              "weight": "20.7",
+              "weight": "30.86",
               "notes": "",
               "reversal": false
             },
-            "F3": {
+            "M1-2": {
               "reward": "R",
               "trials": [
                 "L",
+                "L",
+                "L",
                 "R",
+                "L",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "30.20",
+              "notes": "3 rd trail recorded few seconds to other arm",
+              "reversal": false
+            },
+            "M1-3": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "L",
                 "R",
                 "L",
                 "R",
@@ -8898,11 +8747,107 @@
                 "R",
                 "L"
               ],
-              "weight": "19.1",
+              "weight": "32.94",
+              "notes": "4th trail recorded walking back",
+              "reversal": false
+            },
+            "M2-1": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "U",
+                "U",
+                "R",
+                "L",
+                "U",
+                "R",
+                "R"
+              ],
+              "weight": "33.08",
+              "notes": "58th trail an accident poke within section 4",
+              "reversal": false
+            },
+            "M2-2": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R"
+              ],
+              "weight": "31.63",
               "notes": "",
               "reversal": false
             },
-            "F4": {
+            "M2-3": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "L"
+              ],
+              "weight": "27.03",
+              "notes": "",
+              "reversal": false
+            },
+            "M3-1": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "U",
+                "U",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "30.02",
+              "notes": "",
+              "reversal": false
+            },
+            "M3-2": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "L",
+                "L",
+                "U",
+                "R",
+                "R"
+              ],
+              "weight": "28.87",
+              "notes": "have a big lump on the right hind limb, consider remove it from the gait study",
+              "reversal": false
+            },
+            "M3-3": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "28.32",
+              "notes": "",
+              "reversal": false
+            },
+            "M3-4": {
               "reward": "L",
               "trials": [
                 "L",
@@ -8914,39 +8859,7 @@
                 "R",
                 "R"
               ],
-              "weight": "28.6",
-              "notes": "",
-              "reversal": false
-            },
-            "F5": {
-              "reward": "L",
-              "trials": [
-                "L",
-                "R",
-                "L",
-                "L",
-                "L",
-                "R",
-                "R",
-                "L"
-              ],
-              "weight": "25.6",
-              "notes": "",
-              "reversal": false
-            },
-            "F6": {
-              "reward": "L",
-              "trials": [
-                "R",
-                "R",
-                "R",
-                "R",
-                "R",
-                "L",
-                "L",
-                "R"
-              ],
-              "weight": "26.6",
+              "weight": "29.64",
               "notes": "",
               "reversal": false
             }
