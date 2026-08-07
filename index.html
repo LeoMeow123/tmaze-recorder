@@ -391,11 +391,12 @@ function currentCohort() {
 let _syncedKeys = {};   // last-synced "rowKey -> serialized value"
 let _syncTimer = null;
 
-function collectRows() {
+function collectRows(data) {
   // Store each cohort/day/mouse as a verbatim JSONB blob (minus its structural keys),
   // so ANY field — including phase, reversal, and anything added later — round-trips losslessly.
+  data = data || allData;
   const keys = {}, rows = { cohorts: [], days: [], records: [] };
-  (allData.cohorts || []).forEach(c => {
+  (data.cohorts || []).forEach(c => {
     const { days, id, ...meta } = c;
     keys['c:' + id] = JSON.stringify(meta);
     rows.cohorts.push({ id, meta });
@@ -464,6 +465,11 @@ async function runSync() {
 
 window.manualSave = function() { saveLocal(); runSync(); };
 
+// Flush any pending sync the moment the tab is hidden or refreshed — covers switching
+// between the two recording tabs, and shrinks the window where a fast refresh could
+// outrun the debounce (the load-time reconcile() is the ultimate safety net).
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && _dirty && !_saving) runSync(); });
+
 // Rebuild allData from the per-row tables (the load path).
 async function loadFromSupabase() {
   const [cohorts, days, records] = await Promise.all([
@@ -481,29 +487,50 @@ async function loadFromSupabase() {
   return { cohorts: Object.values(byId) };
 }
 
+// Fold any LOCAL-ONLY rows (unsynced edits that never reached the server — e.g. a day
+// added just before a refresh) into the server copy. Server wins on shared rows; we only
+// ADD what the server is missing, never delete. Mutates `server`, returns it.
+function reconcile(server, local) {
+  if (!local || !Array.isArray(local.cohorts)) return server;
+  const cById = {}; server.cohorts.forEach(c => cById[c.id] = c);
+  local.cohorts.forEach(lc => {
+    const sc = cById[lc.id];
+    if (!sc) { server.cohorts.push(lc); cById[lc.id] = lc; return; }   // whole cohort only local
+    const dByNum = {}; (sc.days || []).forEach(d => dByNum[d.day] = d);
+    (lc.days || []).forEach(ld => {
+      const sd = dByNum[ld.day];
+      if (!sd) { sc.days.push(ld); dByNum[ld.day] = ld; return; }      // day only local
+      Object.keys(ld.trials || {}).forEach(mid => { if (!(sd.trials && mid in sd.trials)) { (sd.trials = sd.trials || {})[mid] = ld.trials[mid]; } }); // add local-only mice
+    });
+    sc.days.sort((a, b) => a.day - b.day);
+  });
+  return server;
+}
+
 // =====================================================================
 // INIT
 // =====================================================================
 async function init() {
   setSyncStatus('saving', 'Loading…');
   let loaded = false;
+  const local = (() => { try { return JSON.parse(localStorage.getItem(CACHE_KEY)); } catch { return null; } })();
   try {
-    const cloud = await loadFromSupabase();
-    if (cloud) {
-      allData = cloud;
+    const server = await loadFromSupabase();
+    if (server) {
+      const serverKeys = collectRows(server).keys;        // baseline = what's actually on the server
+      reconcile(server, local);                           // recover any unsynced local-only rows (added day, etc.)
+      allData = server;
+      _syncedKeys = serverKeys;                           // so recovered rows count as "changed" and get pushed
       localStorage.setItem(CACHE_KEY, JSON.stringify(allData));
-      _syncedKeys = collectRows().keys;               // baseline so nothing re-uploads until an edit
-      setSyncStatus('saved', 'Synced');
       loaded = true;
+      const recovered = Object.keys(collectRows().keys).length - Object.keys(serverKeys).length;
+      if (recovered > 0) { setSyncStatus('saving', `Recovering ${recovered} unsynced edit(s)…`); runSync(); }
+      else setSyncStatus('saved', 'Synced');
     }
   } catch (e) { console.error('Supabase load failed:', e); }
 
   if (!loaded) {
-    try {
-      const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
-      if (cached && cached.cohorts) { allData = cached; _syncedKeys = {}; loaded = true; }
-    } catch {}
-    if (loaded) { setSyncStatus('error', 'Offline (cached) — will sync when back'); runSync(); }
+    if (local && local.cohorts) { allData = local; _syncedKeys = {}; loaded = true; setSyncStatus('error', 'Offline (cached) — will sync when back'); runSync(); }
     else setSyncStatus('error', 'No data — check connection');
   }
 
@@ -1499,21 +1526,8 @@ window.saveSetup = async function() {
   const repo = document.getElementById('setup-repo').value.trim() || 'tmaze-recorder';
   setSyncConfig({ who, token, owner, repo });
   closeSetup();
-  // Live data lives in Supabase; (re)load it. Never push from here.
-  setSyncStatus('saving', 'Loading…');
-  try {
-    const cloud = await loadFromSupabase();
-    if (cloud) {
-      allData = cloud;
-      localStorage.setItem(CACHE_KEY, JSON.stringify(allData));
-      _syncedKeys = collectRows().keys;
-      _dirty = false;
-      setSyncStatus('saved', 'Synced');
-      backToCohorts();
-      return;
-    }
-  } catch (e) { console.error(e); }
-  setSyncStatus('error', 'Could not load from database');
+  await init();          // reuse the reconciling load path (never drops unsynced local edits)
+  backToCohorts();
 };
 
 // =====================================================================
