@@ -4,7 +4,7 @@
 // Idempotent (upserts on primary key), so re-running is safe.
 import { readFileSync } from 'node:fs';
 
-const URL = 'https://xgiqhkcpssakrlemvodx.supabase.co';
+const SB_URL = 'https://xgiqhkcpssakrlemvodx.supabase.co';
 const KEY = 'sb_publishable_qbDIUER221OxvA_HvwhpCw_-V5OsMcD';
 
 const data = JSON.parse(readFileSync(new URL('./data.json', import.meta.url), 'utf8'));
@@ -13,7 +13,7 @@ async function upsert(table, rows) {
   if (!rows.length) return;
   for (let i = 0; i < rows.length; i += 500) {
     const chunk = rows.slice(i, i + 500);
-    const res = await fetch(`${URL}/rest/v1/${table}`, {
+    const res = await fetch(`${SB_URL}/rest/v1/${table}`, {
       method: 'POST',
       headers: {
         apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json',
