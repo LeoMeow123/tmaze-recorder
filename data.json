@@ -9032,6 +9032,173 @@
             }
           },
           "locked": true
+        },
+        {
+          "day": 4,
+          "date": "2026-08-08",
+          "trials": {
+            "M1-1": {
+              "reward": "L",
+              "trials": [
+                "U",
+                "R",
+                "U",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "29.36",
+              "notes": "",
+              "reversal": false
+            },
+            "M1-2": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R"
+              ],
+              "weight": "29.21",
+              "notes": "",
+              "reversal": false
+            },
+            "M1-3": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "R",
+                "L",
+                "R"
+              ],
+              "weight": "31.04",
+              "notes": "",
+              "reversal": false
+            },
+            "M2-1": {
+              "reward": "R",
+              "trials": [
+                "U",
+                "U",
+                "U",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "31.74",
+              "notes": "",
+              "reversal": false
+            },
+            "M2-2": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "L"
+              ],
+              "weight": "31.2",
+              "notes": "",
+              "reversal": false
+            },
+            "M2-3": {
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "26.02",
+              "notes": "",
+              "reversal": false
+            },
+            "M3-1": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M3-2": {
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "out; big liquid sac on hind limb",
+              "reversal": false
+            },
+            "M3-3": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M3-4": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "U",
+                "U",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "27.82",
+              "notes": "very shaky, used to be fast but today walks very slow",
+              "reversal": false
+            }
+          },
+          "locked": true
         }
       ]
     },
