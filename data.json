@@ -9556,6 +9556,109 @@
             }
           },
           "locked": true
+        },
+        {
+          "day": 3,
+          "date": "2026-08-08",
+          "trials": {
+            "F1": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "21.2",
+              "notes": "",
+              "reversal": false
+            },
+            "F2": {
+              "reward": "L",
+              "trials": [
+                "R",
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "20.3",
+              "notes": "",
+              "reversal": false
+            },
+            "F3": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "17.8",
+              "notes": "",
+              "reversal": false
+            },
+            "F4": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "27.5",
+              "notes": "",
+              "reversal": false
+            },
+            "F5": {
+              "reward": "L",
+              "trials": [
+                "R",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "23.5",
+              "notes": "",
+              "reversal": false
+            },
+            "F6": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "25.1",
+              "notes": "",
+              "reversal": false
+            }
+          },
+          "locked": true
         }
       ]
     }
