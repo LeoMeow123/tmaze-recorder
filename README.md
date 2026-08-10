@@ -16,17 +16,25 @@ Web app for recording T-maze behavioral trials, replacing Google Sheets with a p
 - **Real mouse IDs** — enter actual ear tag IDs via the reorder modal; mask IDs (M1, F1) used as placeholders
 - **Drag-to-reorder** — set recording sequence by dragging rows
 - **STRIDE-compatible CSV export** — `meta_trials.csv`, `T-maze-metadata.csv`, full trials, and weights
-- **GitHub sync** — manual save + auto-save every 5 min; unsaved change indicator
+- **Live Supabase sync** — every edit saves automatically (~1 s, debounced), per row; multiple people (or two tabs) recording different experiments can't overwrite each other
+- **Finish-Day GitHub backup** — pressing *Finish Day* commits one `data.json` snapshot to GitHub (the only GitHub write; no more 5-min commit spam)
 
 ## Setup
 
-1. Open the [live app](https://leomeow123.github.io/tmaze-recorder/)
-2. Click the gear icon to configure GitHub sync (optional)
+1. Open the [live app](https://leomeow123.github.io/tmaze-recorder/) — live sync is built in, nothing to configure.
+2. (Optional) Click the gear icon to set **your name** (for edit history) and, if you want the Finish-Day backup, a **GitHub token** (fine-grained, Contents read+write on `tmaze-recorder`).
 3. Create a new cohort, enter male/female counts and genotypes
 4. Set mouse IDs and recording order in the reorder modal
 5. Record Day 0, then add days as needed
 
 ## Data storage
 
-- **Local:** `localStorage` for immediate persistence
-- **Cloud:** GitHub repo (`data.json`) via the Contents API — requires a personal access token with repo scope
+Live data lives in **Supabase** (shares the Lee Lab colony project — publishable key, permissive RLS). It's stored **granularly**, one row per level, so concurrent recorders never clobber each other:
+
+- `tmaze_cohorts` — one row per cohort (name/age/genotypes/mice as a JSONB blob)
+- `tmaze_days` — one row per (cohort, day) — date, locked, phase…
+- `tmaze_records` — one row per (cohort, day, mouse) — trials/weight/notes/reward as a JSONB blob
+
+**How saving works:** every edit writes to `localStorage` instantly, then a debounced (~1.2 s) sync **upserts only the rows that changed**. On load, the app **reconciles** the server copy with any unsynced local rows (so a fast refresh after "Add Day" never loses it), and a tab-hidden flush pushes pending edits. **GitHub** now only receives a `data.json` snapshot when you press **Finish Day** (backup/archive).
+
+**Setup (one-time):** run `tmaze_migration.sql` in the Supabase SQL editor to create the tables, then `node import_data.mjs` to import an existing `data.json`. Both are in this repo.
