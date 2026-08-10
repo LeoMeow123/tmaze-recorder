@@ -10096,6 +10096,109 @@
             }
           },
           "locked": true
+        },
+        {
+          "day": 5,
+          "date": "2026-08-10",
+          "trials": {
+            "F1": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "20.1",
+              "notes": "",
+              "reversal": false
+            },
+            "F2": {
+              "reward": "L",
+              "trials": [
+                "R",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "19.7",
+              "notes": "",
+              "reversal": false
+            },
+            "F3": {
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "15.8",
+              "notes": "looks very sick - can barely walk - not running t-maze with this mouse anymore",
+              "reversal": false
+            },
+            "F4": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "R",
+                "L",
+                "R"
+              ],
+              "weight": "26.9",
+              "notes": "in trial 1, food was on right side",
+              "reversal": false
+            },
+            "F5": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "22.7",
+              "notes": "",
+              "reversal": false
+            },
+            "F6": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "24.3",
+              "notes": "",
+              "reversal": false
+            }
+          },
+          "locked": true
         }
       ]
     }
