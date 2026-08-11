@@ -9533,6 +9533,173 @@
             }
           },
           "locked": true
+        },
+        {
+          "day": 7,
+          "date": "2026-08-11",
+          "trials": {
+            "M1-1": {
+              "reward": "L",
+              "trials": [
+                "U",
+                "U",
+                "U",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "27.46",
+              "notes": "5th trail recorded the last few seconds running to the other arm",
+              "reversal": false
+            },
+            "M1-2": {
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "27.38",
+              "notes": "",
+              "reversal": false
+            },
+            "M1-3": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R"
+              ],
+              "weight": "28.92",
+              "notes": "",
+              "reversal": false
+            },
+            "M2-1": {
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M2-2": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "L",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "28.96",
+              "notes": "",
+              "reversal": false
+            },
+            "M2-3": {
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M3-1": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M3-2": {
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "out",
+              "reversal": false
+            },
+            "M3-3": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M3-4": {
+              "reward": "L",
+              "trials": [
+                "U",
+                "U",
+                "U",
+                "U",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "27.82",
+              "notes": "out; very shaky, only walk against the sides",
+              "reversal": false
+            }
+          },
+          "locked": true
         }
       ]
     },
