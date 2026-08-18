@@ -10972,6 +10972,246 @@
           "locked": true
         }
       ]
+    },
+    {
+      "id": "msyxx44q",
+      "name": "PD Cohort 2",
+      "age": "7-10 months",
+      "genotypes": "WT, cdk5",
+      "created": "2026-08-18",
+      "mice": [
+        {
+          "id": "1781",
+          "sex": "M",
+          "genotype": "cdk5",
+          "condition": "healthy"
+        },
+        {
+          "id": "1782",
+          "sex": "M",
+          "genotype": "WT",
+          "condition": "healthy"
+        },
+        {
+          "id": "1783",
+          "sex": "M",
+          "genotype": "WT",
+          "condition": "healthy"
+        },
+        {
+          "id": "1823",
+          "sex": "M",
+          "genotype": "cdk5",
+          "condition": "healthy"
+        },
+        {
+          "id": "1825",
+          "sex": "M",
+          "genotype": "WT",
+          "condition": "healthy"
+        },
+        {
+          "id": "1547",
+          "sex": "M",
+          "genotype": "cdk5",
+          "condition": "healthy"
+        },
+        {
+          "id": "1548",
+          "sex": "M",
+          "genotype": "cdk5",
+          "condition": "healthy"
+        },
+        {
+          "id": "1549",
+          "sex": "M",
+          "genotype": "WT",
+          "condition": "healthy"
+        },
+        {
+          "id": "1478",
+          "sex": "F",
+          "genotype": "WT",
+          "condition": "healthy"
+        },
+        {
+          "id": "1479",
+          "sex": "F",
+          "genotype": "cdk5",
+          "condition": "healthy"
+        }
+      ],
+      "days": [
+        {
+          "day": 0,
+          "date": "2026-08-18",
+          "trials": {
+            "1478": {
+              "reward": "",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "R",
+                ""
+              ],
+              "weight": "34.03",
+              "notes": "marked base tail",
+              "reversal": false
+            },
+            "1479": {
+              "reward": "",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "R",
+                "L",
+                "L",
+                "L",
+                "R",
+                "R"
+              ],
+              "weight": "21.8",
+              "notes": "should be 1477",
+              "reversal": false
+            },
+            "1547": {
+              "reward": "",
+              "trials": [
+                "R",
+                "L",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R"
+              ],
+              "weight": "30.6",
+              "notes": "",
+              "reversal": false
+            },
+            "1548": {
+              "reward": "",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "",
+                "",
+                ""
+              ],
+              "weight": "29.1",
+              "notes": "mid tail",
+              "reversal": false
+            },
+            "1549": {
+              "reward": "",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L",
+                "",
+                ""
+              ],
+              "weight": "38.4",
+              "notes": "end tail",
+              "reversal": false
+            },
+            "1781": {
+              "reward": "",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L",
+                "R",
+                ""
+              ],
+              "weight": "24.5",
+              "notes": "base tail marked",
+              "reversal": false
+            },
+            "1782": {
+              "reward": "",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L",
+                "",
+                ""
+              ],
+              "weight": "42.5",
+              "notes": "mid tail marked",
+              "reversal": false
+            },
+            "1783": {
+              "reward": "",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L",
+                "R",
+                "L",
+                "L"
+              ],
+              "weight": "42.6",
+              "notes": "end tail marked",
+              "reversal": false
+            },
+            "1823": {
+              "reward": "",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "",
+                "",
+                ""
+              ],
+              "weight": "27.2",
+              "notes": "base marked",
+              "reversal": false
+            },
+            "1825": {
+              "reward": "",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "",
+                "",
+                ""
+              ],
+              "weight": "36.3",
+              "notes": "",
+              "reversal": false
+            }
+          },
+          "locked": true
+        }
+      ]
     }
   ]
 }
