@@ -11210,6 +11210,173 @@
             }
           },
           "locked": true
+        },
+        {
+          "day": 1,
+          "date": "2026-08-19",
+          "trials": {
+            "1478": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "L",
+                "L",
+                "L",
+                "R",
+                "L"
+              ],
+              "weight": "32.9",
+              "notes": "",
+              "reversal": false
+            },
+            "1479": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "R",
+                "L",
+                "R",
+                "L",
+                "L"
+              ],
+              "weight": "22,0",
+              "notes": "",
+              "reversal": false
+            },
+            "1547": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "28.3",
+              "notes": "",
+              "reversal": false
+            },
+            "1548": {
+              "reward": "L",
+              "trials": [
+                "R",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "27.5",
+              "notes": "",
+              "reversal": false
+            },
+            "1549": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "37.1",
+              "notes": "",
+              "reversal": false
+            },
+            "1781": {
+              "reward": "L",
+              "trials": [
+                "R",
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "R",
+                "R"
+              ],
+              "weight": "25.1",
+              "notes": "looks like female",
+              "reversal": false
+            },
+            "1782": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L"
+              ],
+              "weight": "40.5",
+              "notes": "looks like female",
+              "reversal": false
+            },
+            "1783": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R"
+              ],
+              "weight": "40.6",
+              "notes": "looks like female",
+              "reversal": false
+            },
+            "1823": {
+              "reward": "L",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R"
+              ],
+              "weight": "25.2",
+              "notes": "",
+              "reversal": false
+            },
+            "1825": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "35.9",
+              "notes": "",
+              "reversal": false
+            }
+          },
+          "locked": true
         }
       ]
     }
