@@ -245,11 +245,11 @@
 
 <!-- REORDER MICE MODAL -->
 <div class="modal-overlay" id="reorderModal">
-  <div class="modal-card" style="max-width:520px;max-height:80vh;overflow-y:auto">
-    <h3>Recording Order &amp; Mouse IDs</h3>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Drag to reorder. Enter real mouse IDs (e.g. ear tag) to replace placeholder IDs.</p>
+  <div class="modal-card" style="max-width:560px;max-height:80vh;overflow-y:auto">
+    <h3>Recording Order &amp; Mouse Info</h3>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Drag to reorder. Enter real mouse IDs (e.g. ear tag) to replace placeholder IDs. Fix a wrong <strong>sex</strong> or <strong>genotype</strong> here, or <strong>✕ remove</strong> a mouse added by mistake — everything applies on <strong>Apply</strong>.</p>
     <table class="mice-table">
-      <thead><tr><th style="width:24px"></th><th>#</th><th>Mask ID</th><th>Real ID</th><th>Sex</th><th>Geno</th></tr></thead>
+      <thead><tr><th style="width:24px"></th><th>#</th><th>Mask ID</th><th>Real ID</th><th>Sex</th><th>Geno</th><th style="width:32px"></th></tr></thead>
       <tbody id="reorderBody"></tbody>
     </table>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
@@ -496,11 +496,14 @@ function reconcile(server, local) {
   local.cohorts.forEach(lc => {
     const sc = cById[lc.id];
     if (!sc) { server.cohorts.push(lc); cById[lc.id] = lc; return; }   // whole cohort only local
+    // Tombstoned mouse ids (removed/renamed-away) must NOT be resurrected from a stale
+    // local cache — unless a mouse with that id legitimately exists again.
+    const gone = mid => (sc.removedMice || []).includes(mid) && !(sc.mice || []).some(mm => mm.id === mid);
     const dByNum = {}; (sc.days || []).forEach(d => dByNum[d.day] = d);
     (lc.days || []).forEach(ld => {
       const sd = dByNum[ld.day];
-      if (!sd) { sc.days.push(ld); dByNum[ld.day] = ld; return; }      // day only local
-      Object.keys(ld.trials || {}).forEach(mid => { if (!(sd.trials && mid in sd.trials)) { (sd.trials = sd.trials || {})[mid] = ld.trials[mid]; } }); // add local-only mice
+      if (!sd) { Object.keys(ld.trials || {}).forEach(mid => { if (gone(mid)) delete ld.trials[mid]; }); sc.days.push(ld); dByNum[ld.day] = ld; return; }  // day only local
+      Object.keys(ld.trials || {}).forEach(mid => { if (gone(mid)) return; if (!(sd.trials && mid in sd.trials)) { (sd.trials = sd.trials || {})[mid] = ld.trials[mid]; } }); // add local-only mice (skip tombstoned)
     });
     sc.days.sort((a, b) => a.day - b.day);
   });
@@ -1604,17 +1607,34 @@ window.saveSetup = async function() {
 window.showReorder = function() {
   const c = currentCohort();
   if (!c) return;
+  // Genotype suggestions: the cohort's declared genotypes + anything already in use.
+  const genoOpts = [...new Set((c.genotypes || '').split(',').map(g => g.trim()).filter(Boolean).concat(c.mice.map(m => m.genotype).filter(Boolean)))];
+  let dl = document.getElementById('reorderGenoDL');
+  if (!dl) { dl = document.createElement('datalist'); dl.id = 'reorderGenoDL'; document.body.appendChild(dl); }
+  dl.innerHTML = genoOpts.map(g => `<option value="${esc(g)}">`).join('');
   const body = document.getElementById('reorderBody');
   body.innerHTML = c.mice.map((m, i) => `<tr draggable="true" data-mouse-id="${esc(m.id)}">
     <td class="drag-handle">&#9776;</td>
     <td style="color:var(--muted);font-size:11px" class="row-num">${i + 1}</td>
     <td style="font-size:12px;color:var(--muted)">${esc(m.id)}</td>
     <td><input class="real-id-input" data-old-id="${esc(m.id)}" value="" placeholder="${esc(m.id)}" style="width:80px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--text);font-size:12px;font-family:'DM Mono',monospace"></td>
-    <td style="font-size:11px">${m.sex}</td>
-    <td style="font-size:11px">${esc(m.genotype)}</td>
+    <td><select class="sex-edit-input" style="background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:3px 4px;color:var(--text);font-size:11px;font-family:'Outfit',sans-serif"><option value="M"${m.sex === 'M' ? ' selected' : ''}>M</option><option value="F"${m.sex === 'F' ? ' selected' : ''}>F</option></select></td>
+    <td><input class="geno-edit-input" list="reorderGenoDL" value="${esc(m.genotype || '')}" style="width:76px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--text);font-size:11px;font-family:'Outfit',sans-serif"></td>
+    <td><button class="btn btn-danger btn-sm remove-mouse-btn" title="Remove this mouse" onclick="toggleRemoveMouse(this)" style="padding:2px 8px">✕</button></td>
   </tr>`).join('');
   document.getElementById('reorderModal').classList.add('open');
   initDragReorderOn(body);
+};
+
+// Mark/unmark a mouse for removal — nothing is deleted until "Apply", so it's cancellable.
+window.toggleRemoveMouse = function(btn) {
+  const tr = btn.closest('tr');
+  const on = tr.dataset.removed === '1';
+  tr.dataset.removed = on ? '' : '1';
+  tr.style.opacity = on ? '' : '0.35';
+  tr.style.textDecoration = on ? '' : 'line-through';
+  btn.textContent = on ? '✕' : '↩';
+  btn.title = on ? 'Remove this mouse' : 'Undo removal';
 };
 
 window.closeReorder = function() { document.getElementById('reorderModal').classList.remove('open'); };
@@ -1622,12 +1642,24 @@ window.closeReorder = function() { document.getElementById('reorderModal').class
 window.saveReorder = function() {
   const c = currentCohort();
   if (!c) return;
-  const rows = document.querySelectorAll('#reorderBody tr');
+  const rows = [...document.querySelectorAll('#reorderBody tr')];
+  const kept = rows.filter(r => r.dataset.removed !== '1');
+  const removedIds = rows.filter(r => r.dataset.removed === '1').map(r => r.dataset.mouseId);
+  if (!kept.length) { alert('Cannot remove every mouse — a cohort needs at least one.'); return; }
 
-  // Build rename map: oldId -> newId
+  // Removal confirm — call out mice that already have recorded data.
+  if (removedIds.length) {
+    const withData = removedIds.filter(id => c.days.some(d => { const t = d.trials[id]; return t && ((t.trials || []).some(x => x) || t.weight || t.notes); }));
+    const msg = `Remove ${removedIds.length} mouse/mice (${removedIds.join(', ')}) from this cohort?` +
+      (withData.length ? `\n\n⚠ ${withData.join(', ')} already ha${withData.length > 1 ? 've' : 's'} recorded trials — removal deletes them from ALL days (including finished ones).` : '') +
+      `\nThis cannot be undone from the app.`;
+    if (!confirm(msg)) return;
+  }
+
+  // Build rename map among kept rows: oldId -> newId
   const renameMap = {};
   const newIds = new Set();
-  for (const row of rows) {
+  for (const row of kept) {
     const oldId = row.dataset.mouseId;
     const input = row.querySelector('.real-id-input');
     const newId = (input && input.value.trim()) || oldId;
@@ -1636,26 +1668,37 @@ window.saveReorder = function() {
     renameMap[oldId] = newId;
   }
 
-  // Apply renames to mice array
+  // Apply removals: drop from every day + tombstone the id so another user's stale
+  // browser cache can't resurrect the deleted rows into the database on their next load.
+  if (removedIds.length) {
+    removedIds.forEach(id => c.days.forEach(d => { if (d.trials) delete d.trials[id]; }));
+    c.removedMice = [...new Set((c.removedMice || []).concat(removedIds))];
+  }
+
   const miceMap = {};
   c.mice.forEach(m => { miceMap[m.id] = m; });
 
-  // Reorder + rename
-  const newOrder = [...rows].map(r => r.dataset.mouseId);
-  c.mice = newOrder.map(oldId => {
+  // Reorder + rename + apply sex/genotype fixes
+  c.mice = kept.map(r => {
+    const oldId = r.dataset.mouseId;
     const m = miceMap[oldId];
     if (!m) return null;
     const newId = renameMap[oldId];
     if (newId !== oldId) {
-      // Rename in all day trials
+      // Rename in all day trials (+ tombstone the old id — see removal note above)
       c.days.forEach(d => {
         if (d.trials[oldId]) {
           d.trials[newId] = d.trials[oldId];
           delete d.trials[oldId];
         }
       });
+      c.removedMice = [...new Set((c.removedMice || []).concat(oldId))];
       m.id = newId;
     }
+    const sexSel = r.querySelector('.sex-edit-input');
+    const genoIn = r.querySelector('.geno-edit-input');
+    if (sexSel) m.sex = sexSel.value;
+    if (genoIn && genoIn.value.trim()) m.genotype = genoIn.value.trim();
     return m;
   }).filter(m => m);
 

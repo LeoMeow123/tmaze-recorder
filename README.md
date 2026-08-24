@@ -13,7 +13,7 @@ Web app for recording T-maze behavioral trials, replacing Google Sheets with a p
 - **Per-mouse reversal marking** — only **LEARNED** mice can start reversal; marking it **flips the reward side back to the Day-0 preferred side** and **resets LEARNED** while the mouse re-learns, then shows **LEARNED (R) ✓** once it reaches criterion again on reversal days; carries forward to new days
 - **Weight monitoring** — SVG chart, baseline tracking, alerts for >15% baseline drop or >10% day-over-day drop
 - **Weights tab** — dedicated weight-only view across all days with baseline/current/change summary
-- **Real mouse IDs** — enter actual ear tag IDs via the reorder modal; mask IDs (M1, F1) used as placeholders
+- **Real mouse IDs & mouse fixes** — the reorder modal is the mouse editor: enter actual ear-tag IDs (mask IDs M1/F1 as placeholders), **fix a wrong sex or genotype**, or **✕ remove a mouse added by mistake** (confirm required; extra warning if it has recorded trials; removed/renamed IDs are tombstoned so stale caches can't resurrect them)
 - **Drag-to-reorder** — set recording sequence by dragging rows
 - **STRIDE-compatible CSV export** — `meta_trials.csv`, `T-maze-metadata.csv`, full trials, and weights
 - **Live Supabase sync** — every edit saves automatically (~1 s, debounced), per row; multiple people (or two tabs) recording different experiments can't overwrite each other
