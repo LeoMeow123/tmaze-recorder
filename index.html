@@ -546,11 +546,12 @@ function papers_length_str() {
 // =====================================================================
 function renderCohortList() {
   const el = document.getElementById('cohortList');
-  if (allData.cohorts.length === 0) {
+  const visible = allData.cohorts.filter(c => !c.deleted);
+  if (visible.length === 0) {
     el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)"><p>No cohorts yet. Click "+ New Cohort" to start.</p></div>';
     return;
   }
-  el.innerHTML = allData.cohorts.map(c => {
+  el.innerHTML = visible.map(c => {
     const dayCount = c.days ? c.days.length : 0;
     const miceCount = c.mice ? c.mice.length : 0;
     return `<div class="cohort-card" onclick="openCohort('${c.id}')">
@@ -558,10 +559,32 @@ function renderCohortList() {
         <h3>${esc(c.name || 'Untitled')}</h3>
         <div class="meta">${esc(c.age || '')} &middot; ${miceCount} mice &middot; ${dayCount} day${dayCount !== 1 ? 's' : ''} &middot; ${esc(c.genotypes || '')}</div>
       </div>
-      <span class="cohort-badge">${c.created || ''}</span>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="cohort-badge">${c.created || ''}</span>
+        <button class="btn btn-danger btn-sm" title="Delete cohort" onclick="deleteCohort('${c.id}', event)">🗑</button>
+      </div>
     </div>`;
   }).join('');
 }
+
+// Soft-delete a cohort: hidden everywhere but kept in the database (recoverable).
+// Empty/mistake cohorts need a simple confirm; cohorts with recorded data require
+// typing the cohort name so nobody wipes real results by mis-click.
+window.deleteCohort = function(id, ev) {
+  if (ev) ev.stopPropagation();
+  const c = allData.cohorts.find(x => x.id === id);
+  if (!c) return;
+  const hasData = (c.days || []).some(d => Object.values(d.trials || {}).some(t =>
+    (t.trials || []).some(x => x) || t.weight || t.notes));
+  if (hasData) {
+    const typed = prompt(`"${c.name}" has recorded data.\nType the cohort name to confirm deletion:`);
+    if (typed === null) return;
+    if (typed.trim() !== c.name) { alert('Name did not match — not deleted.'); return; }
+  } else if (!confirm(`Delete cohort "${c.name}"?`)) return;
+  c.deleted = true;
+  saveLocal();
+  renderCohortList();
+};
 
 // =====================================================================
 // NEW COHORT
@@ -738,10 +761,12 @@ window.markReversal = function() {
   const html = c.mice.map(m => {
     const t = day.trials[m.id];
     const checked = t && t.reversal ? ' checked' : '';
-    return `<label style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;cursor:pointer">
-      <input type="checkbox" data-mouse="${esc(m.id)}"${checked} style="width:16px;height:16px">
+    // Reversal can only START for a mouse that has LEARNED; unchecking is always allowed.
+    const canToggle = !!checked || reachedCriterion(c, m.id, activeDay) === 'learned';
+    return `<label style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;cursor:${canToggle ? 'pointer' : 'not-allowed'};opacity:${canToggle ? '1' : '0.45'}"${canToggle ? '' : ' title="Not learned yet — reversal starts only after the mouse reaches criterion"'}>
+      <input type="checkbox" data-mouse="${esc(m.id)}"${checked}${canToggle ? '' : ' disabled'} style="width:16px;height:16px">
       <span style="font-weight:600">${esc(m.id)}</span>
-      <span style="color:var(--muted);font-size:11px">${esc(m.genotype)} ${m.sex}</span>
+      <span style="color:var(--muted);font-size:11px">${esc(m.genotype)} ${m.sex}${canToggle ? '' : ' · not learned yet'}</span>
     </label>`;
   }).join('');
   const el = document.getElementById('dayContent');
@@ -754,7 +779,8 @@ window.markReversal = function() {
   picker.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
     <h4 style="font-size:13px">Toggle Reversal (Day ${day.day})</h4>
     <button class="btn btn-sm btn-primary" onclick="applyReversal()">Apply</button>
-  </div>${html}`;
+  </div>
+  <p style="font-size:11px;color:var(--muted);margin-bottom:8px">Only mice that have <strong style="color:var(--green)">LEARNED</strong> can start reversal. Starting reversal flips the reward to the Day-0 preferred side and resets LEARNED until the mouse re-learns.</p>${html}`;
   el.insertBefore(picker, el.firstChild);
 };
 
@@ -855,36 +881,68 @@ function excludedByStreak(cohort, mouseId, dayIdx) {
 }
 
 // Learning criterion: 6+ correct (rewarded-side) choices on 2 consecutive
-// experiment days (Day 1+).
+// experiment days (Day 1+). Applied separately to the learning phase and — once a
+// mouse is switched to reversal — to the reversal phase (re-learning the flipped side).
 const LEARN_MIN_CORRECT = 6, LEARN_DAYS = 2;
+
+// First day index where this mouse is marked reversal (its phase boundary), or -1.
+function reversalStartIdx(cohort, mouseId) {
+  for (let i = 0; i < cohort.days.length; i++) {
+    if (cohort.days[i].day < 1) continue;
+    const t = cohort.days[i].trials[mouseId];
+    if (t && t.reversal) return i;
+  }
+  return -1;
+}
+
+// Effective reward side for a mouse on a given day. Learning phase: opposite of the
+// Day-0 preference. Reversal days: flipped back to the preferred side — the mouse
+// must now re-learn against what it just learned.
+function effectiveReward(cohort, day, mouseId) {
+  const t = day.trials[mouseId];
+  const base = getRewardSide(cohort, mouseId) || (t && t.reward) || '';
+  if (!base) return '';
+  return (t && t.reversal) ? (base === 'L' ? 'R' : 'L') : base;
+}
 
 function correctCount(cohort, day, mouseId) {
   if (day.day < 1) return 0;
   const t = day.trials[mouseId];
   if (!t) return 0;
-  const reward = getRewardSide(cohort, mouseId) || t.reward;
+  const reward = effectiveReward(cohort, day, mouseId);
   if (!reward) return 0;
   let correct = 0;
   for (let i = 0; i < 8; i++) { if (t.trials[i] === reward) correct++; }
   return correct;
 }
 
-// Index into cohort.days where the criterion is first met, or -1 if never.
-function criterionDayIdx(cohort, mouseId) {
+// Day index where the criterion is first met WITHIN one phase ('learning' = days
+// before the mouse's reversal mark, 'reversal' = days marked reversal), or -1.
+function criterionDayIdxPhase(cohort, mouseId, phase) {
   const days = cohort.days;
   let streak = 0;
   for (let i = 0; i < days.length; i++) {
     if (days[i].day < 1) continue;
+    const t = days[i].trials[mouseId];
+    const isRev = !!(t && t.reversal);
+    if ((phase === 'reversal') !== isRev) { streak = 0; continue; }
     streak = correctCount(cohort, days[i], mouseId) >= LEARN_MIN_CORRECT ? streak + 1 : 0;
     if (streak >= LEARN_DAYS) return i;
   }
   return -1;
 }
 
-// True for every day at/after the criterion is first met.
+// Phase-aware learned status for a day: '' | 'learned' | 'reversal'.
+// Learning-phase LEARNED shows from its criterion day up to the reversal mark
+// (starting reversal RESETS it — the mouse is re-learning); reversal-phase LEARNED
+// shows once the criterion is met again on reversal days.
 function reachedCriterion(cohort, mouseId, dayIdx) {
-  const idx = criterionDayIdx(cohort, mouseId);
-  return idx >= 0 && dayIdx >= idx;
+  const revStart = reversalStartIdx(cohort, mouseId);
+  const learnIdx = criterionDayIdxPhase(cohort, mouseId, 'learning');
+  if (learnIdx >= 0 && dayIdx >= learnIdx && (revStart < 0 || dayIdx < revStart)) return 'learned';
+  const revIdx = criterionDayIdxPhase(cohort, mouseId, 'reversal');
+  if (revIdx >= 0 && dayIdx >= revIdx) return 'reversal';
+  return '';
 }
 
 function renderDayContent() {
@@ -949,6 +1007,15 @@ function renderTrialDay(c, day, el) {
     const t = day.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '', reversal: false };
     const isRev = t.reversal;
     const uCount = t.trials.filter(x => x === 'U').length;
+    // Day 0: the preference is DECIDED once the majority is mathematically secured —
+    // the remaining trials can no longer change the winning side (e.g. 5/8 to one side).
+    let d0Decided = false, d0L = 0, d0R = 0;
+    if (isDay0) {
+      let d0U = 0;
+      for (let i = 0; i < 8; i++) { const v = t.trials[i]; if (v === 'L') d0L++; else if (v === 'R') d0R++; else if (v === 'U') d0U++; }
+      const remaining = 8 - d0L - d0R - d0U;
+      d0Decided = (d0L > d0R + remaining) || (d0R > d0L + remaining);
+    }
     const cond = m.condition || 'healthy';
     const condExcluded = !isDay0 && (cond === 'disease' || cond === 'missing');
     const day0Failed = !isDay0 && failedDay0(c, m.id);
@@ -961,10 +1028,10 @@ function renderTrialDay(c, day, el) {
     else if (day0Failed) { badgeLabel = 'OUT'; failTitle = 'Failed Day 0 — unable to perform the T-maze'; }
     else if (streakExcluded) { badgeLabel = 'OUT'; failTitle = '3 consecutive failed days — excluded from testing'; }
     else if (thisDayFail) { badgeLabel = 'FAIL'; failTitle = `${uCount} unfinished trials — failed this day (kept in study)`; }
-    const learned = !isDay0 && reachedCriterion(c, m.id, activeDay);
-    // A learned mouse (with no reversal phase) is done for this cohort — celebrate
-    // the day it crosses, then show a positive green band like the OUT band.
-    if (learned && criterionDayIdx(c, m.id) === activeDay) {
+    const learned = !isDay0 ? reachedCriterion(c, m.id, activeDay) : '';   // '' | 'learned' | 'reversal'
+    // Celebrate the day a criterion is crossed — both the first learning and the
+    // reversal re-learning fire fireworks, once each.
+    if (learned && criterionDayIdxPhase(c, m.id, learned === 'reversal' ? 'reversal' : 'learning') === activeDay) {
       const key = m.id + ':' + activeDay;
       if (!celebrated.has(key)) { celebrated.add(key); newlyLearned.push(m.id); }
     }
@@ -975,9 +1042,9 @@ function renderTrialDay(c, day, el) {
       // Auto-calculate from this day's trials
       reward = getDay0Reward(c, m.id);
     } else {
-      // Reward = opposite of Day 0 preference if available, else fall back to manual
-      const rewardSide = getRewardSide(c, m.id);
-      reward = rewardSide || t.reward;
+      // Learning: opposite of Day-0 preference. Reversal day: flipped back to the
+      // preferred side (re-learning). Falls back to manual reward if no Day 0.
+      reward = effectiveReward(c, day, m.id);
     }
 
     // Accuracy (not shown for Day 0 — there's no "correct" side yet).
@@ -995,7 +1062,7 @@ function renderTrialDay(c, day, el) {
 
     const rowClass = learned ? ' class="mouse-learned"' : (failed ? ' class="mouse-failed"' : '');
     html += `<tr${rowClass}>
-      <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}${isRev ? ' <span class="phase-badge phase-reversal">R</span>' : ''}${!learned && failed ? ` <span class="fail-badge" title="${failTitle}">${badgeLabel}</span>` : ''}${learned ? ` <span class="learn-badge" title="Reached criterion: ${LEARN_MIN_CORRECT}+ correct on ${LEARN_DAYS} consecutive days — done for this cohort">LEARNED ✓</span>` : ''}</td>
+      <td style="font-weight:600;font-size:12px;white-space:nowrap">${esc(m.id)}${isRev ? ' <span class="phase-badge phase-reversal">R</span>' : ''}${!learned && failed ? ` <span class="fail-badge" title="${failTitle}">${badgeLabel}</span>` : ''}${learned ? ` <span class="learn-badge" title="${learned === 'reversal' ? `Re-learned the flipped side: ${LEARN_MIN_CORRECT}+ correct on ${LEARN_DAYS} consecutive reversal days` : `Reached criterion: ${LEARN_MIN_CORRECT}+ correct on ${LEARN_DAYS} consecutive days`}">${learned === 'reversal' ? 'LEARNED (R) ✓' : 'LEARNED ✓'}</span>` : ''}${isDay0 && d0Decided && !failed ? ' <span class="learn-badge" title="Preference decided — the majority side is already secured; remaining trials cannot change it">DONE ✓</span>' : ''}</td>
       ${isDay0 ? `<td><select class="cond-input" onchange="setCondition('${m.id}',this.value)"${locked ? ' disabled' : ''}>
         <option value="healthy"${cond === 'healthy' ? ' selected' : ''}>Healthy</option>
         <option value="missing"${cond === 'missing' ? ' selected' : ''}>Missing</option>
@@ -1005,9 +1072,7 @@ function renderTrialDay(c, day, el) {
       <td><input class="weight-input${wCls}" value="${esc(String(t.weight || ''))}" onchange="setWeight('${m.id}',this.value)" title="${weightWarn || ''}"${locked ? ' disabled' : ''}></td>`;
 
     // Trial cells
-    // Check if first 8 trials are a 4-4 tie (for Day 0 T9 visibility)
-    let d0L = 0, d0R = 0;
-    if (isDay0) { for (let i = 0; i < 8; i++) { if (t.trials[i] === 'L') d0L++; else if (t.trials[i] === 'R') d0R++; } }
+    // 4-4 tie after the 8 trials → the T9 tiebreaker becomes clickable (d0L/d0R counted above)
     const isTied = isDay0 && d0L === 4 && d0R === 4;
 
     for (let i = 0; i < 8; i++) {
@@ -1042,7 +1107,7 @@ function renderTrialDay(c, day, el) {
     } else {
       const day0Reward = getDay0Reward(c, m.id);
       if (day0Reward) {
-        html += `<td><span class="cell-toggle cell-${reward} reward-locked" title="Reward = opposite of Day 0 preference">${reward}</span></td>`;
+        html += `<td><span class="cell-toggle cell-${reward} reward-locked" title="${isRev ? 'Reversal: reward flipped to the Day-0 preferred side' : 'Reward = opposite of Day 0 preference'}">${reward}</span></td>`;
       } else {
         html += `<td><span class="cell-toggle cell-${reward || 'empty'}"${locked ? ' style="cursor:default"' : ` onclick="toggleReward('${m.id}')"`}>${reward || '-'}</span></td>`;
       }
@@ -1070,8 +1135,10 @@ const celebrated = new Set();
 // celebrations — only live crossings during recording fire.
 function seedCelebrated(cohort) {
   cohort.mice.forEach(m => {
-    const idx = criterionDayIdx(cohort, m.id);
-    if (idx >= 0) celebrated.add(m.id + ':' + idx);
+    const li = criterionDayIdxPhase(cohort, m.id, 'learning');
+    if (li >= 0) celebrated.add(m.id + ':' + li);
+    const ri = criterionDayIdxPhase(cohort, m.id, 'reversal');
+    if (ri >= 0) celebrated.add(m.id + ':' + ri);
   });
 }
 
@@ -1431,7 +1498,7 @@ window.exportCSV = function() {
   c.days.forEach(d => {
     if (d.day === 0) return; // skip Day 0 preference test
     c.mice.forEach(m => {
-      const reward = getRewardSide(c, m.id) || (d.trials[m.id] && d.trials[m.id].reward) || '';
+      const reward = effectiveReward(c, d, m.id);   // flips automatically on reversal days
       if (reward) {
         metaTrials += `DAY${d.day},${m.id},${reward}\n`;
       }
@@ -1449,11 +1516,12 @@ window.exportCSV = function() {
   c.days.forEach((d, di) => {
     c.mice.forEach(m => {
       const t = d.trials[m.id] || { reward: '', trials: ['','','','','','','',''], weight: '', notes: '' };
-      const reward = d.day === 0 ? getDay0Reward(c, m.id) : (getRewardSide(c, m.id) || t.reward);
+      const reward = d.day === 0 ? getDay0Reward(c, m.id) : effectiveReward(c, d, m.id);
       let correct = 0, total = 0;
       if (d.day > 0) { for (let i = 0; i < 8; i++) { const tr = t.trials[i]; if (tr === 'L' || tr === 'R' || tr === 'U') { total++; if (tr === reward) correct++; } } }
       const pct = total > 0 ? Math.round((correct / total) * 100) : '';
-      const learned = d.day > 0 && reachedCriterion(c, m.id, di) ? 'yes' : '';
+      const lp = d.day > 0 ? reachedCriterion(c, m.id, di) : '';
+      const learned = lp === 'reversal' ? 'yes-reversal' : (lp ? 'yes' : '');
       const phase = d.day === 0 ? 'preference' : (t.reversal ? 'reversal' : 'learning');
       const t8 = t.trials.slice(0, 8).map(v => v || '').join(',');
       const t9 = t.trials[8] || '';

@@ -6,11 +6,11 @@ Web app for recording T-maze behavioral trials, replacing Google Sheets with a p
 
 ## Features
 
-- **Multi-cohort management** — create and switch between cohorts with age, genotype, and sex tracking
-- **Day 0 preference test** — 8 trials per mouse; preferred side auto-calculated from majority and used as reward side for all subsequent days
+- **Multi-cohort management** — create and switch between cohorts with age, genotype, and sex tracking; **delete a mistaken cohort** from the list (🗑 — cohorts with recorded data require typing the name to confirm; soft-deleted, recoverable from the database)
+- **Day 0 preference test** — 8 trials per mouse; preferred side auto-calculated from majority and used as reward side for all subsequent days. A **DONE ✓ badge appears automatically** once the majority is mathematically secured (e.g. 5/8 to one side) — no hand-counting the remaining trials
 - **Click-to-record trials** — tap cells to toggle L/R; correct/wrong colored automatically based on reward side
 - **Auto-calculated dates** — set Day 0 date, all other days compute as Day 0 + N
-- **Per-mouse reversal marking** — toggle reversal status individually; carries forward to new days
+- **Per-mouse reversal marking** — only **LEARNED** mice can start reversal; marking it **flips the reward side back to the Day-0 preferred side** and **resets LEARNED** while the mouse re-learns, then shows **LEARNED (R) ✓** once it reaches criterion again on reversal days; carries forward to new days
 - **Weight monitoring** — SVG chart, baseline tracking, alerts for >15% baseline drop or >10% day-over-day drop
 - **Weights tab** — dedicated weight-only view across all days with baseline/current/change summary
 - **Real mouse IDs** — enter actual ear tag IDs via the reorder modal; mask IDs (M1, F1) used as placeholders
