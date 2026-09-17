@@ -637,12 +637,26 @@ window.manualSave = function() { saveLocal(); runSync(); };
 // outrun the debounce (the load-time reconcile() is the ultimate safety net).
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && _dirty && !_saving) runSync(); });
 
+// Fetch EVERY row of a table. PostgREST silently caps un-paginated queries at 1000
+// rows — the lab crossed 1000 total records on 2026-09-17 and freshly-recovered rows
+// started vanishing from every load (the merge then read them as remote deletions).
+// Stable order makes the pages deterministic (no skips/dupes between pages).
+async function sbAll(path, order) {
+  const all = [];
+  for (let from = 0; ; from += 1000) {
+    const rows = await sb(`${path}&order=${order}&limit=1000&offset=${from}`);
+    all.push(...(rows || []));
+    if (!rows || rows.length < 1000) break;
+  }
+  return all;
+}
+
 // Rebuild allData from the per-row tables (the load path).
 async function loadFromSupabase() {
   const [cohorts, days, records] = await Promise.all([
-    sb('tmaze_cohorts?select=*'),
-    sb('tmaze_days?select=*'),
-    sb('tmaze_records?select=*'),
+    sbAll('tmaze_cohorts?select=*', 'id.asc'),
+    sbAll('tmaze_days?select=*', 'cohort_id.asc,day_index.asc'),
+    sbAll('tmaze_records?select=*', 'cohort_id.asc,day_index.asc,mouse_id.asc'),
   ]);
   if (!cohorts) return null;
   const byId = {};
