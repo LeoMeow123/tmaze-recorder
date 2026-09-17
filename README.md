@@ -17,7 +17,9 @@ Web app for recording T-maze behavioral trials, replacing Google Sheets with a p
 - **Drag-to-reorder** — set recording sequence by dragging rows
 - **STRIDE-compatible CSV export** — `meta_trials.csv`, `T-maze-metadata.csv`, full trials, and weights
 - **Live Supabase sync** — every edit saves automatically (~1 s, debounced), per row; multiple people (or two tabs) recording different experiments can't overwrite each other
-- **Finish-Day GitHub backup** — pressing *Finish Day* commits one `data.json` snapshot to GitHub (the only GitHub write; no more 5-min commit spam)
+- **Sync safety net** (added after the 2026-09-16 outage) — a **red banner + close-tab guard** whenever edits haven't reached the cloud yet; an **amber banner** when the app started offline (cloud state unknown); a **cloud-age chip** in the header showing how old the loaded snapshot is, with one-click reload (stale >30 min highlighted); **exports re-pull from the cloud first** (row-level three-way merge: local unsynced edits win, remote edits/deletions adopted, pending local deletes preserved) so a long-lived tab can never export a stale CSV
+- **Paginated cloud loads** — Supabase's REST layer silently caps un-paginated queries at 1000 rows; the app pages through every table (stable order, 1000-row pages), so no records vanish as the lab's total grows (this bit on 2026-09-17 at 1,000+ records)
+- **Finish-Day GitHub backup** — pressing *Finish Day* commits one `data.json` snapshot to GitHub (the only GitHub write; no more 5-min commit spam), with a nag if no snapshot has been taken in >3 days
 
 ## Setup
 
@@ -35,6 +37,15 @@ Live data lives in **Supabase** (shares the Lee Lab colony project — publishab
 - `tmaze_days` — one row per (cohort, day) — date, locked, phase…
 - `tmaze_records` — one row per (cohort, day, mouse) — trials/weight/notes/reward as a JSONB blob
 
-**How saving works:** every edit writes to `localStorage` instantly, then a debounced (~1.2 s) sync **upserts only the rows that changed**. On load, the app **reconciles** the server copy with any unsynced local rows (so a fast refresh after "Add Day" never loses it), and a tab-hidden flush pushes pending edits. **GitHub** now only receives a `data.json` snapshot when you press **Finish Day** (backup/archive).
+**How saving works:** every edit writes to `localStorage` instantly, then a debounced (~1.2 s) sync **upserts only the rows that changed**. On load, the app **reconciles** the server copy with any unsynced local rows (so a fast refresh after "Add Day" never loses it, and a computer that recorded offline auto-recovers its data the first time it loads online), and a tab-hidden flush pushes pending edits. All cloud reads are **paginated** (1000-row pages, stable order) so nothing silently truncates. **GitHub** only receives a `data.json` snapshot when you press **Finish Day** (backup/archive).
 
 **Setup (one-time):** run `tmaze_migration.sql` in the Supabase SQL editor to create the tables, then `node import_data.mjs` to import an existing `data.json`. Both are in this repo.
+
+## Data recovery (break-glass tools)
+
+Normal recovery is automatic: open the app **in the browser that recorded the data** while online, and unsynced rows push themselves up (the red banner clears when everything is safe). For everything else:
+
+- **`import_cohort.mjs`** — rescue from a browser that can't get online. On that computer: DevTools console → `copy(localStorage.getItem('tmaze-cache'))` → save as a file → `node import_cohort.mjs dump.json "<cohort name>" [--dry]`. Writes **only the named cohort**, so stale cached copies of other cohorts can't clobber newer server data.
+- **`restore_from_csv.mjs`** — rebuild a cohort's records from a `*_trials_full.csv` export when that's all that survived: `node restore_from_csv.mjs <trials_full.csv> "<cohort name>" [--dry]`. Restores trials T1–T8 (+T9), weights, notes, and reversal flags; only writes records that are missing online.
+
+Both are idempotent and preview with `--dry`. Lessons that shaped them (Sep 2026): a sync outage can strand a day in one browser's `localStorage`, and crossing 1,000 total records once made un-paginated loads silently drop the newest rows — the CSV exports in a locked drawer turned out to be a real recovery path, so keep pressing **Finish Day**.
