@@ -173,11 +173,13 @@
   <h1>T-Maze Recorder</h1>
   <div class="header-actions">
     <span class="sync-status offline" id="syncStatus">Local</span>
+    <span class="cloud-chip" id="cloudChip" title="When this tab last loaded the cloud copy. Long-lived tabs go stale — reload before trusting an export." onclick="reloadFromCloudUI()">cloud: —</span>
     <button class="btn-secondary btn btn-sm" onclick="showSetup()">Sync</button>
     <button class="btn btn-secondary btn-sm" onclick="exportCSV()">Export CSV</button>
     <button class="btn btn-green btn-sm" onclick="manualSave()">Save</button>
   </div>
 </header>
+<div id="syncBanner" style="display:none"></div>
 
 <!-- COHORT LIST VIEW -->
 <div class="view active" id="view-cohorts">
@@ -277,6 +279,14 @@
   </div>
 </div>
 
+<style>
+#syncBanner { position: sticky; top: 0; z-index: 40; background: #c0392b; color: #fff;
+  font-weight: 700; text-align: center; padding: 10px 14px; font-size: 15px; }
+#syncBanner.warn { background: #b7791f; }
+.cloud-chip { font-size: 11px; color: var(--muted, #888); border: 1px solid #ccc;
+  border-radius: 10px; padding: 2px 8px; cursor: pointer; user-select: none; }
+.cloud-chip.stale { color: #b7791f; border-color: #b7791f; font-weight: 700; }
+</style>
 <script>
 (function(){
 "use strict";
@@ -378,6 +388,8 @@ let currentCohortId = null;
 let activeDay = null; // index into current cohort's days array
 let _saving = false;
 let _dirty = false;
+let _lastCloudLoad = 0;   // when THIS tab last loaded the cloud copy (staleness guard)
+let _offlineStart = false; // init fell back to the local cache (cloud state unknown)
 
 function currentCohort() {
   return allData.cohorts.find(c => c.id === currentCohortId);
@@ -426,22 +438,174 @@ async function syncToSupabase() {
   if (chCohorts.length) await up('tmaze_cohorts', chCohorts.map(c => Object.assign({}, c, { updated_at: stamp, updated_by: who })));
   if (chDays.length) await up('tmaze_days', chDays.map(d => Object.assign({}, d, { updated_at: stamp, updated_by: who })));
   if (chRecords.length) await up('tmaze_records', chRecords.map(r => Object.assign({}, r, { updated_at: stamp, updated_by: who })));
-  for (const k of deletions) await deleteRowByKey(k);
+  const prevSynced = _syncedKeys;
+  const failedDeletes = [];
+  for (const k of deletions) { if (!(await deleteRowByKey(k))) failedDeletes.push(k); }
   _syncedKeys = keys;
+  // a failed DELETE stays "pending" so the banner shows it and the next sync retries it
+  failedDeletes.forEach(k => { _syncedKeys[k] = prevSynced[k]; });
 }
+
+function pendingCount() {
+  // rows whose current content differs from the last successfully-synced copy
+  try {
+    const keys = collectRows().keys;
+    let n = 0;
+    for (const k in keys) if (keys[k] !== _syncedKeys[k]) n++;
+    for (const k in _syncedKeys) if (!(k in keys)) n++;   // pending deletions
+    return n;
+  } catch { return 0; }
+}
+
+function updateSyncBanner() {
+  const el = document.getElementById('syncBanner');
+  if (!el) return;
+  const n = pendingCount();
+  if (_offlineStart) {
+    el.className = 'warn';
+    el.style.display = '';
+    el.textContent = 'Offline — showing this computer\'s local copy; edits will sync when the connection returns.';
+    return;
+  }
+  if (n > 0) {
+    el.className = '';
+    el.style.display = '';
+    el.textContent = `\u26a0 ${n} edit${n === 1 ? '' : 's'} NOT saved to the cloud yet — keep this tab open (auto-retrying). Do not trust exports from other computers until this clears.`;
+    return;
+  }
+  // Finish-Day nag (per-browser): gentle amber if no snapshot in > 3 days
+  const last = Number(localStorage.getItem('tmaze-last-finishday') || 0);
+  const days = last ? (Date.now() - last) / 86400000 : Infinity;
+  if (getSyncConfig()?.token && days > 3) {
+    el.className = 'warn';
+    el.style.display = '';
+    el.textContent = last
+      ? `No Finish-Day backup in ${Math.floor(days)} days — press Finish Day after your last mouse to snapshot to GitHub.`
+      : 'No Finish-Day backup recorded from this browser yet — press Finish Day after your last mouse.';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+function updateCloudChip() {
+  const el = document.getElementById('cloudChip');
+  if (!el) return;
+  if (!_lastCloudLoad) { el.textContent = 'cloud: never'; el.classList.add('stale'); return; }
+  const mins = Math.round((Date.now() - _lastCloudLoad) / 60000);
+  el.textContent = 'cloud: ' + (mins < 1 ? 'now' : mins < 60 ? mins + 'm ago' : Math.round(mins / 60) + 'h ago') + ' \u21bb';
+  el.classList.toggle('stale', mins > 30);
+}
+setInterval(updateCloudChip, 60000);
+
+// Rebuild nested allData from a flat rowKey -> JSON map (inverse of collectRows).
+function buildDataFromKeys(keys) {
+  const cohorts = {};
+  for (const k in keys) {
+    if (k.startsWith('c:')) cohorts[k.slice(2)] = Object.assign({}, JSON.parse(keys[k]), { id: k.slice(2), days: [] });
+  }
+  const dayObj = {};
+  for (const k in keys) {
+    if (k.startsWith('d:')) {
+      const p = k.split(':'); const cid = p[1], day = Number(p[2]);
+      if (!cohorts[cid]) continue;
+      dayObj[cid + ':' + day] = Object.assign({}, JSON.parse(keys[k]), { day, trials: {} });
+    }
+  }
+  for (const k in keys) {
+    if (k.startsWith('r:')) {
+      const p = k.split(':'); const d = dayObj[p[1] + ':' + Number(p[2])];
+      if (d) d.trials[p.slice(3).join(':')] = JSON.parse(keys[k]);
+    }
+  }
+  for (const ck in dayObj) cohorts[ck.split(':')[0]].days.push(dayObj[ck]);
+  Object.values(cohorts).forEach(c => c.days.sort((a, b) => a.day - b.day));
+  return { cohorts: Object.values(cohorts) };
+}
+
+// Re-pull the server copy WITHOUT losing local work, even edits made while this
+// function is awaiting the network. Row-level THREE-WAY MERGE, base = _syncedKeys
+// (the last copy this tab knows the server accepted):
+//   local != base            -> LOCAL wins (unsynced edit/addition; gets re-pushed)
+//   local == base            -> SERVER wins (adopts remote edits & remote deletions)
+//   only on server           -> adopt (another device's rows / recovered day)
+//   in base, missing locally -> pending local DELETE: stays deleted, retried
+// Serialized with the sync mutex so no concurrent syncToSupabase snapshot races.
+async function refreshFromCloud() {
+  while (_saving) await new Promise(r => setTimeout(r, 150));
+  _saving = true;
+  let ok = false;
+  try {
+    try { await syncToSupabase(); _dirty = false; } catch (e) { console.error('pre-refresh flush failed:', e); }
+    const server = await loadFromSupabase();
+    if (server) {
+      const serverKeys = collectRows(server).keys;
+      const localKeys = collectRows(allData).keys;   // AFTER the awaits: includes mid-flight edits
+      const base = _syncedKeys;
+      const merged = Object.assign({}, serverKeys);
+      for (const k in localKeys) {
+        if (localKeys[k] !== base[k]) merged[k] = localKeys[k];          // local unsynced change wins
+        else if (!(k in serverKeys)) delete merged[k];                    // synced row deleted remotely
+      }
+      for (const k in base) {
+        if (!(k in localKeys) && (k in merged)) delete merged[k];         // pending local DELETE stays deleted
+      }
+      const c0 = currentCohort();
+      const activeDayNum = (c0 && typeof activeDay === 'number' && c0.days[activeDay]) ? c0.days[activeDay].day : null;
+      allData = buildDataFromKeys(merged);
+      _syncedKeys = serverKeys;   // diffs (local wins, pending deletes) re-push via pendingCount
+      localStorage.setItem(CACHE_KEY, JSON.stringify(allData));
+      _lastCloudLoad = Date.now();
+      const c1 = currentCohort();
+      if (c1 && activeDayNum != null) {
+        const i = c1.days.findIndex(d => d.day === activeDayNum);
+        activeDay = i >= 0 ? i : (c1.days.length ? c1.days.length - 1 : null);
+      }
+      ok = true;
+    }
+  } catch (e) { console.error('refreshFromCloud failed:', e);
+  } finally { _saving = false; }
+  if (ok) {
+    _offlineStart = false;
+    if (pendingCount() > 0) runSync();
+    updateSyncBanner(); updateCloudChip();
+  }
+  return ok;
+}
+
+function rerenderAfterRefresh() {
+  try { renderCohortList(); } catch {}
+  if (currentCohort() && activeDay != null && activeDay !== 'weights') {
+    try { renderDayTabs(); } catch {}
+    try { renderDayContent(); } catch {}
+  }
+  try { if (typeof renderWeightChart === 'function' && currentCohort()) renderWeightChart(); } catch {}
+}
+
+window.reloadFromCloudUI = async function() {
+  setSyncStatus('saving', 'Reloading from cloud…');
+  const ok = await refreshFromCloud();
+  setSyncStatus(ok ? 'saved' : 'error', ok ? 'Synced' : 'Offline — using local copy');
+  rerenderAfterRefresh();
+};
+
+window.addEventListener('beforeunload', (e) => {
+  if (pendingCount() > 0) { e.preventDefault(); e.returnValue = ''; }
+});
 
 async function deleteRowByKey(k) {
   const p = k.split(':');
   try {
-    if (p[0] === 'r') await sb(`tmaze_records?cohort_id=eq.${encodeURIComponent(p[1])}&day_index=eq.${p[2]}&mouse_id=eq.${encodeURIComponent(p[3])}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } });
+    if (p[0] === 'r') await sb(`tmaze_records?cohort_id=eq.${encodeURIComponent(p[1])}&day_index=eq.${p[2]}&mouse_id=eq.${encodeURIComponent(p.slice(3).join(':'))}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } });
     else if (p[0] === 'd') await sb(`tmaze_days?cohort_id=eq.${encodeURIComponent(p[1])}&day_index=eq.${p[2]}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } });
     else if (p[0] === 'c') await sb(`tmaze_cohorts?id=eq.${encodeURIComponent(p[1])}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } });
-  } catch (e) { console.error('delete failed', k, e); }
+    return true;
+  } catch (e) { console.error('delete failed', k, e); return false; }
 }
 
 function saveLocal() {
   localStorage.setItem(CACHE_KEY, JSON.stringify(allData));   // instant local safety net
   _dirty = true;
+  updateSyncBanner();
   setSyncStatus('saving', 'Saving…');
   clearTimeout(_syncTimer);
   _syncTimer = setTimeout(runSync, 1200);                     // debounce ~1.2s after the last edit
@@ -453,11 +617,14 @@ async function runSync() {
   try {
     await syncToSupabase();
     _dirty = false;
+    _offlineStart = false;
+    updateSyncBanner();
     setSyncStatus('saved', 'Saved');
     setTimeout(() => { if (!_dirty) setSyncStatus('saved', 'Synced'); }, 1500);
   } catch (e) {
     console.error('Sync failed:', e);
     setSyncStatus('error', 'Offline — retrying');
+    updateSyncBanner();
     clearTimeout(_syncTimer);
     _syncTimer = setTimeout(runSync, 4000);                   // keep retrying; data stays in localStorage meanwhile
   } finally { _saving = false; }
@@ -527,13 +694,15 @@ async function init() {
       localStorage.setItem(CACHE_KEY, JSON.stringify(allData));
       loaded = true;
       const recovered = Object.keys(collectRows().keys).length - Object.keys(serverKeys).length;
+      _lastCloudLoad = Date.now();
       if (recovered > 0) { setSyncStatus('saving', `Recovering ${recovered} unsynced edit(s)…`); runSync(); }
       else setSyncStatus('saved', 'Synced');
+      updateSyncBanner(); updateCloudChip();
     }
   } catch (e) { console.error('Supabase load failed:', e); }
 
   if (!loaded) {
-    if (local && local.cohorts) { allData = local; _syncedKeys = {}; loaded = true; setSyncStatus('error', 'Offline (cached) — will sync when back'); runSync(); }
+    if (local && local.cohorts) { allData = local; _syncedKeys = {}; _offlineStart = true; loaded = true; setSyncStatus('error', 'Offline (cached) — will sync when back'); updateSyncBanner(); runSync(); }
     else setSyncStatus('error', 'No data — check connection');
   }
 
@@ -1277,6 +1446,7 @@ window.finishDay = async function() {
   if (cfg?.token) {                                   // one backup commit of the full snapshot to GitHub
     setSyncStatus('saving', 'Backing up to GitHub…');
     const ok = await saveToCloud(allData);
+    if (ok) localStorage.setItem('tmaze-last-finishday', String(Date.now()));  // nag clock: successes only
     setSyncStatus(ok ? 'saved' : 'error', ok ? 'Backed up ✓' : 'Backup failed — data is safe in Supabase');
   }
 };
@@ -1308,8 +1478,9 @@ window.toggleReward = function(mouseId) {
 window.toggleTrial = function(mouseId, trialIdx) {
   if (activeDayLocked()) return;
   const c = currentCohort();
-  const day = c.days[activeDay];
-  const t = day.trials[mouseId];
+  const day = c && c.days[activeDay];
+  const t = day && day.trials[mouseId];
+  if (!t) { rerenderAfterRefresh(); return; }   // row/cohort vanished (e.g. refresh adopted a remote removal)
   const val = t.trials[trialIdx];
   if (val === 'L') t.trials[trialIdx] = 'R';
   else if (val === 'R') t.trials[trialIdx] = 'U';
@@ -1492,7 +1663,15 @@ function renderWeightChart() {
 // =====================================================================
 // EXPORT CSV
 // =====================================================================
-window.exportCSV = function() {
+window.exportCSV = async function() {
+  if (!currentCohort()) { alert('Open a cohort first'); return; }
+  // STALE-TAB GUARD: a long-lived tab exports its own snapshot, not the cloud's.
+  // Re-pull (flush-first, add-only reconcile) so the export reflects every device.
+  setSyncStatus('saving', 'Refreshing from cloud before export…');
+  const fresh = await refreshFromCloud();
+  setSyncStatus(fresh ? 'saved' : 'error', fresh ? 'Synced' : 'Offline');
+  rerenderAfterRefresh();
+  if (!fresh && !confirm('Could not refresh from the cloud — this export may miss edits made on other computers. Export anyway?')) return;
   const c = currentCohort();
   if (!c) { alert('Open a cohort first'); return; }
 
@@ -1550,7 +1729,11 @@ window.exportCSV = function() {
   setTimeout(() => download(`${c.name}_weights.csv`, weights), 600);
 };
 
-window.exportWeightsCSV = function() {
+window.exportWeightsCSV = async function() {
+  if (!currentCohort()) return;
+  const fresh = await refreshFromCloud();
+  rerenderAfterRefresh();
+  if (!fresh && !confirm('Could not refresh from the cloud — export may be stale. Export anyway?')) return;
   const c = currentCohort();
   if (!c) return;
   let csv = 'mouse,sex,genotype';
