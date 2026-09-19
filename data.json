@@ -20662,8 +20662,10 @@
         {
           "day": 3,
           "date": "2026-09-18",
+          "locked": true,
           "trials": {
             "16935": {
+              "notes": "",
               "reward": "R",
               "trials": [
                 "R",
@@ -20676,10 +20678,10 @@
                 "R"
               ],
               "weight": "23.82",
-              "notes": "",
               "reversal": false
             },
             "16936": {
+              "notes": "",
               "reward": "R",
               "trials": [
                 "R",
@@ -20692,10 +20694,10 @@
                 "R"
               ],
               "weight": "23.17",
-              "notes": "",
               "reversal": false
             },
             "16937": {
+              "notes": "",
               "reward": "R",
               "trials": [
                 "R",
@@ -20708,6 +20710,219 @@
                 "R"
               ],
               "weight": "23.50",
+              "reversal": false
+            },
+            "16938": {
+              "notes": "",
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "22.32",
+              "reversal": false
+            },
+            "16939": {
+              "notes": "",
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "R",
+                "L",
+                "R"
+              ],
+              "weight": "21.72",
+              "reversal": false
+            },
+            "16940": {
+              "notes": "",
+              "reward": "L",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "22.34",
+              "reversal": false
+            },
+            "16941": {
+              "notes": "",
+              "reward": "R",
+              "trials": [
+                "U",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "18.35",
+              "reversal": false
+            },
+            "16942": {
+              "notes": "",
+              "reward": "L",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "18.99",
+              "reversal": false
+            },
+            "16943": {
+              "notes": "",
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "L",
+                "L",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "19.36",
+              "reversal": false
+            },
+            "16948": {
+              "notes": "",
+              "reward": "L",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "R",
+                "L",
+                "R"
+              ],
+              "weight": "21.93",
+              "reversal": false
+            },
+            "16949": {
+              "notes": "",
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L",
+                "R"
+              ],
+              "weight": "20.84",
+              "reversal": false
+            },
+            "16950": {
+              "notes": "",
+              "reward": "L",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "18.27",
+              "reversal": false
+            },
+            "16951": {
+              "notes": "",
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "19.21",
+              "reversal": false
+            }
+          }
+        },
+        {
+          "day": 4,
+          "date": "2026-09-19",
+          "trials": {
+            "16935": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "23.77",
+              "notes": "",
+              "reversal": false
+            },
+            "16936": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "22.90",
+              "notes": "",
+              "reversal": false
+            },
+            "16937": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "L",
+                "R",
+                "R",
+                "L",
+                "L",
+                "L",
+                "R"
+              ],
+              "weight": "23.78",
               "notes": "",
               "reversal": false
             },
@@ -20723,87 +20938,87 @@
                 "",
                 ""
               ],
-              "weight": "22.32",
+              "weight": "",
               "notes": "",
               "reversal": false
             },
             "16939": {
               "reward": "L",
               "trials": [
-                "L",
-                "L",
-                "L",
-                "L",
-                "L",
-                "R",
-                "L",
-                "R"
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
               ],
-              "weight": "21.72",
+              "weight": "",
               "notes": "",
               "reversal": false
             },
             "16940": {
               "reward": "L",
               "trials": [
-                "L",
-                "R",
-                "L",
-                "L",
-                "R",
-                "L",
-                "L",
-                "L"
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
               ],
-              "weight": "22.34",
+              "weight": "",
               "notes": "",
               "reversal": false
             },
             "16941": {
               "reward": "R",
               "trials": [
-                "U",
-                "R",
-                "R",
-                "R",
-                "L",
-                "R",
-                "R",
-                "R"
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
               ],
-              "weight": "18.35",
+              "weight": "",
               "notes": "",
               "reversal": false
             },
             "16942": {
               "reward": "L",
               "trials": [
-                "L",
-                "R",
-                "L",
-                "L",
-                "L",
-                "L",
-                "L",
-                "L"
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
               ],
-              "weight": "18.99",
+              "weight": "",
               "notes": "",
               "reversal": false
             },
             "16943": {
               "reward": "R",
               "trials": [
-                "R",
-                "R",
                 "L",
                 "L",
                 "L",
                 "R",
+                "L",
+                "L",
                 "R",
                 "R"
               ],
-              "weight": "19.36",
+              "weight": "19.42",
               "notes": "",
               "reversal": false
             },
@@ -20811,15 +21026,15 @@
               "reward": "L",
               "trials": [
                 "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
                 "R",
-                "L",
-                "L",
-                "L",
-                "R",
-                "L",
                 "R"
               ],
-              "weight": "21.93",
+              "weight": "21.53",
               "notes": "",
               "reversal": false
             },
@@ -20830,44 +21045,44 @@
                 "L",
                 "R",
                 "L",
-                "L",
+                "R",
                 "L",
                 "L",
                 "R"
               ],
-              "weight": "20.84",
+              "weight": "20.74",
               "notes": "",
               "reversal": false
             },
             "16950": {
               "reward": "L",
               "trials": [
-                "R",
-                "R",
-                "L",
-                "L",
-                "L",
-                "L",
-                "L",
-                "L"
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
               ],
-              "weight": "18.27",
+              "weight": "",
               "notes": "",
               "reversal": false
             },
             "16951": {
               "reward": "L",
               "trials": [
-                "L",
-                "L",
-                "L",
-                "L",
-                "L",
-                "L",
-                "L",
-                "L"
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
               ],
-              "weight": "19.21",
+              "weight": "",
               "notes": "",
               "reversal": false
             }
