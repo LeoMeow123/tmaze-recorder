@@ -22683,6 +22683,157 @@
             }
           },
           "locked": true
+        },
+        {
+          "day": 3,
+          "date": "2026-10-01",
+          "trials": {
+            "16676": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "L"
+              ],
+              "weight": "20.50",
+              "notes": "",
+              "reversal": false
+            },
+            "16677": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "L",
+                "L",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "21.55",
+              "notes": "",
+              "reversal": false
+            },
+            "16874": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "28.39",
+              "notes": "",
+              "reversal": false
+            },
+            "16875": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "R"
+              ],
+              "weight": "28.74",
+              "notes": "",
+              "reversal": false
+            },
+            "16876": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "28.45",
+              "notes": "",
+              "reversal": false
+            },
+            "16877": {
+              "reward": "L",
+              "trials": [
+                "R",
+                "L",
+                "L",
+                "L",
+                "L",
+                "R",
+                "L",
+                "L"
+              ],
+              "weight": "29.12",
+              "notes": "",
+              "reversal": false
+            },
+            "16878": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "R",
+                "L",
+                "L",
+                "R",
+                "L"
+              ],
+              "weight": "24.80",
+              "notes": "",
+              "reversal": false
+            },
+            "16879": {
+              "reward": "L",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "25.21",
+              "notes": "",
+              "reversal": false
+            },
+            "16880": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "L",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "L"
+              ],
+              "weight": "23.36",
+              "notes": "",
+              "reversal": false
+            }
+          },
+          "locked": true
         }
       ],
       "removedMice": [
