@@ -25229,6 +25229,269 @@
             }
           },
           "locked": true
+        },
+        {
+          "day": 4,
+          "date": "2026-10-17",
+          "trials": {
+            "1": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "R",
+                "R",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "18.98",
+              "notes": "",
+              "reversal": false
+            },
+            "2": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "L",
+                "R",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R"
+              ],
+              "weight": "18.66",
+              "notes": "",
+              "reversal": false
+            },
+            "3": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "R",
+                "L"
+              ],
+              "weight": "18.39",
+              "notes": "",
+              "reversal": false
+            },
+            "4": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "L",
+                "L",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "19.72",
+              "notes": "",
+              "reversal": false
+            },
+            "5": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L",
+                "R"
+              ],
+              "weight": "19.06",
+              "notes": "",
+              "reversal": false
+            },
+            "6": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "L",
+                "R",
+                "L",
+                "R",
+                "L",
+                "R",
+                "R"
+              ],
+              "weight": "19.18",
+              "notes": "",
+              "reversal": false
+            },
+            "7": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "19.27",
+              "notes": "",
+              "reversal": false
+            },
+            "8": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "R",
+                "L",
+                "R",
+                "R",
+                "L"
+              ],
+              "weight": "18.90",
+              "notes": "",
+              "reversal": false
+            },
+            "9": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "L"
+              ],
+              "weight": "21.62",
+              "notes": "",
+              "reversal": false
+            },
+            "10": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R"
+              ],
+              "weight": "23.81",
+              "notes": "",
+              "reversal": false
+            },
+            "11": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "R"
+              ],
+              "weight": "23.30",
+              "notes": "",
+              "reversal": false
+            },
+            "12": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "13": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R"
+              ],
+              "weight": "24.82",
+              "notes": "",
+              "reversal": false
+            },
+            "14": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "R",
+                "L"
+              ],
+              "weight": "22.59",
+              "notes": "",
+              "reversal": false
+            },
+            "15": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R"
+              ],
+              "weight": "26.38",
+              "notes": "",
+              "reversal": false
+            },
+            "16": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            }
+          },
+          "locked": true
         }
       ]
     }
