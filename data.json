@@ -25492,6 +25492,269 @@
             }
           },
           "locked": true
+        },
+        {
+          "day": 5,
+          "date": "2026-10-18",
+          "trials": {
+            "1": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "L"
+              ],
+              "weight": "18.08",
+              "notes": "",
+              "reversal": false
+            },
+            "2": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "R",
+                "R",
+                "L"
+              ],
+              "weight": "18.22",
+              "notes": "Whiteboard on trial 8.",
+              "reversal": false
+            },
+            "3": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "L",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "18.25",
+              "notes": "",
+              "reversal": false
+            },
+            "4": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "L",
+                "R",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "19.18",
+              "notes": "",
+              "reversal": false
+            },
+            "5": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L",
+                "R"
+              ],
+              "weight": "18.85",
+              "notes": "",
+              "reversal": false
+            },
+            "6": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "18.60",
+              "notes": "",
+              "reversal": false
+            },
+            "7": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "R"
+              ],
+              "weight": "18.76",
+              "notes": "",
+              "reversal": false
+            },
+            "8": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R"
+              ],
+              "weight": "18.67",
+              "notes": "",
+              "reversal": false
+            },
+            "9": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L"
+              ],
+              "weight": "21.36",
+              "notes": "",
+              "reversal": false
+            },
+            "10": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L",
+                "R",
+                "L"
+              ],
+              "weight": "23.60",
+              "notes": "",
+              "reversal": false
+            },
+            "11": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "12": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "13": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "24.63",
+              "notes": "",
+              "reversal": false
+            },
+            "14": {
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "22.23",
+              "notes": "Whiteboard on trial 8.",
+              "reversal": false
+            },
+            "15": {
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "16": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            }
+          },
+          "locked": true
         }
       ]
     }
