@@ -25755,6 +25755,269 @@
             }
           },
           "locked": true
+        },
+        {
+          "day": 6,
+          "date": "2026-10-19",
+          "trials": {
+            "1": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L",
+                "L"
+              ],
+              "weight": "18.09",
+              "notes": "",
+              "reversal": false
+            },
+            "2": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "L",
+                "L",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "17.85",
+              "notes": "",
+              "reversal": false
+            },
+            "3": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "17.88",
+              "notes": "",
+              "reversal": false
+            },
+            "4": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "L",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R"
+              ],
+              "weight": "18.48",
+              "notes": "",
+              "reversal": false
+            },
+            "5": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "R",
+                "L",
+                "R",
+                "L",
+                "R"
+              ],
+              "weight": "18.01",
+              "notes": "",
+              "reversal": false
+            },
+            "6": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "R",
+                "L",
+                "L"
+              ],
+              "weight": "17.84",
+              "notes": "",
+              "reversal": false
+            },
+            "7": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "8": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "L",
+                "R",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "18.21",
+              "notes": "",
+              "reversal": false
+            },
+            "9": {
+              "reward": "R",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R"
+              ],
+              "weight": "20.10",
+              "notes": "",
+              "reversal": false
+            },
+            "10": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L"
+              ],
+              "weight": "22.64",
+              "notes": "",
+              "reversal": false
+            },
+            "11": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "12": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "13": {
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "14": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "15": {
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "16": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            }
+          },
+          "locked": true
         }
       ]
     }
