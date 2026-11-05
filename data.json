@@ -28443,6 +28443,77 @@
             }
           },
           "locked": true
+        },
+        {
+          "day": 9,
+          "date": "2026-11-04",
+          "trials": {
+            "M1": {
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "M2": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "30.33",
+              "notes": "",
+              "reversal": false
+            },
+            "M3": {
+              "reward": "R",
+              "trials": [
+                "R",
+                "L",
+                "R",
+                "L",
+                "R",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "34.52",
+              "notes": "",
+              "reversal": false
+            },
+            "M4": {
+              "reward": "R",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            }
+          },
+          "locked": true
         }
       ]
     },
