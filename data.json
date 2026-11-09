@@ -28660,6 +28660,7 @@
         {
           "day": 12,
           "date": "2026-11-07",
+          "locked": true,
           "trials": {
             "M1": {
               "notes": "",
@@ -28725,8 +28726,7 @@
               "weight": "",
               "reversal": false
             }
-          },
-          "locked": true
+          }
         }
       ]
     },
@@ -29734,6 +29734,112 @@
               "reversal": false
             }
           }
+        }
+      ]
+    },
+    {
+      "id": "mw9l3seh",
+      "age": "8mo",
+      "mice": [
+        {
+          "id": "16773",
+          "sex": "F",
+          "genotype": "Tau",
+          "condition": "healthy"
+        },
+        {
+          "id": "16775",
+          "sex": "F",
+          "genotype": "Tau",
+          "condition": "healthy"
+        },
+        {
+          "id": "16756",
+          "sex": "M",
+          "genotype": "Tau",
+          "condition": "healthy"
+        },
+        {
+          "id": "16757",
+          "sex": "M",
+          "genotype": "Tau",
+          "condition": "healthy"
+        }
+      ],
+      "name": "Opto/Fiber 8 mo Tau",
+      "created": "2026-11-09",
+      "genotypes": "Tau",
+      "days": [
+        {
+          "day": 0,
+          "date": "2026-11-09",
+          "trials": {
+            "16756": {
+              "notes": "",
+              "reward": "",
+              "trials": [
+                "R",
+                "L",
+                "U",
+                "R",
+                "R",
+                "U",
+                "R",
+                "U"
+              ],
+              "weight": "32.55",
+              "reversal": false
+            },
+            "16757": {
+              "notes": "",
+              "reward": "",
+              "trials": [
+                "R",
+                "L",
+                "U",
+                "R",
+                "L",
+                "U",
+                "U",
+                "U"
+              ],
+              "weight": "30.73",
+              "reversal": false
+            },
+            "16773": {
+              "notes": "",
+              "reward": "",
+              "trials": [
+                "U",
+                "R",
+                "L",
+                "R",
+                "R",
+                "U",
+                "U",
+                "R"
+              ],
+              "weight": "26.98",
+              "reversal": false
+            },
+            "16775": {
+              "notes": "",
+              "reward": "",
+              "trials": [
+                "R",
+                "R",
+                "L",
+                "R",
+                "L",
+                "R",
+                "R",
+                "R"
+              ],
+              "weight": "23.89",
+              "reversal": false
+            }
+          },
+          "locked": true
         }
       ]
     }
