@@ -29844,6 +29844,7 @@
         {
           "day": 1,
           "date": "2026-11-10",
+          "locked": true,
           "trials": {
             "16756": {
               "notes": "",
@@ -29909,8 +29910,7 @@
               "weight": "25.19",
               "reversal": false
             }
-          },
-          "locked": true
+          }
         },
         {
           "day": 2,
@@ -29920,67 +29920,68 @@
               "notes": "",
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "R",
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "R"
               ],
-              "weight": "",
+              "weight": "30.51",
               "reversal": false
             },
             "16757": {
               "notes": "",
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "R",
+                "L",
+                "R",
+                "L",
+                "U",
+                "U",
+                "R",
+                "U"
               ],
-              "weight": "",
+              "weight": "28.72",
               "reversal": false
             },
             "16773": {
               "notes": "",
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "U",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "L",
+                "R"
               ],
-              "weight": "",
+              "weight": "26.04",
               "reversal": false
             },
             "16775": {
               "notes": "",
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "R",
+                "R",
+                "R",
+                "R",
+                "L",
+                "L",
+                "L",
+                "R"
               ],
-              "weight": "",
+              "weight": "24.55",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         }
       ]
     }
