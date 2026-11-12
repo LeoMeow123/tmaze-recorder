@@ -29915,6 +29915,7 @@
         {
           "day": 2,
           "date": "2026-11-11",
+          "locked": true,
           "trials": {
             "16756": {
               "notes": "",
@@ -29978,6 +29979,76 @@
                 "R"
               ],
               "weight": "24.55",
+              "reversal": false
+            }
+          }
+        },
+        {
+          "day": 3,
+          "date": "2026-11-12",
+          "trials": {
+            "16756": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "16757": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "16773": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "16775": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
               "reversal": false
             }
           },
