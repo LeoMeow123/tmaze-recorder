@@ -30059,70 +30059,71 @@
           "date": "2026-11-13",
           "trials": {
             "16756": {
-              "notes": "",
+              "notes": "Forgot to update whiteboard from 16775",
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "R",
+                "L",
+                "L"
               ],
-              "weight": "",
+              "weight": "29.21",
               "reversal": false
             },
             "16757": {
-              "notes": "",
+              "notes": "Injury?",
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "R",
+                "L",
+                "U",
+                "U",
+                "U",
+                "U",
+                "U",
+                "L"
               ],
-              "weight": "",
+              "weight": "28.16",
               "reversal": false
             },
             "16773": {
               "notes": "",
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L",
+                "L",
+                "R"
               ],
-              "weight": "",
+              "weight": "24.92",
               "reversal": false
             },
             "16775": {
               "notes": "",
               "reward": "L",
               "trials": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "L",
+                "U",
+                "L",
+                "R",
+                "L",
+                "L",
+                "U",
+                "L"
               ],
-              "weight": "",
+              "weight": "23.68",
               "reversal": false
             }
-          }
+          },
+          "locked": true
         }
       ]
     }
