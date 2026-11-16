@@ -30057,6 +30057,7 @@
         {
           "day": 4,
           "date": "2026-11-13",
+          "locked": true,
           "trials": {
             "16756": {
               "notes": "Forgot to update whiteboard from 16775",
@@ -30120,6 +30121,76 @@
                 "L"
               ],
               "weight": "23.68",
+              "reversal": false
+            }
+          }
+        },
+        {
+          "day": 5,
+          "date": "2026-11-14",
+          "trials": {
+            "16756": {
+              "notes": "",
+              "reward": "L",
+              "trials": [
+                "R",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L",
+                "L",
+                "R"
+              ],
+              "weight": "30.11",
+              "reversal": true
+            },
+            "16757": {
+              "notes": "",
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "30.33",
+              "reversal": false
+            },
+            "16773": {
+              "notes": "",
+              "reward": "L",
+              "trials": [
+                "L",
+                "R",
+                "R",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "24.92",
+              "reversal": false
+            },
+            "16775": {
+              "notes": "",
+              "reward": "L",
+              "trials": [
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L",
+                "L",
+                "R"
+              ],
+              "weight": "23.55",
               "reversal": false
             }
           },
