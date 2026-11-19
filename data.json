@@ -30270,8 +30270,10 @@
         {
           "day": 7,
           "date": "2026-11-16",
+          "locked": true,
           "trials": {
             "16756": {
+              "notes": "",
               "reward": "L",
               "trials": [
                 "L",
@@ -30282,6 +30284,75 @@
                 "R",
                 "L",
                 "L"
+              ],
+              "weight": "",
+              "reversal": true
+            },
+            "16757": {
+              "notes": "",
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "reversal": false
+            },
+            "16773": {
+              "notes": "Incorrect mouse number, accidentally had 16757 on white board",
+              "reward": "L",
+              "trials": [
+                "R",
+                "L",
+                "R",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L"
+              ],
+              "weight": "",
+              "reversal": false
+            },
+            "16775": {
+              "notes": "",
+              "reward": "L",
+              "trials": [
+                "L",
+                "L",
+                "R",
+                "L",
+                "L",
+                "L",
+                "L",
+                "U"
+              ],
+              "weight": "",
+              "reversal": false
+            }
+          }
+        },
+        {
+          "day": 8,
+          "date": "2026-11-17",
+          "trials": {
+            "16756": {
+              "reward": "L",
+              "trials": [
+                "R",
+                "L",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R",
+                "R"
               ],
               "weight": "",
               "notes": "",
@@ -30306,9 +30377,9 @@
             "16773": {
               "reward": "L",
               "trials": [
-                "R",
                 "L",
-                "R",
+                "L",
+                "L",
                 "L",
                 "R",
                 "L",
@@ -30316,7 +30387,7 @@
                 "L"
               ],
               "weight": "",
-              "notes": "Incorrect mouse number, accidentally had 16757 on white board",
+              "notes": "",
               "reversal": false
             },
             "16775": {
@@ -30329,7 +30400,7 @@
                 "L",
                 "L",
                 "L",
-                "U"
+                "L"
               ],
               "weight": "",
               "notes": "",
@@ -30337,6 +30408,76 @@
             }
           },
           "locked": true
+        },
+        {
+          "day": 9,
+          "date": "2026-11-18",
+          "trials": {
+            "16756": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": true
+            },
+            "16757": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "16773": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": false
+            },
+            "16775": {
+              "reward": "L",
+              "trials": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "weight": "",
+              "notes": "",
+              "reversal": true
+            }
+          }
         }
       ]
     }
